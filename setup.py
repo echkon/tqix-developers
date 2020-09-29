@@ -18,7 +18,7 @@ PACKAGES = ['tqix', 'tqix/dsm', 'tqix/povm']
 
 NAME = "tqix"
 AUTHOR = ("Binho Le")
-AUTHOR_EMAIL = ("binho@kindai.ac.jp")
+AUTHOR_EMAIL = ("binho@riec.tohoku.ac.jp")
 LICENSE = "GNU"
 DESCRIPTION = "A Toolbox for Quantum in X"
 KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
