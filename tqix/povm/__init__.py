@@ -11,3 +11,12 @@ ________________________________
 """
 
 from tqix.povm.povm import *
+#from tqix.povm.mub3 import *
+#from tqix.povm.mub4 import *
+#from tqix.povm.mub7 import *
+
+#from tqix.povm.sic2 import *
+#from tqix.povm.sic3 import *
+#from tqix.povm.sic4 import *
+#from tqix.povm.sic5 import *
+
