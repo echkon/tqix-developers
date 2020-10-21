@@ -1,5 +1,5 @@
 # tqix
- >>> tqix: a Toolbox for Quantum in X:
+ >>> tqix: a Toolbox for Quantum in X:\
  >>>    X: quantum measurement, quantum metrology, quantum tomography, and others.
 
 # description
