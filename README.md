@@ -2,7 +2,7 @@
  >>> tqix: a Toolbox for Quantum in X:\
  >>>    X: quantum measurement, quantum metrology, quantum tomography, and others.
 
-# description
+# Description
  >>> tqix is an open-source software providing some convenient tools 
      for quantum measurement, quantum metrology, quantum tomography, and others.
 
@@ -32,6 +32,8 @@
            |--- sic.py   # code for Symmetric Informationally Complete (SIC) measurement set
            |
         \dsm # direct quantum state tomogrpaphy (Direct State Measurement, DSM)
+        See: arXiv:2007.05294(2020), J. Phys. B: At. Mol. Opt. Phys. 53, 115501 (2020),
+        Physics Letters A 383, 289–294 (2019).
            |--- __init__.py  
            |--- dsmWeak.py    # code for DSM using Weak measurement
            |--- dsmStrong.py  # code for DSM using Strong measurement
@@ -39,13 +41,13 @@
            |--- execute.py    # execute code contained in "dsm" directory
            |--- util.py       # utility code for quantum tomography: trace distance, fidelity.. 
                
-# license
+# License
  >>> copyright (c) 2019 and later\
  >>> authors: Le Bin Ho\
  >>> contributors: Kieu Quang Tuan\
  >>> all rights reserved.
 
-# note for installation:
+# Note for installation
 >>> download source code from our website:
 https://vqisinfo.wixsite.com/tqix/download
 
