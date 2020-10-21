@@ -32,14 +32,13 @@
            |--- sic.py   # code for Symmetric Informationally Complete (SIC) measurement set
            |
         \dsm # direct quantum state tomogrpaphy (Direct State Measurement, DSM)
-        See: arXiv:2007.05294(2020), J. Phys. B: At. Mol. Opt. Phys. 53, 115501 (2020),
-        Physics Letters A 383, 289–294 (2019).
            |--- __init__.py  
            |--- dsmWeak.py    # code for DSM using Weak measurement
            |--- dsmStrong.py  # code for DSM using Strong measurement
            |--- dsmProb.py, dsmProb_Conf_1.py, dsmProb_Conf_2.py   # code for DSM using Probe-controlled-system measurement
            |--- execute.py    # execute code contained in "dsm" directory
            |--- util.py       # utility code for quantum tomography: trace distance, fidelity.. 
+           |See: arXiv:2007.05294(2020), J. Phys. B: At. Mol. Opt. Phys. 53, 115501 (2020), Physics Letters A 383, 289–294 (2019).
                
 # License
  >>> copyright (c) 2019 and later\
