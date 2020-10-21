@@ -42,7 +42,7 @@
 # license
  >>> copyright (c) 2019 and later\
  >>> authors: Le Bin Ho\
- >>> contributors: Kieu Quang Tuan
+ >>> contributors: Kieu Quang Tuan\
  >>> all rights reserved.
 
 # note for installation:
@@ -52,9 +52,9 @@ https://vqisinfo.wixsite.com/tqix/download
 >>> or from github:
 https://github.com/echkon/tqix-developers
 
->>> then run:
+>>> then run:\
  >>> $sudo pip3 install .
 
 # Verify the installtion and check the version
->>> from qutip import *
+>>> from qutip import *\
 >>> about()
