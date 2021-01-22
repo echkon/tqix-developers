@@ -380,4 +380,3 @@ def cmindex(d):
        raise IndexError('Out of index range')
     else:
        return cmaps[d]
-
