@@ -170,14 +170,16 @@ def clebsch_coe(j1, j2, j3, m1, m2, m3):
            factorial(v + j1 - j2 - m3)
     return CC * SC
 
-
 def _rho_kq(rho, j, k, q):
     # state in kq basis
+    if not isoperx(rho):
+        state = operx(rho)
+    d = shapex(rho)[0] #dimension of state
     
     rkq = 0j
-
-    for m1 in range(-j, j+1):
-        for m2 in range(-j, j+1):
+    jrange = np.linspace(-j,j,d)
+    for m1 in jrange: #range(-j, j+1):
+        for m2 in jrange: #range(-j, j+1):
             rkq += (-1)**(j - m1 - q) * clebsch_coe(j, j, k, m1, -m2,q) * dotx(daggx(zbasis(j,m1)),rho,zbasis(j,m2))
     return rkq
 
@@ -199,8 +201,7 @@ def wigner_spin(state,x_array,y_array):
     if not isoperx(state):
         state = operx(state)
     d = shapex(state)[0] #dimension of state
-    qubit = int(np.log2(d))
-    j = int((d-1)/2)
+    j = (d-1)/2
     
     M = np.shape(x_array)[0]
     N = np.shape(y_array)[0]
