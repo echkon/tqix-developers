@@ -40,12 +40,6 @@
            |--- util.py       # utility code for quantum tomography: trace distance, fidelity.. 
            |See: arXiv:2007.05294(2020), J. Phys. B: At. Mol. Opt. Phys. 53, 115501 (2020), Physics Letters A 383, 289–294 (2019).
                
-# License
- >>> copyright (c) 2019 and later\
- >>> authors: Le Bin Ho\
- >>> contributors: Kieu Quang Tuan\
- >>> all rights reserved.
-
 # Note for installation
 >>> download source code from our website:
 https://vqisinfo.wixsite.com/tqix/download
