@@ -51,7 +51,7 @@ https://github.com/echkon/tqix-developers
  >>> $sudo pip3 install .
 
 # Verify the installtion and check the version
->>> from qutip import *\
+>>> from tqix import *\
 >>> about()
 
 # Instruction for running basic example:
