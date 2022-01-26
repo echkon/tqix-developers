@@ -11,14 +11,14 @@ from setuptools import setup
 # all information about tqix is here
 MAN = 1
 SUB = 0
-SUBS= 1
+SUBS= 2
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
 REQUIRES = ['numpy (>=1.8)', 'scipy (>=0.15)', 'cython (>=0.21)']
-PACKAGES = ['tqix', 'tqix/dsm', 'tqix/povm']
+PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
 NAME = "tqix"
 AUTHOR = ("Binho Le")
-AUTHOR_EMAIL = ("binho@riec.tohoku.ac.jp")
+AUTHOR_EMAIL = ("binho@kindai.ac.jp")
 LICENSE = "GNU"
 DESCRIPTION = "A Toolbox for Quantum in X"
 KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
