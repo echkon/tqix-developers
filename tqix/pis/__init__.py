@@ -12,4 +12,5 @@ ________________________________
 
 from tqix.pis.circuit import *
 from tqix.pis.gates import *
+from tqix.pis.spin_operators import *
 

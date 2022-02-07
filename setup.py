@@ -13,7 +13,7 @@ MAN = 1
 SUB = 0
 SUBS= 2
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
-REQUIRES = ['numpy (>=1.8)', 'scipy (>=0.15)', 'cython (>=0.21)']
+REQUIRES = ['numpy (>=1.8)', 'scipy (>=0.15)', 'cython (>=0.21)','scipy (>=1.7.1)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
 NAME = "tqix"
