@@ -15,6 +15,7 @@ import numpy as np
 from tqix.qx import *
 from tqix.pis.util import *
 from scipy.sparse import bsr_matrix
+from tqix.pis import *
 
 __all__ =['circuit','sobj',
           'dbx','dicke_bx','dicke_ghz']
@@ -38,9 +39,10 @@ def circuit(N,*args):
     else:
        return sobj(args[0],N)
 
-class sobj(object):
+class sobj(Gates):
     # to crate a spin-object
     def __init__(self,state,N):
+        super().__init__()
         self.state = state
         self.N = N
        
@@ -89,5 +91,15 @@ def dicke_ghz(N):
     
     return bsr_matrix(0.5*(e1+e2+e3+e4))
     
-    
-    
+if __name__ == "__main__":
+    N=3
+    print('test with dicke_ghz state')
+    init_state = dicke_ghz(N)
+    qc = circuit(N,init_state)
+    state = qc.state
+    print(state)
+    print(typex(state))
+
+    print('test gate with dicke_ghz state')
+    qc.RZ(np.pi/3).RY().RZ(np.pi/4)
+    print(qc.state)
