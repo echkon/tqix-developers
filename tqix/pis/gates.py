@@ -87,11 +87,8 @@ class Gates:
                 self.theta = old_theta
             elif new_sobj == None and new_theta != None:
                 self.theta = new_theta
-            elif new_sobj != None and new_theta == None:
-                self.sobj = new_sobj
-            elif new_sobj != None and new_theta != None:
-                self.sobj = new_sobj
-                self.theta = new_theta
+            else:
+                raise ValueError("new inputs override old state")
         
         elif old_sobj is None and old_theta is  None:
             if new_theta ==None or new_sobj == None:
@@ -157,7 +154,7 @@ if __name__ == "__main__":
     print(typex(state))
 
     print('test gate with dicke_ghz state')
-    Gates().RZ(qc,np.pi/3).RY().RZ(theta=np.pi/4).RX(sobj=qc)
+    Gates().RZ(qc,np.pi/3).RY().RZ(theta=np.pi/4)
     # Gates().RZ()
     print(qc.state)
 
