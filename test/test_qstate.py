@@ -18,7 +18,7 @@ print(state)
 print(typex(state))
 
 print('test gate with initial state')
-Gates(qc,np.pi/3).RZ()
+Gates().RZ(qc,np.pi/3)
 print(qc.state)
 
 print('test with dicke_ghz state')
@@ -29,5 +29,6 @@ print(state)
 print(typex(state))
 
 print('test gate with dicke_ghz state')
-Gates(qc,np.pi/3).RZ()
+Gates().RZ(qc,np.pi/3)
+Gates().RZ(qc,np.pi/3).RY().RZ(theta=np.pi/4).RX(sobj=qc)
 print(qc.state)
