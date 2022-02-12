@@ -119,7 +119,6 @@ class Gates(object):
             J = block_diag(blocks)
             
         J = csc_matrix(J)
-        print("debug::",self.theta,J)
         expJ = expm(-1j*self.theta*J)
         expJ_conj = csc_matrix(daggx(expJ))
         new_state = expJ.dot(self.state).dot(expJ_conj)
