@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.sparse import bsr_matrix
-from tqix.pis import *
-from tqix.qx import *
-from tqix.qtool import dotx
-from tqix.pis.util import *
+
 
 __all__ = ['Sx','Sy','Sz','S_plus','S_minus','S_2']
 

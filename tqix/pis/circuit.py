@@ -14,7 +14,7 @@ ________________________________
 import numpy as np
 from tqix.qx import *
 from tqix.pis.util import *
-
+from scipy.sparse import bsr_matrix
 
 __all__ =['circuit','sobj',
           'dbx','dicke_bx','dicke_ghz']
@@ -60,7 +60,7 @@ def dbx(j,m):
     state = np.zeros((dim,1))
     offset = get_vidx(j,m) #get vector's index
     state[offset,0] = 1.0
-    return state
+    return bsr_matrix(state)
 
 def dicke_bx(N, jmm1):
     # create a dicke basis follow jmm1
@@ -72,7 +72,7 @@ def dicke_bx(N, jmm1):
     for key in jmm1:
         i,k = ik[key]
         rho[i,k] = jmm1[key]
-    return rho
+    return bsr_matrix(rho)
 
 def dicke_ghz(N):
     # this is an example to get ghz state
@@ -87,7 +87,7 @@ def dicke_ghz(N):
     e3 = dicke_bx(N,{(j,m1,m):1})
     e4 = dicke_bx(N,{(j,m1,m1):1})
     
-    return 0.5*(e1+e2+e3+e4)
+    return bsr_matrix(0.5*(e1+e2+e3+e4))
     
     
     
