@@ -26,7 +26,7 @@ from functools import *
 
 __all__ = ['Gates']
 
-class Gates:
+class Gates(object):
     """ collective rotation gate around axis
         R = expm(-i*theta*J)|state>expm(-i*theta*J).T
 
@@ -40,69 +40,51 @@ class Gates:
         new state
     """
     def __init__(self):
+        self.state = None        
         self.theta = None
-        self.sobj = None
-    
-    def RX(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+
+    def RX(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("Rx")
     
-    def RY(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta) 
+    def RY(self,theta=None):
+        self.check_input_param(theta) 
         return self.gates("Ry")
     
-    def RZ(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+    def RZ(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("Rz")
     
-    def RX2(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+    def RX2(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("Rx2")
     
-    def RY2(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+    def RY2(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("Ry2")
     
-    def RZ2(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta) 
+    def RZ2(self,theta=None):
+        self.check_input_param(theta) 
         return self.gates("Rz2")
     
-    def R_plus(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+    def R_plus(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("R+")
     
-    def R_minus(self,sobj=None,theta=None):
-        self.check_input_param(sobj,theta)
+    def R_minus(self,theta=None):
+        self.check_input_param(theta)
         return self.gates("R-")
     
-    def check_input_param(self,sobj,theta):
-        old_sobj = self.sobj
-        old_theta = self.theta
-        new_sobj = sobj
-        new_theta = theta 
-
-        if old_sobj is not None and old_theta is not None:
-            if new_sobj == None and new_theta == None:
-                self.sobj = old_sobj
-                self.theta = old_theta
-            elif new_sobj == None and new_theta != None:
-                self.theta = new_theta
-            else:
-                raise ValueError("new inputs override old state")
-        
-        elif old_sobj is None and old_theta is  None:
-            if new_theta ==None or new_sobj == None:
-                raise ValueError("theta or quantum object is None")
-            elif new_theta !=None and new_sobj != None:
-                self.sobj = new_sobj
-                self.theta = new_theta
-            
+    def check_input_param(self,theta):
+        self.theta = theta
+        if theta == None:
+            raise ValueError("theta is None")
 
     def gates(self,type=""):
         
-        state = self.sobj.state
+        state = self.state
         d_in = shapex(state)[0]
-        N_in = self.sobj.N
+        N_in = self.N
         d_dicke = get_dim(N_in)
 
         if "Rx" in type:
@@ -137,26 +119,14 @@ class Gates:
             J = block_diag(blocks)
             
         J = csc_matrix(J)
+        print("debug::",self.theta,J)
         expJ = expm(-1j*self.theta*J)
         expJ_conj = csc_matrix(daggx(expJ))
-        new_state = expJ.dot(self.sobj.state).dot(expJ_conj)
+        new_state = expJ.dot(self.state).dot(expJ_conj)
 
-        self.sobj.state = new_state
+        self.state = new_state
 
         return self
-if __name__ == "__main__":
-    N=3
-    print('test with dicke_ghz state')
-    init_state = dicke_ghz(N)
-    qc = circuit(N,init_state)
-    state = qc.state
-    print(state)
-    print(typex(state))
-
-    print('test gate with dicke_ghz state')
-    Gates().RZ(qc,np.pi/3).RY().RZ(theta=np.pi/4)
-    # Gates().RZ()
-    print(qc.state)
 
 
 
