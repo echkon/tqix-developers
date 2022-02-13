@@ -131,16 +131,11 @@ class Gates(object):
         result = []
         t_prob = np.real(csr_matrix(self.state).diagonal())
         result = np.zeros_like(t_prob)
-        
-        for _ in range(num_shots):
-            for ind,prob in enumerate(t_prob):
-                if prob == 0:
-                    continue
-                else:
-                    rand_prob = random.uniform(0,1)
-                    if rand_prob < prob:
-                        result[ind] += 1
-        
+        mask_zeros = t_prob != 0
+        for _ in range(num_shots):    
+            rand_prob = np.random.rand(t_prob.shape[0])
+            mask_prob_ge = t_prob > rand_prob
+            result[mask_zeros & mask_prob_ge] += 1
         result /= num_shots
 
         return result   
