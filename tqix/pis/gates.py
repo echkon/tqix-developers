@@ -14,13 +14,13 @@ ________________________________
 from functools import partial
 import numpy as np
 import cmath as cm
-
+import random
 from sympy import csc
 from tqix.qx import *
 from tqix.qtool import dotx
 from tqix.pis.util import *
 from tqix.pis import *
-from scipy.sparse import bsr_matrix,block_diag,csc_matrix
+from scipy.sparse import bsr_matrix,block_diag,csc_matrix,csr_matrix
 from scipy.sparse.linalg import expm
 from functools import *
 
@@ -126,7 +126,24 @@ class Gates(object):
         self.state = new_state
 
         return self
+    
+    def measure(self,num_shots = None):
+        result = []
+        t_prob = np.real(csr_matrix(self.state).diagonal())
+        result = np.zeros_like(t_prob)
+        
+        for _ in range(num_shots):
+            for ind,prob in enumerate(t_prob):
+                if prob == 0:
+                    continue
+                else:
+                    rand_prob = random.uniform(0,1)
+                    if rand_prob < prob:
+                        result[ind] += 1
+        
+        result /= num_shots
 
+        return result   
 
 
 # def RZ(sobj,theta):
