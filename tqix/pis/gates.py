@@ -58,21 +58,17 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates("Rz")
     
-    def OAT(self,theta,*args, **kwargs):
-        gate_type = kwargs.pop('gate_type', None)
+    def OAT(self,theta,gate_type,*args, **kwargs):
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-
         return eval(f"self.R{gate_type.upper()}2({theta})")
     
-    def TAT(self,theta,*args, **kwargs):
-        gate_type = kwargs.pop('gate_type', None)
+    def TAT(self,theta,gate_type,*args, **kwargs):
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
         return self.gates(type=gate_type+"TAT")
     
-    def TNT(self,theta,*args, **kwargs):
-        gate_type = kwargs.pop('gate_type', None)
+    def TNT(self,theta,gate_type,*args, **kwargs):
         omega = kwargs.pop('omega', None)
         params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)

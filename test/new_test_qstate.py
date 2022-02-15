@@ -13,7 +13,7 @@ print(state)
 print(typex(state))
 
 print('test gate with dicke_ghz state')
-qc.RX(np.pi/3).OAT(np.pi/4,gate_type="X").TAT(np.pi/9,gate_type="XZ").TNT(np.pi/3,gate_type="XZ",omega=12)
+qc.RX(np.pi/3).OAT(np.pi/4,"X").TAT(np.pi/9,"XZ").TNT(np.pi/3,"XZ",omega=12)
 print(qc.state)
 prob = qc.measure(num_shots=100000)
 print(prob)
