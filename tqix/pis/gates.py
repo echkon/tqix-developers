@@ -44,62 +44,85 @@ class Gates(object):
         self.theta = None
 
     def RX(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("Rx")
     
     def RY(self,theta=None):
-        self.check_input_param(theta) 
+        params = {"theta":theta}
+        self.check_input_param(params) 
         return self.gates("Ry")
     
     def RZ(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("Rz")
     
+    def OAT(self,theta,*args, **kwargs):
+        gate_type = kwargs.pop('gate_type', None)
+        params = {"theta":theta,"gate_type":gate_type}
+        self.check_input_param(params)
+
+        return eval(f"self.R{gate_type.upper()}2({theta})")
+    
+    def TAT(self,theta,*args, **kwargs):
+        gate_type = kwargs.pop('gate_type', None)
+        params = {"theta":theta,"gate_type":gate_type}
+        self.check_input_param(params)
+        return self.gates(type=gate_type+"TAT")
+    
+    def TNT(self,theta,*args, **kwargs):
+        gate_type = kwargs.pop('gate_type', None)
+        omega = kwargs.pop('omega', None)
+        params = {"theta":theta,"gate_type":gate_type,"omega":omega}
+        self.check_input_param(params)
+        return self.gates(type=gate_type+"TNT",omega=omega)
+
     def RX2(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("Rx2")
     
     def RY2(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("Ry2")
     
     def RZ2(self,theta=None):
-        self.check_input_param(theta) 
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("Rz2")
     
     def R_plus(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("R+")
     
     def R_minus(self,theta=None):
-        self.check_input_param(theta)
+        params = {"theta":theta}
+        self.check_input_param(params)
         return self.gates("R-")
-    
-    def check_input_param(self,theta):
-        self.theta = theta
-        if theta == None:
-            raise ValueError("theta is None")
 
-    def gates(self,type=""):
-        
-        state = self.state
-        d_in = shapex(state)[0]
-        N_in = self.N
-        d_dicke = get_dim(N_in)
+    def check_input_param(self,params):
+        self.theta = params["theta"]
+        for param,value in params.items():
+            if value == None:
+                raise ValueError(f"{param} is None")
 
-        if "Rx" in type:
+    def get_J(self,N_in,d_in,d_dicke,type):
+        if "x" in type:
             S = partial(Sx)
         
-        elif "Ry" in type:
+        elif "y" in type:
             S = partial(Sy)
         
-        elif "Rz" in type:
+        elif "z" in type:
             S = partial(Sz)
         
-        elif "R+" in type:
+        elif "+" in type:
             S = partial(S_plus)
         
-        elif "R-" in type:
+        elif "-" in type:
             S = partial(S_minus)
 
         if d_in != d_dicke:
@@ -119,7 +142,36 @@ class Gates(object):
             J = block_diag(blocks)
             
         J = csc_matrix(J)
-        expJ = expm(-1j*self.theta*J)
+        return J
+
+    def gates(self,type="",*args, **kwargs):
+        state = self.state
+        d_in = shapex(state)[0]
+        N_in = self.N
+        d_dicke = get_dim(N_in)
+        
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        
+        type = type.lower()
+        count_ops = 0
+        for ops in ["x","y","z","+","-"]:
+            if ops in type:
+                count_ops += 1
+        
+        if count_ops == 1:
+            J = get_J(type)
+            expJ = expm(-1j*self.theta*J)
+        elif count_ops == 2:
+            if "tat" in type:
+                J_2 = get_J(type[0]+"2")
+                J_2_prime = get_J(type[1]+"2")
+                expJ = expm(-1j*self.theta*(J_2-J_2_prime))
+            elif "tnt" in type:
+                omega = kwargs.pop('omega', None)
+                J_2 = get_J(type[0]+"2")
+                J_prime = get_J(type[1])
+                expJ = expm(-1j*(self.theta*J_2+omega*J_prime))
+
         expJ_conj = csc_matrix(daggx(expJ))
         new_state = expJ.dot(self.state).dot(expJ_conj)
 
