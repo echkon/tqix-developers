@@ -20,7 +20,7 @@ from tqix.qx import *
 from tqix.qtool import dotx
 from tqix.pis.util import *
 from tqix.pis import *
-from scipy.sparse import bsr_matrix,block_diag,csc_matrix,csr_matrix
+from scipy.sparse import bsr_matrix,block_diag,csc_matrix,csr_matrix,lil_matrix
 from scipy.sparse.linalg import expm
 from functools import *
 
@@ -98,6 +98,11 @@ class Gates(object):
         params = {"theta":theta}
         self.check_input_param(params)
         return self.gates("R-")
+    
+    def GMS(self,theta,phi,gate_type,*args, **kwargs):
+        params = {"theta":theta,"phi":phi,"gate_type":gate_type}
+        self.check_input_param(params)
+        return self.gates(type=gate_type+"GMS",phi=phi)
 
     def check_input_param(self,params):
         self.theta = params["theta"]
@@ -135,9 +140,8 @@ class Gates(object):
                 else:
                     blocks.append(S(j))
 
-            J = block_diag(blocks)
+            J = block_diag(blocks,format="csc")
             
-        J = csc_matrix(J)
         return J
 
     def gates(self,type="",*args, **kwargs):
@@ -167,8 +171,14 @@ class Gates(object):
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
                 expJ = expm(-1j*(self.theta*J_2+omega*J_prime))
+            elif "gms" in type:
+                phi = kwargs.pop('phi', None)
+                J = get_J(type[0])
+                J_prime = get_J(type[1])
+                S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
+                expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
 
-        expJ_conj = csc_matrix(daggx(expJ))
+        expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
 
         self.state = new_state
