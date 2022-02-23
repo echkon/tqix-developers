@@ -8,15 +8,6 @@ import math
 
 __all__ =['add_noise']
 
-import numpy as np
-from tqix.qx import *
-from tqix.pis.util import *
-from tqix.pis import *
-from scipy.sparse import csc_matrix
-import math 
-
-__all__ =['add_noise']
-
 def add_noise(qc,noise=0.3):
     state = qc.state
     d_in = shapex(state)[0]
