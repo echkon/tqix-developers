@@ -8,24 +8,6 @@ import math
 
 __all__ =['add_noise']
 
-def add_noise(qc,noise=0.3):
-    state = qc.state
-    d_in = shapex(state)[0]
-    N_in = qc.N
-    d_dicke = get_dim(N_in)
-
-    if d_in != d_dicke:
-        state = csc_matrix(np.pad(state.toarray(),((0,d_dicke-d_in),(0,d_dicke-d_in))))
-    new_Nds = get_Nds(shapex(state)[0])
-
-    assert N_in == new_Nds, "not full block"
-
-    # non_zero_arrays = state.nonzero()   
-    # iks = list(zip(non_zero_arrays[0],non_zero_arrays[1]))
-    jmm1,all_iks = get_jmm1_idx(new_Nds)
-    
-    j_min = get_jmin(N_in)
-    j_max = N_in/2
 import numpy as np
 from tqix.qx import *
 from tqix.pis.util import *
