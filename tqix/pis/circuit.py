@@ -18,7 +18,7 @@ from scipy.sparse import bsr_matrix
 from tqix.pis import *
 
 __all__ =['circuit','sobj',
-          'dbx','dicke_bx','dicke_ghz']
+          'dbx','dicke_ghz']
 
 def circuit(N,*args):
     """create a quantum circuit
@@ -63,18 +63,6 @@ def dbx(j,m):
     offset = get_vidx(j,m) #get vector's index
     state[offset,0] = 1.0
     return bsr_matrix(state)
-
-def dicke_bx(N, jmm1):
-    # create a dicke basis follow jmm1
-    # jmm1 as {(j,m,m1):p}
-    
-    dim = get_dim(N)
-    rho = np.zeros((dim,dim),dtype = complex)
-    ik = get_jmm1_idx(N)[1] # return i,k from jmm1
-    for key in jmm1:
-        i,k = ik[key]
-        rho[i,k] = jmm1[key]
-    return bsr_matrix(rho)
 
 def dicke_ghz(N):
     # this is an example to get ghz state
