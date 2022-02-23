@@ -13,11 +13,12 @@ ________________________________
 #from numpy import
 import numpy as np
 from tqix.qx import *
-
+import math 
 
 __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
            'get_jmin','get_jarray','get_marray',
-           'get_vidx','get_midx','get_jmm1_idx','get_mm1_idx_max'
+           'get_vidx','get_midx','get_jmm1_idx','get_mm1_idx_max','get_A',
+           'get_B','get_D','get_Lambda','get_alpha'
             ]
         
 def get_Nds(d):
@@ -167,3 +168,38 @@ def get_jmm1_idx(N):
                 jmm1[(i, k)] = (j, m, m1)
                 ik[(j, m, m1)] = (i, k)
     return [jmm1,ik]
+
+def get_A(j,m,type=""):
+    if type == "+":
+        return np.sqrt((j-m)*(j+m+1))
+    elif type == "-":
+        return np.sqrt((j+m)*(j-m+1))
+    else:
+        return m 
+
+def get_B(j,m,type=""):
+    if type == "+":
+        return np.sqrt((j-m)*(j-m-1))
+    elif type == "-":
+        return -np.sqrt((j+m)*(j+m-1))
+    else:
+        return np.sqrt((j+m)*(j-m))
+
+def get_D(j,m,type=""):
+    if type == "+":
+        return -np.sqrt((j+m+1)*(j+m+2))
+    if type == "-":
+        return np.sqrt((j-m+1)*(j-m+2))
+    else:
+        return np.sqrt((j+m+1)*(j-m+1))
+
+def get_Lambda(N,j,type=""):
+    if type == "a":
+        return (N/2+1)/(2*j*(j+1))
+    elif type == "b":
+        return (N/2+j+1)/(2*j*(2*j+1))
+    else:
+        return (N/2-j)/(2*(j+1)*(2*j+1))
+
+def get_alpha(N,j):
+    return math.factorial(N)/(math.factorial(N/2-j)*math.factorial(N/2+j))

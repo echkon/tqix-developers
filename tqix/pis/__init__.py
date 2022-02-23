@@ -10,6 +10,7 @@ ________________________________
 ________________________________
 """
 from tqix.pis.spin_operators import *
+from tqix.pis.noise import *
 from tqix.pis.gates import *
 from tqix.pis.circuit import *
 
