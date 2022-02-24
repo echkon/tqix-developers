@@ -209,7 +209,7 @@ class Gates(object):
         result = np.zeros_like(t_prob)
         mask_zeros = t_prob != 0
         for _ in range(num_shots):    
-            rand_prob = np.random.rand(t_prob.shape[0])
+            rand_prob = np.array([random.uniform(0,1)]*t_prob.shape[0])
             mask_prob_ge = t_prob > rand_prob
             result[mask_zeros & mask_prob_ge] += 1
         result /= num_shots
