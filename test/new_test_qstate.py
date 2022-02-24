@@ -6,7 +6,7 @@ import scipy.sparse as sparse
 
 from tqix.pis.noise import add_noise
 
-N=100
+N=3
 qc = circuit(N)
 state = qc.state
 init_state = dotx(state,daggx(state))
