@@ -99,37 +99,4 @@ def add_noise(qc,noise=0.3):
     normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
     new_state = (1-noise)*rho + noise*normalized_rho_0             
     return new_state
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
+    
