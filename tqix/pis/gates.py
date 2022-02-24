@@ -204,7 +204,6 @@ class Gates(object):
         return self
     
     def measure(self,num_shots = None):
-        result = []
         t_prob = np.real(csr_matrix(self.state).diagonal())
         result = np.zeros_like(t_prob)
         mask_zeros = t_prob != 0
@@ -213,6 +212,7 @@ class Gates(object):
             mask_prob_ge = t_prob > rand_prob
             result[mask_zeros & mask_prob_ge] += 1
         result /= num_shots
+        result[-1] = 1 - np.sum(result[:-1])
 
         return result   
 
