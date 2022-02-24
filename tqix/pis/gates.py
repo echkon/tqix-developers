@@ -43,66 +43,78 @@ class Gates(object):
         self.state = None        
         self.theta = None
 
-    def RX(self,theta=None):
+    def RX(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx")
+        return self.gates("Rx",noise=noise)
     
-    def RY(self,theta=None):
+    def RY(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params) 
-        return self.gates("Ry")
+        return self.gates("Ry",noise=noise)
     
-    def RZ(self,theta=None):
+    def RZ(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz")
+        return self.gates("Rz",noise=noise)
     
     def OAT(self,theta,gate_type,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return eval(f"self.R{gate_type.upper()}2({theta})")
+        return eval(f"self.R{gate_type.upper()}2({theta},noise={noise})")
     
     def TAT(self,theta,gate_type,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TAT")
+        return self.gates(type=gate_type+"TAT",noise=noise)
     
     def TNT(self,theta,gate_type,*args, **kwargs):
         omega = kwargs.pop('omega', None)
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",omega=omega)
+        return self.gates(type=gate_type+"TNT",omega=omega,noise=noise)
 
-    def RX2(self,theta=None):
+    def RX2(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx2")
+        return self.gates("Rx2",noise=noise)
     
-    def RY2(self,theta=None):
+    def RY2(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Ry2")
+        return self.gates("Ry2",noise=noise)
     
-    def RZ2(self,theta=None):
+    def RZ2(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz2")
+        return self.gates("Rz2",noise=noise)
     
-    def R_plus(self,theta=None):
+    def R_plus(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R+")
+        return self.gates("R+",noise=noise)
     
-    def R_minus(self,theta=None):
+    def R_minus(self,theta=None,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R-")
+        return self.gates("R-",noise=noise)
     
     def GMS(self,theta,phi,gate_type,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
         params = {"theta":theta,"phi":phi,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"GMS",phi=phi)
+        return self.gates(type=gate_type+"GMS",phi=phi,noise=noise)
 
     def check_input_param(self,params):
         self.theta = params["theta"]
@@ -181,8 +193,14 @@ class Gates(object):
         expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
 
-        self.state = new_state
-
+        noise = kwargs.pop('noise', None)
+        
+        if noise is not None:
+            new_state = add_noise(self,noise)
+            self.state = new_state
+        else:
+            self.state = new_state
+        
         return self
     
     def measure(self,num_shots = None):

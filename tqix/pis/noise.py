@@ -4,7 +4,6 @@ from tqix.qx import *
 from tqix.pis.util import *
 from tqix.pis import *
 from scipy.sparse import csc_matrix,lil_matrix
-import math 
 
 __all__ =['add_noise']
 
@@ -20,17 +19,17 @@ def add_noise(qc,noise=0.3):
 
     assert N_in == new_Nds, "not full block"
 
-    # non_zero_arrays = state.nonzero()   
-    # iks = list(zip(non_zero_arrays[0],non_zero_arrays[1]))
-    jmm1,_ = get_jmm1_idx(new_Nds)
-    rho_0 = np.zeros((d_dicke,d_dicke))
+    non_zero_arrays = state.nonzero()   
+    iks = list(zip(non_zero_arrays[0],non_zero_arrays[1]))
+    jmm1 = get_jmm1_idx(N_in)[0]
+    rho_0 = csc_matrix((d_dicke, d_dicke), dtype=np.complex)
     rho = state
     j_min = get_jmin(N_in)
     j_max = N_in/2
 
-    for key,value in jmm1.items():
-        j,m,m1 = value 
-        i,k = key
+    for ik in iks:
+        j,m,m1 = jmm1[ik]
+        i,k = ik
         first_term = 0
         second_term = 0
         third_term = 0
@@ -95,10 +94,11 @@ def add_noise(qc,noise=0.3):
             gamma_9 = D_jm_plus*D_jm1_plus*Lambda_d*dicke_bx(N_in,{(j+1,m+1,m1+1):1})
 
         third_term = (gamma_7+gamma_8+gamma_9)/2
+
         rho_0 += p_jmm1*(first_term+second_term+third_term)
-    new_state = (1-noise)*rho + (4*noise)/(3*N_in)*rho_0             
-    qc.state = csc_matrix(new_state)
-    return qc
+    normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
+    new_state = (1-noise)*rho + noise*normalized_rho_0             
+    return new_state
 
 
 

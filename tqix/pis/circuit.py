@@ -14,7 +14,7 @@ ________________________________
 import numpy as np
 from tqix.qx import *
 from tqix.pis.util import *
-from scipy.sparse import bsr_matrix
+from scipy.sparse import csc_matrix
 from tqix.pis import *
 
 __all__ =['circuit','sobj',
@@ -62,7 +62,7 @@ def dbx(j,m):
     state = np.zeros((dim,1))
     offset = get_vidx(j,m) #get vector's index
     state[offset,0] = 1.0
-    return bsr_matrix(state)
+    return csc_matrix(state)
 
 def dicke_ghz(N):
     # this is an example to get ghz state
@@ -77,7 +77,7 @@ def dicke_ghz(N):
     e3 = dicke_bx(N,{(j,m1,m):1})
     e4 = dicke_bx(N,{(j,m1,m1):1})
     
-    return bsr_matrix(0.5*(e1+e2+e3+e4))
+    return csc_matrix(0.5*(e1+e2+e3+e4))
     
 if __name__ == "__main__":
     N=3

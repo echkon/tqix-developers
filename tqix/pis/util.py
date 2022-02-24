@@ -5,7 +5,7 @@
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
->>> contributors:
+>>> contributors: 
 >>> all rights reserved
 ________________________________
 """
@@ -14,7 +14,7 @@ ________________________________
 import numpy as np
 from tqix.qx import *
 import math 
-from scipy.sparse import bsr_matrix
+from scipy.sparse import csc_matrix
 
 __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
            'get_jmin','get_jarray','get_marray',
@@ -215,4 +215,4 @@ def dicke_bx(N, jmm1):
     for key in jmm1:
         i,k = ik[key]
         rho[i,k] = jmm1[key]
-    return bsr_matrix(rho)
+    return csc_matrix(rho)
