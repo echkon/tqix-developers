@@ -212,59 +212,6 @@ class Gates(object):
             mask_prob_ge = t_prob > rand_prob
             result[mask_zeros & mask_prob_ge] += 1
         result /= num_shots
-        result[-1] = 1 - np.sum(result[:-1])
+        result[-1] = np.abs(1 - np.sum(result[:-1]))
 
         return result   
-
-
-# def RZ(sobj,theta):
-#     """ collective rotation gate around the z-axis
-#     RZ = expm(-i*theta*Jz)|state>
-
-#     Parameters
-#     ----------
-#     theta: rotation angle
-#     state: quantum state
-
-#     Return
-#     ----------
-#     new state
-#     """
-
-#     state = sobj.state.toarray()
-#     d = shapex(state)[0]
-#     Nds = get_Nds(d) #cannot use for pure
-#     Nin = sobj.N #get from input
-
-#     if not isoperx(state):
-#         j = (d-1)/2
-#         new_state = np.zeros((d,1),dtype = complex)
-#         for idx in np.nonzero(state)[0]:
-#             m = int(j - idx)
-#             new_state[idx,0] = cm.exp(-1j*theta*m)*state[idx,0]
-#     else:
-#         if Nin != Nds: #not full blocks
-#            j = Nin/2
-#            new_state = np.zeros((d,d),dtype = complex)
-#            iks = _get_non0_idx(state)
-#            mm1 = get_mm1_idx_max(Nin)[0]
-#            for ik in iks:
-#               (m, m1) = mm1[ik]
-#               new_state[ik] = state[ik]*cm.exp(-1j*theta*(m-m1)) 
-#         else: #full blocks
-#            new_state = np.zeros((d,d),dtype = complex)
-#            iks = _get_non0_idx(state)
-#            jmm1 = get_jmm1_idx(Nds)[0] 
-#            for ik in iks:
-#                (j,m,m1) = jmm1[ik]
-#                new_state[ik] = state[ik]*cm.exp(-1j*theta*(m-m1))
-#     sobj.state = bsr_matrix(new_state)
-
-# def _get_non0_idx(matrix):
-#     """get non zero indexs of a matrix"""
-#     lidx = []
-#     for i,j in enumerate(matrix):
-#         for k,l in enumerate(j):
-#           if l != 0.0:
-#              lidx.append((i,k))
-#     return lidx
