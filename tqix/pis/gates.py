@@ -212,6 +212,7 @@ class Gates(object):
             mask_prob_ge = t_prob > rand_prob
             result[mask_zeros & mask_prob_ge] += 1
         result /= num_shots
-        result[-1] = np.abs(1 - np.sum(result[:-1]))
-
+        result[-1] = 1 - np.sum(result[:-1])
+        if result[-1] < 0:
+            result[-1] = 0
         return result   
