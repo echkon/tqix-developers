@@ -116,6 +116,12 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates(type=gate_type+"GMS",phi=phi,noise=noise)
 
+    def RN(self,theta,phi,gate_type,*args, **kwargs):
+        noise = kwargs.pop('noise', None)
+        params = {"theta":theta,"phi":phi,"gate_type":gate_type}
+        self.check_input_param(params)
+        return self.gates(type=gate_type+"RN",phi=phi,noise=noise)
+
     def check_input_param(self,params):
         self.theta = params["theta"]
         for param,value in params.items():
@@ -189,6 +195,11 @@ class Gates(object):
                 J_prime = get_J(type[1])
                 S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
                 expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
+            elif "rn" in type:
+                phi = kwargs.pop('phi', None)
+                J = get_J(type[0])
+                J_prime = get_J(type[1])
+                expJ = expm(-1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
 
         expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
