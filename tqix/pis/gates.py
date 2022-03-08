@@ -20,7 +20,7 @@ from tqix.qx import *
 from tqix.qtool import dotx
 from tqix.pis.util import *
 from tqix.pis import *
-from scipy.sparse import bsr_matrix,block_diag,csc_matrix,csr_matrix,lil_matrix
+from scipy.sparse import block_diag,csr_matrix
 from scipy.sparse.linalg import expm
 from functools import *
 
@@ -73,8 +73,7 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates(type=gate_type+"TAT",noise=noise)
     
-    def TNT(self,theta,gate_type,*args, **kwargs):
-        omega = kwargs.pop('omega', None)
+    def TNT(self,theta,omega,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
         params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)
@@ -127,6 +126,12 @@ class Gates(object):
         for param,value in params.items():
             if value == None:
                 raise ValueError(f"{param} is None")
+    
+    def get_N_d_d_dicked(self,state):
+        d_in = shapex(state)[0]
+        N_in = self.N
+        d_dicke = get_dim(N_in)
+        return d_in,N_in,d_dicke
 
     def get_J(self,N_in,d_in,d_dicke,type):
         if "x" in type:
@@ -161,13 +166,53 @@ class Gates(object):
             J = block_diag(blocks,format="csc")
             
         return J
+    
+    def var(self,type="",*args, **kwargs):
+        use_vector = kwargs.pop('use_vector', None)
+        n = kwargs.pop('n', None)
+        if use_vector:
+            exp_val_J_2 = self.expval(type="xyz2",n=n,use_vector=use_vector)
+            exp_val_J = self.expval(type="xyz",n=n,use_vector=use_vector)
+        else:
+            exp_val_J_2 = self.expval(type=type+"2")
+            exp_val_J = self.expval(type=type)
+        return exp_val_J_2-exp_val_J**2
+    
+    def expval(self,type="",*args, **kwargs):
+        state = self.state 
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        type = type.lower()
+        count_ops = 0
+        for ops in ["x","y","z","+","-"]:
+            if ops in type:
+                count_ops += 1
+        if "j" in type:
+                count_ops += 3
+
+        if count_ops == 1:
+            J = get_J(type)
+        elif count_ops > 1:
+            use_vector = kwargs.pop('use_vector', None)
+            n = kwargs.pop('n', None)
+            if use_vector:
+                if n is None:
+                    raise ValueError("expval vector J must have vector n")
+                order = {"x":0,"y":1,"z":2}
+                J = sum([n[order[type_J]]*get_J(type_J) for type_J in type if type_J != "2"])
+                if "2" in type:
+                    J = J.dot(J)
+            else:
+                if "j" in type and "2" in type:
+                    J = sum([get_J(type_J+"2") for type_J in "xyz"])
+                elif "2" in type:
+                    J = sum([get_J(type_J+"2") for type_J in type if type_J != "2"])
+        return state.dot(J).diagonal().sum()
+
 
     def gates(self,type="",*args, **kwargs):
         state = self.state
-        d_in = shapex(state)[0]
-        N_in = self.N
-        d_dicke = get_dim(N_in)
-        
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         
         type = type.lower()
