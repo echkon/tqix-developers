@@ -4,10 +4,11 @@ import numpy as np
 
 __all__ = ['get_xi_2_H','get_xi_2_S','get_xi_2_R','get_xi_2_D','get_xi_2_E']
 
-def get_xi_2_H(alpha,gamma,qc):
+def get_xi_2_H(alpha,beta,gamma,qc):
     var_alpha = qc.var(alpha)
+    mean_beta = qc.expval(beta)
     mean_gamma = qc.expval(gamma)
-    return (2*var_alpha)/np.abs(mean_gamma) 
+    return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
 def get_xi_2_S(qc):
     N = qc.N
@@ -32,6 +33,6 @@ def get_xi_2_E(qc,n):
     mean_Jvec = qc.expval(type="xyz",use_vector=True,n=n)
     N = qc.N
     mean_J_2 = qc.expval(type="J2")
-    return (N*var_Jvec)/(mean_J_2-N/2-mean_Jvec)
+    return (N*var_Jvec)/(mean_J_2-N/2-mean_Jvec**2)
 
 

@@ -72,7 +72,6 @@ def shapex(x):
     """
     if scipy.sparse.issparse(x):
           x = x.toarray()
-          
     if isqx(x):
        return x.shape
     else:

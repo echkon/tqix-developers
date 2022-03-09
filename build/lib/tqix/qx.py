@@ -23,6 +23,7 @@ import warnings
 import numpy as np
 from random import random
 from tqix.qtool import dotx
+import scipy
 
 def qx(x):
     """ 
@@ -52,6 +53,8 @@ def typex(x):
     return a quantum type of x:
     bar, ket, oper
     """
+    if scipy.sparse.issparse(x):
+      x = x.toarray()
     if isqx(x):
        if x.shape[0]!=1:
           return 'oper' if x.shape[1] != 1 else 'ket'
@@ -67,6 +70,8 @@ def shapex(x):
     """
     to return the dimention of x
     """
+    if scipy.sparse.issparse(x):
+          x = x.toarray()
     if isqx(x):
        return x.shape
     else:

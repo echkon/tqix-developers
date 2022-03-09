@@ -14,10 +14,11 @@ ________________________________
 import numpy as np
 from tqix.qx import *
 from tqix.pis.util import *
-
+from scipy.sparse import csc_matrix
+from tqix.pis import *
 
 __all__ =['circuit','sobj',
-          'dbx','dicke_bx','dicke_ghz']
+          'dbx','dicke_ghz']
 
 def circuit(N,*args):
     """create a quantum circuit
@@ -34,13 +35,14 @@ def circuit(N,*args):
     if not args:
        j = N/2
        psi = dbx(j,-j) # all spins down
-       return sobj(psi,N) 
+       return sobj(operx(psi).tolist(),N) 
     else:
-       return sobj(args[0],N)
+       return sobj(operx(args[0].tolist()),N)
 
-class sobj(object):
+class sobj(Gates):
     # to crate a spin-object
     def __init__(self,state,N):
+        super().__init__()
         self.state = state
         self.N = N
        
@@ -60,19 +62,7 @@ def dbx(j,m):
     state = np.zeros((dim,1))
     offset = get_vidx(j,m) #get vector's index
     state[offset,0] = 1.0
-    return state
-
-def dicke_bx(N, jmm1):
-    # create a dicke basis follow jmm1
-    # jmm1 as {(j,m,m1):p}
-    
-    dim = get_dim(N)
-    rho = np.zeros((dim,dim),dtype = complex)
-    ik = get_jmm1_idx(N)[1] # return i,k from jmm1
-    for key in jmm1:
-        i,k = ik[key]
-        rho[i,k] = jmm1[key]
-    return rho
+    return csc_matrix(state)
 
 def dicke_ghz(N):
     # this is an example to get ghz state
@@ -87,7 +77,17 @@ def dicke_ghz(N):
     e3 = dicke_bx(N,{(j,m1,m):1})
     e4 = dicke_bx(N,{(j,m1,m1):1})
     
-    return 0.5*(e1+e2+e3+e4)
+    return csc_matrix(0.5*(e1+e2+e3+e4))
     
-    
-    
+if __name__ == "__main__":
+    N=3
+    print('test with dicke_ghz state')
+    init_state = dicke_ghz(N)
+    qc = circuit(N,init_state)
+    state = qc.state
+    print(state)
+    print(typex(state))
+
+    print('test gate with dicke_ghz state')
+    qc.RZ(np.pi/3).RY().RZ(np.pi/4)
+    print(qc.state)
