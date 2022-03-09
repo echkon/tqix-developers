@@ -3,14 +3,17 @@ from tqix.pis import *
 from tqix import *
 import numpy as np
 
-N=3
+N=100
 qc = circuit(N)
-state = qc.state
-init_state = dotx(state,daggx(state))
-qc = circuit(N,init_state)
-qc.OAT(np.pi/3,"Y",noise=0.05)
-print(get_xi_2_H("x","z",qc))
-print(get_xi_2_S(qc))
-print(get_xi_2_R(qc))
-print(get_xi_2_D(qc,n=[1,0,3]))
-print(get_xi_2_E(qc,n=[1,0,3]))
+# husimi_3d(qc.state.toarray(), x ,y ,cmap = cmindex(1),fname ="husimi3d.eps")
+THETA = [0, np.pi]
+PHI = [0, 2* np.pi]
+# husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),fname ="husimi_sphere.eps",alpha=0.5,view=(-90,0))
+qc.OAT(np.pi/70,"X")
+print(qc.state.diagonal().sum())
+print("xi_2_H:",get_xi_2_H("x","y","z",qc))
+print("xi_2_S:",get_xi_2_S(qc))
+print("xi_2_R:",get_xi_2_R(qc))
+print("xi_2_D:",get_xi_2_D(qc,n=[1,0,0]))
+print("xi_2_E:",get_xi_2_E(qc,n=[1,0,0]))
+# husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),fname ="afterhusimi_sphere.eps",alpha=0.5,view=(-90,0))

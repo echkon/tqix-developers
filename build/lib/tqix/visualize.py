@@ -235,8 +235,8 @@ def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
     plt.axis('off')
 
     _printout(fname)
-    fig.savefig(fname,dpi=50,bbox_inches='tight')
-
+    # fig.savefig(fname,dpi=50,bbox_inches='tight')
+    plt.show()
 
 def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
                    fname = 'fig_wigner_spin_3d.eps',alpha = 1):

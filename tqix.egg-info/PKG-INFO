@@ -1,4 +1,4 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: tqix
 Version: 1.0.2
 Summary: A Toolbox for Quantum in X
@@ -6,5 +6,8 @@ Home-page: http://
 Author: Binho Le
 Author-email: binho@kindai.ac.jp
 License: GNU
-Description: UNKNOWN
 Platform: UNKNOWN
+License-File: LICENSE
+
+UNKNOWN
+

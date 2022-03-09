@@ -158,13 +158,10 @@ class Gates(object):
             j_array = get_jarray(N_in)[::-1]
             blocks = []
             for j in j_array:
-                if "2" in type:
-                    blocks.append(S(j).dot(S(j)))
-                else:
-                    blocks.append(S(j))
-
+                blocks.append(S(j))
             J = block_diag(blocks,format="csc")
-            
+            if "2" in type:
+                J = J.dot(J)     
         return J
     
     def var(self,type="",*args, **kwargs):
@@ -199,14 +196,17 @@ class Gates(object):
                 if n is None:
                     raise ValueError("expval vector J must have vector n")
                 order = {"x":0,"y":1,"z":2}
-                J = sum([n[order[type_J]]*get_J(type_J) for type_J in type if type_J != "2"])
+                list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
+                J = reduce(lambda x,y:x+y,list_J)
                 if "2" in type:
                     J = J.dot(J)
             else:
                 if "j" in type and "2" in type:
-                    J = sum([get_J(type_J+"2") for type_J in "xyz"])
+                    list_J = ([get_J(type_J+"2") for type_J in "xyz"])
+                    J = reduce(lambda x,y:x+y,list_J)
                 elif "2" in type:
-                    J = sum([get_J(type_J+"2") for type_J in type if type_J != "2"])
+                    list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
+                    J = reduce(lambda x,y:x+y,list_J)
         return state.dot(J).diagonal().sum()
 
 

@@ -1,6 +1,8 @@
+LICENSE
 README.md
 setup.py
 test/test_qstate.py
+test/test_spin_operator.py
 tqix/__init__.py
 tqix/about.py
 tqix/backend.py
@@ -30,6 +32,9 @@ tqix/dsm/util.py
 tqix/pis/__init__.py
 tqix/pis/circuit.py
 tqix/pis/gates.py
+tqix/pis/noise.py
+tqix/pis/spin_operators.py
+tqix/pis/squeeze_param.py
 tqix/pis/util.py
 tqix/povm/__init__.py
 tqix/povm/mub.py

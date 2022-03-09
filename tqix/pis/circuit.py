@@ -35,9 +35,9 @@ def circuit(N,*args):
     if not args:
        j = N/2
        psi = dbx(j,-j) # all spins down
-       return sobj(psi,N) 
+       return sobj(operx(psi).tolist(),N) 
     else:
-       return sobj(args[0],N)
+       return sobj(operx(args[0].tolist()),N)
 
 class sobj(Gates):
     # to crate a spin-object
