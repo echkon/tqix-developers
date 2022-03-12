@@ -168,11 +168,15 @@ class Gates(object):
         use_vector = kwargs.pop('use_vector', None)
         n = kwargs.pop('n', None)
         if use_vector:
-            exp_val_J_2 = self.expval(type="xyz2",n=n,use_vector=use_vector)
-            exp_val_J = self.expval(type="xyz",n=n,use_vector=use_vector)
+            exp_val_J_2 = self.expval(type=type+"2",n=n,use_vector=use_vector)
+            exp_val_J = self.expval(type=type,n=n,use_vector=use_vector)
         else:
-            exp_val_J_2 = self.expval(type=type+"2")
-            exp_val_J = self.expval(type=type)
+            if "theta" in type:
+                exp_val_J_2 = self.expval(type=type+"2")
+                exp_val_J = self.expval(type=type)
+            else:
+                exp_val_J_2 = self.expval(type=type+"2")
+                exp_val_J = self.expval(type=type)
         return exp_val_J_2-exp_val_J**2
     
     def expval(self,type="",*args, **kwargs):
@@ -186,6 +190,10 @@ class Gates(object):
                 count_ops += 1
         if "j" in type:
                 count_ops += 3
+        if"cov" in type:
+            count_ops += 6
+        if "theta" in type or "n1n2_minus" in type or "n1n2_plus" in type:
+            count_ops += 2
 
         if count_ops == 1:
             J = get_J(type)
@@ -193,20 +201,40 @@ class Gates(object):
             use_vector = kwargs.pop('use_vector', None)
             n = kwargs.pop('n', None)
             if use_vector:
-                if n is None:
-                    raise ValueError("expval vector J must have vector n")
                 order = {"x":0,"y":1,"z":2}
-                list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
-                J = reduce(lambda x,y:x+y,list_J)
+
+                if "cov" in type or "n1n2_minus" in type or "n1n2_plus" in type:
+                    n1 = kwargs.pop('n1', None)
+                    n2 = kwargs.pop('n2', None)
+                    list_J_1 = ([get_J(type_J).dot(n1[order[type_J]]) for type_J in "xyz"])
+                    list_J_2 = ([get_J(type_J).dot(n2[order[type_J]]) for type_J in "xyz"])
+                    J_1 = reduce(lambda x,y:x+y,list_J_1)
+                    J_2 = reduce(lambda x,y:x+y,list_J_2)
+                    if "cov" in type:
+                        J = J_1.dot(J_2) + J_2.dot(J_1)
+                    elif "n1n2_minus" in type:
+                        J_1 = J_1.dot(J_1)
+                        J_2 = J_2.dot(J_2)
+                        J = J_1 - J_2
+                    elif "n1n2_plus" in type:
+                        J_1 = J_1.dot(J_1)
+                        J_2 = J_2.dot(J_2)
+                        J = J_1 + J_2
+                else:     
+                    list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
+                    J = reduce(lambda x,y:x+y,list_J)
+                    if "2" in type:
+                        J = J.dot(J)
+            elif "theta" in type:
+                J = np.cos(self.theta)*get_J("y")+np.sin(self.theta)*get_J("z")
                 if "2" in type:
                     J = J.dot(J)
             else:
                 if "j" in type and "2" in type:
                     list_J = ([get_J(type_J+"2") for type_J in "xyz"])
-                    J = reduce(lambda x,y:x+y,list_J)
                 elif "2" in type:
                     list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
-                    J = reduce(lambda x,y:x+y,list_J)
+                J = reduce(lambda x,y:x+y,list_J)
         return state.dot(J).diagonal().sum()
 
 

@@ -12,13 +12,34 @@ def get_xi_2_H(alpha,beta,gamma,qc):
 
 def get_xi_2_S(qc):
     N = qc.N
-    mean_Jx2_Jy2 = qc.expval(type="x2y2")
-    mean_J_2_minus = qc.expval(type="-2")
-    return 2/N*(mean_Jx2_Jy2-np.abs(mean_J_2_minus))
+    mean_x = qc.expval(type="x")
+    mean_y = qc.expval(type="y")
+    mean_z = qc.expval(type="z")
+    mag_mean_J = np.sqrt(mean_x**2+mean_y**2+mean_z**2)
+    theta = np.arccos(mean_z/mag_mean_J)
+    if mean_y > 0:
+        phi = np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
+    else:
+        phi = 2*np.pi - np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
+    n1 = [-np.sin(phi),np.cos(phi),0]
+    n2 = [np.cos(theta)*np.cos(phi),np.cos(theta)*np.sin(phi),-np.sin(theta)]
+    mean_J_n1 = qc.expval(type="xyz",use_vector=True,n=n1)
+    mean_J_n2 = qc.expval(type="xyz",use_vector=True,n=n2)
+    cov = 1/2*qc.expval(type="cov",use_vector=True,n1=n1,n2=n2) - mean_J_n1*mean_J_n2
+    mean_n1n2_minus = qc.expval(type="n1n2_minus",use_vector=True,n1=n1,n2=n2)
+    mean_n1n2_plus = qc.expval(type="n1n2_plus",use_vector=True,n1=n1,n2=n2)
+    xi_2_S_1 =  2/N*(mean_n1n2_plus+np.sqrt(mean_n1n2_minus**2+4*cov**2))
+    xi_2_S_2 =  2/N*(mean_n1n2_plus-np.sqrt(mean_n1n2_minus**2+4*cov**2))
+    if xi_2_S_1 < 0 and xi_2_S_2 > 0:
+        return xi_2_S_2
+    elif xi_2_S_1 > 0 and xi_2_S_2 < 0:
+        return xi_2_S_1
+    else:
+        return min(xi_2_S_1,xi_2_S_2)
 
 def get_xi_2_R(qc):
-    N = qc.N
     xi_2_S = get_xi_2_S(qc)
+    N = qc.N
     mean_Jz = qc.expval(type="z")
     return (N**2/(4*np.abs(mean_Jz)**2))*xi_2_S
 
