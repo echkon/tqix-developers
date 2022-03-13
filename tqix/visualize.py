@@ -19,6 +19,7 @@ from matplotlib import cm
 from numpy import amax, meshgrid
 import numpy as np
 from tqix.quasi_prob import *
+import os 
 
 def husimi_2d(state,xrange,yrange,N = 100,fname='fig_husimi_2d.eps',
               cmap = 'viridis',alpha = 1.0):
@@ -191,7 +192,7 @@ try:
 except:
     pass
 
-def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
+def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',dirname ="",
                    fname = 'fig_husimi_spin_3d.eps',alpha = 1,view=(120,120),use_axis=False):
     """ to plot Husimi visualization in Bloch sphere
     
@@ -244,8 +245,8 @@ def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
     ax.view_init(view)
     elev,azim = view
     ax.view_init(elev=elev, azim=azim)
-    fig.savefig(f"{elev},{azim},{fname}",dpi=50,bbox_inches='tight')
-    plt.show(block=True)
+    fig.savefig(os.path.join(dirname,fname),dpi=50,bbox_inches='tight')
+    # plt.show(block=True)
 
 def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
                    fname = 'fig_wigner_spin_3d.eps',alpha = 1,view=(120,120),use_axis=False):
