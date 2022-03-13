@@ -3,7 +3,7 @@ from tqix.pis import *
 from tqix import *
 import numpy as np
 from matplotlib import pyplot as plt
-
+import os
 N=100
 THETA = [0, np.pi]
 PHI = [0, 2* np.pi]
