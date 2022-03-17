@@ -25,8 +25,6 @@ def get_xi_2_S(qc):
     n2 = np.asarray([np.cos(theta)*np.cos(phi),0,-np.sin(theta)]).astype(np.complex128)
     cov = qc.expval(type="cov",use_vector=True,n1=n1,n2=n2)/2
     # *(1e-16)
-    if -1e-4 < cov < 1e-4:
-        cov = 0
     mean_n1n2_minus = qc.expval(type="n1n2_minus",use_vector=True,n1=n1,n2=n2)
     mean_n1n2_plus = qc.expval(type="n1n2_plus",use_vector=True,n1=n1,n2=n2)
     xi_2_S_1 =  2/N*(mean_n1n2_plus+np.sqrt(mean_n1n2_minus**2+4*cov**2))
