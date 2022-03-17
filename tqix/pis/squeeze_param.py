@@ -15,17 +15,18 @@ def get_xi_2_S(qc):
     mean_x = qc.expval(type="x")
     mean_y = qc.expval(type="y")
     mean_z = qc.expval(type="z")
-    mag_mean_J = np.sqrt(mean_x**2+mean_y**2+mean_z**2)
+    mag_mean_J = np.sqrt(np.real(mean_x**2+mean_y**2+mean_z**2))
     theta = np.arccos(mean_z/mag_mean_J)
     if mean_y > 0:
         phi = np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
     else:
         phi = 2*np.pi - np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
-    n1 = [-np.sin(phi),np.cos(phi),0]
-    n2 = [np.cos(theta)*np.cos(phi),np.cos(theta)*np.sin(phi),-np.sin(theta)]
-    mean_J_n1 = qc.expval(type="xyz",use_vector=True,n=n1)
-    mean_J_n2 = qc.expval(type="xyz",use_vector=True,n=n2)
-    cov = 1/2*qc.expval(type="cov",use_vector=True,n1=n1,n2=n2) - mean_J_n1*mean_J_n2
+    n1 = np.asarray([-np.sin(phi),np.cos(phi),0]).astype(np.complex128)
+    n2 = np.asarray([np.cos(theta)*np.cos(phi),0,-np.sin(theta)]).astype(np.complex128)
+    cov = qc.expval(type="cov",use_vector=True,n1=n1,n2=n2)/2
+    # *(1e-16)
+    if -1e-4 < cov < 1e-4:
+        cov = 0
     mean_n1n2_minus = qc.expval(type="n1n2_minus",use_vector=True,n1=n1,n2=n2)
     mean_n1n2_plus = qc.expval(type="n1n2_plus",use_vector=True,n1=n1,n2=n2)
     xi_2_S_1 =  2/N*(mean_n1n2_plus+np.sqrt(mean_n1n2_minus**2+4*cov**2))

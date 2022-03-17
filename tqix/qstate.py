@@ -138,7 +138,7 @@ def spin_coherent(j,theta,phi):
     for m in array:
         state += sqrt(factorial(2*j)/(factorial(j+m)*factorial(j-m)))\
                 * (cos(theta/2.0))**(j+m) * (sin(theta/2.0))**(j-m)\
-                * exp(-1j*m*phi) * zbasis(j,m)
+                * exp(-1j*m*phi) * bz(j,m)
     return state
 
 def ghz(n):

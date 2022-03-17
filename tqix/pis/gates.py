@@ -73,11 +73,11 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates(type=gate_type+"TAT",noise=noise)
     
-    def TNT(self,theta,omega,gate_type,*args, **kwargs):
+    def TNT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
-        params = {"theta":theta,"gate_type":gate_type,"omega":omega}
+        params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",omega=omega,noise=noise)
+        return self.gates(type=gate_type+"TNT",noise=noise)
 
     def RX2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
@@ -115,11 +115,11 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates(type=gate_type+"GMS",phi=phi,noise=noise)
 
-    def RN(self,theta,phi,gate_type,*args, **kwargs):
+    def RN(self,theta,phi,*args, **kwargs):
         noise = kwargs.pop('noise', None)
-        params = {"theta":theta,"phi":phi,"gate_type":gate_type}
+        params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"RN",phi=phi,noise=noise)
+        return self.gates(type="RN",phi=phi,noise=noise)
 
     def check_input_param(self,params):
         self.theta = params["theta"]
@@ -235,7 +235,7 @@ class Gates(object):
                 elif "2" in type:
                     list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
                 J = reduce(lambda x,y:x+y,list_J)
-        return state.dot(J).diagonal().sum()
+        return J.dot(state).diagonal().sum()
 
 
     def gates(self,type="",*args, **kwargs):
@@ -248,7 +248,8 @@ class Gates(object):
         for ops in ["x","y","z","+","-"]:
             if ops in type:
                 count_ops += 1
-        
+        if "rn" in type:
+            count_ops += 2
         if count_ops == 1:
             J = get_J(type)
             expJ = expm(-1j*self.theta*J)
@@ -258,10 +259,9 @@ class Gates(object):
                 J_2_prime = get_J(type[1]+"2")
                 expJ = expm(-1j*self.theta*(J_2-J_2_prime))
             elif "tnt" in type:
-                omega = kwargs.pop('omega', None)
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
-                expJ = expm(-1j*(self.theta*J_2+omega*J_prime))
+                expJ = expm(-1j*self.theta*(J_2 - J_prime.dot(N_in/2)))
             elif "gms" in type:
                 phi = kwargs.pop('phi', None)
                 J = get_J(type[0])
@@ -270,9 +270,9 @@ class Gates(object):
                 expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
             elif "rn" in type:
                 phi = kwargs.pop('phi', None)
-                J = get_J(type[0])
-                J_prime = get_J(type[1])
-                expJ = expm(-1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
+                J = get_J("x")
+                J_prime = get_J("y")
+                expJ = expm(1j*self.theta*(J.dot(np.sin(phi))-J_prime.dot(np.cos(phi))))
 
         expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
