@@ -14,3 +14,5 @@ from tqix.pis.spin_operators import *
 from tqix.pis.noise import *
 from tqix.pis.gates import *
 from tqix.pis.circuit import *
+from tqix.pis.optimizers import *
+from tqix.pis.fit import *

@@ -11,6 +11,7 @@ ________________________________
 """
 
 #from numpy import
+from concurrent.futures import process
 from functools import partial
 import numpy as np
 import cmath as cm
@@ -45,81 +46,94 @@ class Gates(object):
 
     def RX(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx",noise=noise)
+        return self.gates("Rx",noise=noise,num_processes=processes)
     
     def RY(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params) 
-        return self.gates("Ry",noise=noise)
+        return self.gates("Ry",noise=noise,num_processes=processes)
     
     def RZ(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz",noise=noise)
+        return self.gates("Rz",noise=noise,num_processes=processes)
     
     def OAT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return eval(f"self.R{gate_type.upper()}2({theta},noise={noise})")
+        return eval(f"self.R{gate_type.upper()}2({theta},noise={noise},num_processes={processes})")
     
     def TAT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TAT",noise=noise)
+        return self.gates(type=gate_type+"TAT",noise=noise,num_processes=processes)
     
     def TNT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",noise=noise)
+        return self.gates(type=gate_type+"TNT",noise=noise,num_processes=processes)
 
     def RX2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx2",noise=noise)
+        return self.gates("Rx2",noise=noise,num_processes=processes)
     
     def RY2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Ry2",noise=noise)
+        return self.gates("Ry2",noise=noise,num_processes=processes)
     
     def RZ2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz2",noise=noise)
+        return self.gates("Rz2",noise=noise,num_processes=processes)
     
     def R_plus(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R+",noise=noise)
+        return self.gates("R+",noise=noise,num_processes=processes)
     
     def R_minus(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R-",noise=noise)
+        return self.gates("R-",noise=noise,num_processes=processes)
     
     def GMS(self,theta,phi,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"GMS",phi=phi,noise=noise)
+        return self.gates(type=gate_type+"GMS",phi=phi,noise=noise,num_processes=processes)
 
     def RN(self,theta,phi,*args, **kwargs):
         noise = kwargs.pop('noise', None)
+        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
-        return self.gates(type="RN",phi=phi,noise=noise)
+        return self.gates(type="RN",phi=phi,noise=noise,num_processes=processes)
 
     def check_input_param(self,params):
         self.theta = params["theta"]
@@ -194,47 +208,64 @@ class Gates(object):
             count_ops += 6
         if "theta" in type or "n1n2_minus" in type or "n1n2_plus" in type:
             count_ops += 2
+        
+        if "oat'" in type:
+            J = get_J(type[4]+'2')
+            if '2' in type:
+                J = J.dot(J)
+        elif "tnt'" in type:
+            J_2 = get_J(type[4]+"2")
+            J_prime = get_J(type[5])
+            J = (J_2 - J_prime*N_in/2)
+            if '2' in type:
+                J = J.dot(J)
+        elif "tat'" in type:
+            J_2 = get_J(type[4]+"2")
+            J_2_prime = get_J(type[5]+"2")
+            J = (J_2-J_2_prime)
+            if '2' in type:
+                J = J.dot(J)
+        else:
+            if count_ops == 1:
+                J = get_J(type)
+            elif count_ops > 1:
+                use_vector = kwargs.pop('use_vector', None)
+                n = kwargs.pop('n', None)
+                if use_vector:
+                    order = {"x":0,"y":1,"z":2}
 
-        if count_ops == 1:
-            J = get_J(type)
-        elif count_ops > 1:
-            use_vector = kwargs.pop('use_vector', None)
-            n = kwargs.pop('n', None)
-            if use_vector:
-                order = {"x":0,"y":1,"z":2}
-
-                if "cov" in type or "n1n2_minus" in type or "n1n2_plus" in type:
-                    n1 = kwargs.pop('n1', None)
-                    n2 = kwargs.pop('n2', None)
-                    list_J_1 = ([get_J(type_J).dot(n1[order[type_J]]) for type_J in "xyz"])
-                    list_J_2 = ([get_J(type_J).dot(n2[order[type_J]]) for type_J in "xyz"])
-                    J_1 = reduce(lambda x,y:x+y,list_J_1)
-                    J_2 = reduce(lambda x,y:x+y,list_J_2)
-                    if "cov" in type:
-                        J = J_1.dot(J_2) + J_2.dot(J_1)
-                    elif "n1n2_minus" in type:
-                        J_1 = J_1.dot(J_1)
-                        J_2 = J_2.dot(J_2)
-                        J = J_1 - J_2
-                    elif "n1n2_plus" in type:
-                        J_1 = J_1.dot(J_1)
-                        J_2 = J_2.dot(J_2)
-                        J = J_1 + J_2
-                else:     
-                    list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
-                    J = reduce(lambda x,y:x+y,list_J)
+                    if "cov" in type or "n1n2_minus" in type or "n1n2_plus" in type:
+                        n1 = kwargs.pop('n1', None)
+                        n2 = kwargs.pop('n2', None)
+                        list_J_1 = ([get_J(type_J).dot(n1[order[type_J]]) for type_J in "xyz"])
+                        list_J_2 = ([get_J(type_J).dot(n2[order[type_J]]) for type_J in "xyz"])
+                        J_1 = reduce(lambda x,y:x+y,list_J_1)
+                        J_2 = reduce(lambda x,y:x+y,list_J_2)
+                        if "cov" in type:
+                            J = J_1.dot(J_2) + J_2.dot(J_1)
+                        elif "n1n2_minus" in type:
+                            J_1 = J_1.dot(J_1)
+                            J_2 = J_2.dot(J_2)
+                            J = J_1 - J_2
+                        elif "n1n2_plus" in type:
+                            J_1 = J_1.dot(J_1)
+                            J_2 = J_2.dot(J_2)
+                            J = J_1 + J_2
+                    else:     
+                        list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
+                        J = reduce(lambda x,y:x+y,list_J)
+                        if "2" in type:
+                            J = J.dot(J)
+                elif "theta" in type:
+                    J = np.cos(self.theta)*get_J("y")+np.sin(self.theta)*get_J("z")
                     if "2" in type:
                         J = J.dot(J)
-            elif "theta" in type:
-                J = np.cos(self.theta)*get_J("y")+np.sin(self.theta)*get_J("z")
-                if "2" in type:
-                    J = J.dot(J)
-            else:
-                if "j" in type and "2" in type:
-                    list_J = ([get_J(type_J+"2") for type_J in "xyz"])
-                elif "2" in type:
-                    list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
-                J = reduce(lambda x,y:x+y,list_J)
+                else:
+                    if "j" in type and "2" in type:
+                        list_J = ([get_J(type_J+"2") for type_J in "xyz"])
+                    elif "2" in type:
+                        list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
+                    J = reduce(lambda x,y:x+y,list_J)
         return J.dot(state).diagonal().sum()
 
 
@@ -261,7 +292,7 @@ class Gates(object):
             elif "tnt" in type:
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
-                expJ = expm(-1j*self.theta*(J_2 - J_prime.dot(N_in/2)))
+                expJ = expm(-1j*self.theta*(J_2 - J_prime*N_in/2))
             elif "gms" in type:
                 phi = kwargs.pop('phi', None)
                 J = get_J(type[0])
@@ -272,7 +303,7 @@ class Gates(object):
                 phi = kwargs.pop('phi', None)
                 J = get_J("x")
                 J_prime = get_J("y")
-                expJ = expm(1j*self.theta*(J.dot(np.sin(phi))-J_prime.dot(np.cos(phi))))
+                expJ = expm(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
 
         expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
@@ -280,7 +311,11 @@ class Gates(object):
         noise = kwargs.pop('noise', None)
         
         if noise is not None:
-            new_state = add_noise(self,noise)
+            num_processes = kwargs.pop('num_processes', None)
+            if num_processes is not None:
+                new_state = add_noise(self,noise,num_process=num_processes)
+            else:
+                new_state = add_noise(self,noise)
             self.state = new_state
         else:
             self.state = new_state

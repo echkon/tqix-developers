@@ -246,7 +246,6 @@ def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',dirname ="",
     elev,azim = view
     ax.view_init(elev=elev, azim=azim)
     fig.savefig(os.path.join(dirname,fname),dpi=50,bbox_inches='tight')
-    plt.show(block=True)
     plt.close()
 
 def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
