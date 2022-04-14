@@ -10,7 +10,7 @@ def get_xi_2_H(alpha,beta,gamma,qc):
     mean_gamma = qc.expval(gamma)
     return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
-def get_xi_2_S(qc):
+def get_xi_2_S(qc,return_n0=False):
     N = qc.N
     mean_x = qc.expval(type="x")
     mean_y = qc.expval(type="y")
@@ -21,6 +21,8 @@ def get_xi_2_S(qc):
         phi = np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
     else:
         phi = 2*np.pi - np.arccos(mean_x/(mag_mean_J*np.sin(theta)))
+    if theta == 0 or isclose(theta,np.pi):
+        phi = 0
     n1 = np.asarray([-np.sin(phi),np.cos(phi),0]).astype(np.complex128)
     n2 = np.asarray([np.cos(theta)*np.cos(phi),0,-np.sin(theta)]).astype(np.complex128)
     cov = qc.expval(type="cov",use_vector=True,n1=n1,n2=n2)/2
@@ -29,18 +31,27 @@ def get_xi_2_S(qc):
     mean_n1n2_plus = qc.expval(type="n1n2_plus",use_vector=True,n1=n1,n2=n2)
     xi_2_S_1 =  2/N*(mean_n1n2_plus+np.sqrt(mean_n1n2_minus**2+4*cov**2))
     xi_2_S_2 =  2/N*(mean_n1n2_plus-np.sqrt(mean_n1n2_minus**2+4*cov**2))
-    if xi_2_S_1 < 0 and xi_2_S_2 > 0:
-        return xi_2_S_2
-    elif xi_2_S_1 > 0 and xi_2_S_2 < 0:
-        return xi_2_S_1
+    if return_n0:
+        n0 = np.asarray([np.sin(theta)*np.cos(phi),np.sin(theta)*np.sin(phi),np.cos(theta)])
+        if xi_2_S_1 < 0 and xi_2_S_2 > 0:
+                return n0,xi_2_S_2
+        elif xi_2_S_1 > 0 and xi_2_S_2 < 0:
+            return n0,xi_2_S_1
+        else:
+            return n0,min(xi_2_S_1,xi_2_S_2)
     else:
-        return min(xi_2_S_1,xi_2_S_2)
+        if xi_2_S_1 < 0 and xi_2_S_2 > 0:
+            return xi_2_S_2
+        elif xi_2_S_1 > 0 and xi_2_S_2 < 0:
+            return xi_2_S_1
+        else:
+            return min(xi_2_S_1,xi_2_S_2)
 
 def get_xi_2_R(qc):
-    xi_2_S = get_xi_2_S(qc)
+    n0,xi_2_S = get_xi_2_S(qc,return_n0=True)
     N = qc.N
-    mean_Jz = qc.expval(type="z")
-    return (N**2/(4*np.abs(mean_Jz)**2))*xi_2_S
+    mean_J = qc.expval(type="xyz",use_vector=True,n=n0)
+    return (N**2/(4*np.abs(mean_J)**2))*xi_2_S
 
 def get_xi_2_D(qc,n):
     N = qc.N
