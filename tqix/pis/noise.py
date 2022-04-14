@@ -9,8 +9,8 @@ import functools
 
 __all__ =['add_noise','calc_rho_0']
 
-def calc_rho_0(iks,jmm1,state,j_min,j_max,N_in):
-    accumulate_states = []
+def calc_rho_0(iks,jmm1,state,j_min,j_max,N_in,d_dicke):
+    accumulate_states = csc_matrix((d_dicke, d_dicke), dtype=np.complex)
 
     for ik in iks:
         j,m,m1 = jmm1[ik]
@@ -79,8 +79,8 @@ def calc_rho_0(iks,jmm1,state,j_min,j_max,N_in):
             gamma_9 = D_jm_plus*D_jm1_plus*Lambda_d*dicke_bx(N_in,{(j+1,m+1,m1+1):1})
 
         third_term = (gamma_7+gamma_8+gamma_9)/2
+        accumulate_states += p_jmm1*(first_term+second_term+third_term)
 
-        accumulate_states.append(p_jmm1*(first_term+second_term+third_term))
     return accumulate_states
 
 def add_noise(qc,noise=0.3,num_process=6):
@@ -108,16 +108,13 @@ def add_noise(qc,noise=0.3,num_process=6):
     for i in range(num_process):
         begin_idx = round(len_iks*i/num_process)
         end_idx = round(len_iks*(i+1)/num_process)
-        run_arguments.append((iks[begin_idx:end_idx],jmm1,state,j_min,j_max,N_in))
+        run_arguments.append((iks[begin_idx:end_idx],jmm1,state,j_min,j_max,N_in,d_dicke))
     
     pool = multiprocessing.Pool(processes=num_process)
     accumulate_states = pool.starmap(calc_rho_0,run_arguments)
     pool.close()
-    pool.join()
-    
+    pool.join()    
     accumulate_states = functools.reduce(lambda x,y: x+y,accumulate_states)
-    assert len(accumulate_states) == len_iks
-    rho_0 += functools.reduce(lambda x,y:x+y,accumulate_states)
     normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
     new_state = (1-noise)*rho + noise*normalized_rho_0             
     return new_state
