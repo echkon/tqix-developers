@@ -15,9 +15,10 @@ def find_mean_xi_s(noise):
             qc = circuit(N)
             qc.RN(np.pi/2,0)
             start = time.time()
-            qc.OAT(theta,"Z",noise=0.05,num_processes=25)
+            qc.OAT(theta,"Z",noise=0.05,num_processes=1)
             end = time.time()-start 
             print("time:",end)
+            print(get_xi_2_S(qc))
             xi_2_s = np.real(get_xi_2_S(qc))
             if xi_2_s < min_xi_s:
                   min_xi_s = xi_2_s
