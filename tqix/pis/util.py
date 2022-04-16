@@ -19,7 +19,7 @@ from scipy.sparse import csc_matrix
 __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
            'get_jmin','get_jarray','get_marray',
            'get_vidx','get_midx','get_jmm1_idx','get_mm1_idx_max','get_A',
-           'get_B','get_D','get_Lambda','get_alpha','dicke_bx','isclose'
+           'get_B','get_D','get_Lambda','get_alpha','dicke_bx','isclose','dicke_bx1'
             ]
         
 def get_Nds(d):
@@ -212,6 +212,16 @@ def dicke_bx(N, jmm1):
     dim = get_dim(N)
     rho = np.zeros((dim,dim),dtype = complex)
     ik = get_jmm1_idx(N)[1] # return i,k from jmm1
+    for key in jmm1:
+        i,k = ik[key]
+        rho[i,k] = jmm1[key]
+    return csc_matrix(rho)
+
+def dicke_bx1(N,jmm1,ik,dim):
+    # create a dicke basis follow jmm1
+    # jmm1 as {(j,m,m1):p}
+
+    rho = np.zeros((dim,dim),dtype = complex)
     for key in jmm1:
         i,k = ik[key]
         rho[i,k] = jmm1[key]
