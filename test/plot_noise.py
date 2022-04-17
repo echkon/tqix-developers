@@ -19,7 +19,6 @@ from tqix.pis.noise import add_noise
 N=100
 angles = np.linspace(0,0.1,30).tolist()
 # OAT
-noise = 0.05
 def find_mean_xi_s(noise):
       OAT_xi_2_S = []
       min_xi_s = np.inf 
