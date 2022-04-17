@@ -8,6 +8,9 @@ import sys
 
 from setuptools import setup
 
+import numpy
+from Cython.Build import cythonize
+
 # all information about tqix is here
 MAN = 1
 SUB = 0
@@ -52,7 +55,9 @@ setup(name = NAME,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
       packages=PACKAGES,
-      zip_safe=False)
+      zip_safe=False,
+      ext_modules=cythonize("tqix/pis/*.pyx", include_path = [numpy.get_include()])
+)
 
 
 #find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
