@@ -3,7 +3,7 @@ from tqix import *
 import numpy as np
 from matplotlib import pyplot as plt
 import time
-
+np.set_printoptions(threshold=sys.maxsize)
 from tqix.pis.noise import add_noise 
 # import warnings
 # import traceback
@@ -16,7 +16,7 @@ from tqix.pis.noise import add_noise
 #     log.write(warnings.formatwarning(message, category, filename, lineno, line))
 
 # warnings.showwarning = warn_with_traceback
-N=3
+N=100
 angles = np.linspace(0,0.1,30).tolist()
 # OAT
 noise = 0.05
