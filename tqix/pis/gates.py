@@ -307,6 +307,7 @@ class Gates(object):
 
         expJ_conj = daggx(expJ)
         new_state = expJ.dot(self.state).dot(expJ_conj)
+        self.state = new_state
 
         noise = kwargs.pop('noise', None)
         
@@ -317,9 +318,7 @@ class Gates(object):
             else:
                 new_state = add_noise(self,noise)
             self.state = new_state
-        else:
-            self.state = new_state
-        
+
         return self
     
     def measure(self,num_shots = None):
