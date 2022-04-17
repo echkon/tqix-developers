@@ -19,7 +19,6 @@ from tqix.pis.noise import add_noise
 N=100
 angles = np.linspace(0,0.1,30).tolist()
 # OAT
-noise = 0.05
 def find_mean_xi_s(noise):
       OAT_xi_2_S = []
       min_xi_s = np.inf 
@@ -28,7 +27,7 @@ def find_mean_xi_s(noise):
             qc = circuit(N)
             qc.RN(np.pi/2,0)
             start = time.time()
-            qc.OAT(theta,"Z",noise=0.05,num_processes=25)
+            qc.OAT(theta,"Z",noise=noise,num_processes=25)
             end = time.time()-start 
             print("time:",end)
             print(qc.state.diagonal().sum())
@@ -42,6 +41,7 @@ def find_mean_xi_s(noise):
 
       print("noise,xi_2_s,theta:",noise,min_xi_s,min_theta)
 
+find_mean_xi_s(None)
 find_mean_xi_s(0.05)
 find_mean_xi_s(0.1)
 find_mean_xi_s(0.15)
