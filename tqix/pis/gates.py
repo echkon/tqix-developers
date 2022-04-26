@@ -178,6 +178,31 @@ class Gates(object):
                 J = J.dot(J)     
         return J
     
+    def Jx(self):
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        return get_J("x")
+    
+    def Jy(self):
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        return get_J("y")
+    
+    def Jz(self):
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        return get_J("z")
+    
+    def J_plus(self):
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        return get_J("+")
+    
+    def J_minus(self):
+        d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
+        get_J = partial(self.get_J,N_in,d_in,d_dicke)
+        return get_J("-")
+    
     def var(self,type="",*args, **kwargs):
         use_vector = kwargs.pop('use_vector', None)
         n = kwargs.pop('n', None)
@@ -194,7 +219,10 @@ class Gates(object):
         return exp_val_J_2-exp_val_J**2
     
     def expval(self,type="",*args, **kwargs):
-        state = self.state 
+        state = self.state
+        observable = kwargs.pop('observable', None)
+        if observable is not None:
+            return observable.dot(state).diagonal().sum()
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         type = type.lower()
