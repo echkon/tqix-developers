@@ -1,49 +1,14 @@
-from tqix.pis import *
-from tqix import *
-import numpy as np
 from matplotlib import pyplot as plt
-import time
-np.set_printoptions(threshold=sys.maxsize)
-from tqix.pis.noise import add_noise 
-# import warnings
-# import traceback
-# import sys
+noise = [0,0.05,0.1,0.15,0.2]
+oat = [0.04802251459678246,0.04830069500039826,0.048576134582554005,0.04884875242129055,0.04911846437944632]
+tnt = [0.09185840794634033,0.09215983460631605,0.09246013671192259,0.0927592929064781,0.09305728128975488]
+tat = [0.01820935561851911,0.018847949353980768,0.01948654308944242,0.02011984062233296,0.0207479114919488]
 
-# def warn_with_traceback(message, category, filename, lineno, file=None, line=None):
-
-#     log = file if hasattr(file,'write') else sys.stderr
-#     traceback.print_stack(file=log)
-#     log.write(warnings.formatwarning(message, category, filename, lineno, line))
-
-# warnings.showwarning = warn_with_traceback
-N=100
-angles = np.linspace(0,0.1,30).tolist()
-# OAT
-def find_mean_xi_s(noise):
-      OAT_xi_2_S = []
-      min_xi_s = np.inf 
-      min_theta = None
-      for theta in angles:
-            qc = circuit(N)
-            qc.RN(np.pi/2,0)
-            start = time.time()
-            qc.OAT(theta,"Z",noise=noise,num_processes=25)
-            end = time.time()-start 
-            print("time:",end)
-            print(qc.state.diagonal().sum())
-            print(get_xi_2_S(qc))
-            xi_2_s = np.real(get_xi_2_S(qc))
-            if xi_2_s < min_xi_s:
-                  min_xi_s = xi_2_s
-                  min_theta = theta
-            elif xi_2_s > min_xi_s:
-                  break 
-
-      print("noise,xi_2_s,theta:",noise,min_xi_s,min_theta)
-
-find_mean_xi_s(None)
-find_mean_xi_s(0.05)
-find_mean_xi_s(0.1)
-find_mean_xi_s(0.15)
-find_mean_xi_s(0.2)
-
+ax = plt.gca() 
+ax.plot(noise, oat,'c-o',label=r'$OAT$')
+ax.plot(noise, tnt,'r-s',label=r'$TNT$')
+ax.plot(noise, tat,'g-*',label=r'$TAT$')
+ax.set_xlabel("noise")
+ax.set_ylabel(r"$\xi^{2}_{S}$")
+lgd = ax.legend(loc='center left', bbox_to_anchor=(0.8, 0.25))
+plt.savefig("./noise.eps")

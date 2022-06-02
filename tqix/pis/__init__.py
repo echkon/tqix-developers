@@ -9,10 +9,8 @@ ________________________________
 >>> all rights reserved
 ________________________________
 """
-import sys
-sys.path
-sys.path.append('tqix/pis/')
-import accumulated_state
+
+
 from tqix.pis.squeeze_param import *
 from tqix.pis.spin_operators import *
 from tqix.pis.noise import *
