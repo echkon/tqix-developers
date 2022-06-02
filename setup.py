@@ -4,12 +4,8 @@ tqix: a Toolbox for Quantum in X:
    x: quantum measurement, quantum metrology, quantum tomography, and more.
 """
 import os
-import sys
 
 from setuptools import setup
-
-import numpy
-from Cython.Build import cythonize
 
 # all information about tqix is here
 MAN = 1
@@ -55,8 +51,6 @@ setup(name = NAME,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
       packages=PACKAGES,
-      zip_safe=False,
-      ext_modules=cythonize("tqix/pis/*.pyx", include_path = [numpy.get_include()])
 )
 
 

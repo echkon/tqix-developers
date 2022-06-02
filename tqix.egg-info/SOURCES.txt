@@ -1,8 +1,11 @@
 LICENSE
 README.md
 setup.py
+./tqix/pis/accumulated_state.c
+test/test_gate.py
 test/test_qstate.py
 test/test_spin_operator.py
+test/test_vqa.py
 tqix/__init__.py
 tqix/about.py
 tqix/backend.py
@@ -31,8 +34,10 @@ tqix/dsm/execute.py
 tqix/dsm/util.py
 tqix/pis/__init__.py
 tqix/pis/circuit.py
+tqix/pis/fit.py
 tqix/pis/gates.py
 tqix/pis/noise.py
+tqix/pis/optimizers.py
 tqix/pis/spin_operators.py
 tqix/pis/squeeze_param.py
 tqix/pis/util.py

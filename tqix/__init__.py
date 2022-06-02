@@ -15,12 +15,13 @@ import warnings
 
 import tqix.version
 from tqix.version import version as __version__
+import sys
 
 # ------------------------------------------
 # Load modules
 # ==========================================
-
 # utility
+
 from tqix.utility import *
 from tqix.about import *
 
@@ -42,6 +43,7 @@ from tqix.dsm import *
 from tqix.povm import *
 
 # pis
+
 from tqix.pis import *
 
 # -----------------------------------------------------------------------------
