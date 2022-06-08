@@ -8,6 +8,7 @@ import numpy as np
 from tqix.pis import *
 from tqix import * 
 from scipy.sparse import block_diag
+from scipy import linalg
 
 logger = logging.getLogger(__name__)
 
@@ -177,7 +178,8 @@ class GD:
             self._t += 1
             if self.use_qng:
                 G = self.calc_fubini_tensor(params)
-                params_new = params - self.step_size * G.dot(derivative) 
+                pinv_G = linalg.pinv(G.toarray())
+                params_new = params - self.step_size * pinv_G.dot(derivative) 
             else: 
                 params_new = params - self.step_size * derivative
             loss = objective_function(params_new)
