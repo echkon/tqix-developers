@@ -88,8 +88,13 @@ TNT_xi_2_R = []
 #      qc.TNT(theta,"ZX")
 #      husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),dirname="./TNT",fname =str(theta)+"husimi_sphere.eps",alpha=1,view=(180,0))
 
-
-
+for phi in np.linspace(0,-np.pi,30):
+      qc = circuit(10)
+      qc.RN(np.pi,phi)
+# qc.TNT(theta,"ZX")
+      husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),dirname="./TNT",fname =f"test_husimi_sphere{phi}.eps",alpha=1,use_axis=True)
+# qc.RN(np.pi,-np.pi/2)
+# husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),dirname="",fname =f"test_husimi_sphere.eps",alpha=1,view=(180,0),use_axis=True)
 
 # #GMS
 # # plt.figure()
@@ -118,26 +123,26 @@ TNT_xi_2_R = []
 #      husimi_spin_3d(qc.state.toarray(), THETA ,PHI ,cmap = cmindex(1),dirname="./GMS",fname =str(theta)+"husimi_sphere.eps",view=(-90,0))
 
 # TAT
-angles = np.linspace(0,0.12,50).tolist()
-plt.figure()
-TAT_xi_2_S = []
-TAT_xi_2_R = []
-for theta in angles:
-       qc = circuit(N)
-       qc.RN(np.pi/2,0)
-       qc.TAT(theta,"ZY")
-       print(theta,np.real(get_xi_2_S(qc)))
-       TAT_xi_2_S.append(10*np.log10(np.real(get_xi_2_S(qc))))
-       TAT_xi_2_R.append(10*np.log10(np.real(get_xi_2_R(qc))))
+# angles = np.linspace(0,0.12,50).tolist()
+# plt.figure()
+# TAT_xi_2_S = []
+# TAT_xi_2_R = []
+# for theta in angles:
+#        qc = circuit(N)
+#        qc.RN(np.pi/2,0)
+#        qc.TAT(theta,"ZY")
+#        print(theta,np.real(get_xi_2_S(qc)))
+#        TAT_xi_2_S.append(10*np.log10(np.real(get_xi_2_S(qc))))
+#        TAT_xi_2_R.append(10*np.log10(np.real(get_xi_2_R(qc))))
 
-ax = plt.gca() 
-ax.plot(angles, TAT_xi_2_S,label=r'$10log_{10}(\xi^{2}_{S})$')
-ax.set_xlabel("theta")
-ax.set_ylabel("Db")
-ax.legend()
-dirname= "./TAT"
-fname ="xi_2_graph.eps"
-plt.savefig(os.path.join(dirname,fname))
+# ax = plt.gca() 
+# ax.plot(angles, TAT_xi_2_S,label=r'$10log_{10}(\xi^{2}_{S})$')
+# ax.set_xlabel("theta")
+# ax.set_ylabel("Db")
+# ax.legend()
+# dirname= "./TAT"
+# fname ="xi_2_graph.eps"
+# plt.savefig(os.path.join(dirname,fname))
 
 
 # for theta in ([0.0, 0.02, 0.04, 0.06, 0.08,0.1]):

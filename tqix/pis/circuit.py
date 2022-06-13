@@ -16,11 +16,11 @@ from tqix.qx import *
 from tqix.pis.util import *
 from scipy.sparse import csc_matrix
 from tqix.pis import *
-
+import torch 
 __all__ =['circuit','sobj',
           'dbx','dicke_ghz']
 
-def circuit(N,*args):
+def circuit(N,use_tensor=None,device=None,*args):
     """create a quantum circuit
 
     Parameters:
@@ -35,16 +35,21 @@ def circuit(N,*args):
     if not args:
        j = N/2
        psi = dbx(j,-j) # all spins down
-       return sobj(operx(psi).tolist(),N) 
+       if use_tensor:
+            psi = psi.todense()
+            return sobj(torch.tensor(operx(psi)).to(device),N,use_tensor=use_tensor,device=device)
+       return sobj(operx(psi).tolist(),N,use_tensor=use_tensor,device=device) 
     else:
-       return sobj(operx(args[0].tolist()),N)
+       return sobj(operx(args[0].tolist()),N,use_tensor=use_tensor,device=device)
 
 class sobj(Gates):
     # to crate a spin-object
-    def __init__(self,state,N):
+    def __init__(self,state,N,use_tensor=None,device=None):
         super().__init__()
         self.state = state
         self.N = N
+        self.use_tensor = use_tensor
+        self.device = device
        
     def print_state(self):
         state = self.state
