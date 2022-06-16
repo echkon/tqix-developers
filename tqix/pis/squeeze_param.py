@@ -36,7 +36,7 @@ def get_xi_2_S(qc,return_n0=False,use_tensor=False):
         xi_2_S_2 =  torch.real(2/N*(mean_n1n2_plus-torch.sqrt(mean_n1n2_minus**2+4*cov**2)))
 
         if return_n0:
-            n0 = torch.tensor([torch.sin(theta)*torch.cos(phi),torch.sin(theta)*torch.sin(phi),torch.cos(theta)])
+            n0 = torch.tensor([torch.sin(theta)*torch.cos(phi),torch.sin(theta)*torch.sin(phi),torch.cos(theta)]).to(qc.device)
             if xi_2_S_1 < 0 and xi_2_S_2 > 0:
                     return n0,xi_2_S_2
             elif xi_2_S_1 > 0 and xi_2_S_2 < 0:
@@ -87,10 +87,15 @@ def get_xi_2_S(qc,return_n0=False,use_tensor=False):
             else:
                 return min(xi_2_S_1,xi_2_S_2)
 
-def get_xi_2_R(qc):
-    n0,xi_2_S = get_xi_2_S(qc,return_n0=True)
+def get_xi_2_R(qc,use_tensor):
+    if use_tensor:
+        n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_tensor=True)
+    else:
+        n0,xi_2_S = get_xi_2_S(qc,return_n0=True)
     N = qc.N
     mean_J = qc.expval(type="xyz",use_vector=True,n=n0)
+    if use_tensor:
+        return (N**2/(4*torch.abs(mean_J)**2))*xi_2_S
     return (N**2/(4*np.abs(mean_J)**2))*xi_2_S
 
 def get_xi_2_D(qc,n):

@@ -3,23 +3,15 @@ from tqix import *
 import numpy as np
 import time 
 from tqix.pis import *
-
-
+import time 
 # n_qubit = 25
 # times = []
 # for num_q in range(n_qubit):
 #     num_q += 1
-num_q=500
+num_q=100
+qc = circuit(num_q,use_tensor=True,device='cuda')
 start = time.time()
-qc = circuit(num_q)
-t = time.time()-start
-start = time.time()
-qc.RZ(np.pi/3)
-t = time.time()-start
-start = time.time()
-qc.RX(np.pi/3)
-t = time.time()-start
-start = time.time()
-qc.RZ(np.pi/3)
-t = time.time()-start
-# qc.measure(num_shots=1)
+qc.TNT(np.pi/3,omega=np.pi/3,gate_type="XY",noise=0.05)
+print(qc.state)
+print(qc.state.diagonal().sum())
+print("time:",time.time()-start)

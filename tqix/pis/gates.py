@@ -83,9 +83,10 @@ class Gates(object):
     def TNT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
-        params = {"theta":theta,"gate_type":gate_type}
+        omega = kwargs.pop('omega', None)
+        params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",noise=noise,num_processes=processes)
+        return self.gates(type=gate_type+"TNT",omega=omega,noise=noise,num_processes=processes)
 
     def RX2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
@@ -320,7 +321,7 @@ class Gates(object):
                             J = J_1 + J_2
                     else:
                         if self.use_tensor:
-                            list_J = ([get_J(type_J).mm(n[order[type_J]]) for type_J in type if type_J != "2"])
+                            list_J = ([get_J(type_J)*(n[order[type_J]]) for type_J in type if type_J != "2"])
                         else:
                             list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
                         J = reduce(lambda x,y:x+y,list_J)
@@ -377,10 +378,11 @@ class Gates(object):
             elif "tnt" in type:
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
+                omega = kwargs.pop('omega', None)
                 if self.use_tensor:
-                    expJ = torch.matrix_exp(-1j*self.theta*(J_2 - J_prime*N_in/2))
+                    expJ = torch.matrix_exp(-1j*(self.theta*J_2 - omega*J_prime))
                 else:
-                    expJ = expm(-1j*self.theta*(J_2 - J_prime*N_in/2))
+                    expJ = expm(-1j*(self.theta*J_2 - omega*J_prime))
             elif "gms" in type:
                 phi = kwargs.pop('phi', None)
                 J = get_J(type[0])
@@ -410,10 +412,16 @@ class Gates(object):
         
         if noise is not None:
             num_processes = kwargs.pop('num_processes', None)
-            if num_processes is not None:
-                new_state = add_noise(self,noise,num_process=num_processes)
+            if not self.use_tensor:
+                if num_processes is not None:
+                    new_state = add_noise(self,noise,num_process=num_processes)
+                else:
+                    new_state = add_noise(self,noise)
             else:
-                new_state = add_noise(self,noise)
+                if num_processes is not None:
+                    new_state = add_noise(self,noise,num_process=num_processes,use_tensor=self.use_tensor,device=self.device)
+                else:
+                    new_state = add_noise(self,noise,use_tensor=self.use_tensor,device=self.device)
             self.state = new_state
 
         return self
@@ -438,3 +446,4 @@ if __name__ == '__main__':
     qc.OAT(0.05,"x")
     print(qc.state)
     print(np.real(get_xi_2_S(qc,use_tensor=False)))
+    print(np.real(get_xi_2_R(qc,use_tensor=False)))
