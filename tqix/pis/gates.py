@@ -71,7 +71,13 @@ class Gates(object):
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return eval(f"self.R{gate_type.upper()}2({theta},noise={noise},num_processes={processes})")
+        gate_type = gate_type.lower()
+        if gate_type =="x":
+            return self.RX2(theta,noise=noise,num_processes=processes)
+        if gate_type =="y":
+            return self.RY2(theta,noise=noise,num_processes=processes)
+        if gate_type =="z":
+            return self.RZ2(theta,noise=noise,num_processes=processes)                    
     
     def TAT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)

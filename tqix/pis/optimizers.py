@@ -169,7 +169,6 @@ class GD:
         loss_history = []
         loss_history.append(objective_function(initial_point))
         derivative = gradient_function(initial_point)
-
         params = params_new = initial_point
     
         while self._t < self._maxiter:
