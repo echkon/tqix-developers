@@ -24,6 +24,7 @@ from tqix.pis import *
 from scipy.sparse import block_diag,csr_matrix
 from scipy.sparse.linalg import expm
 from functools import *
+import torch 
 
 __all__ = ['Gates']
 
@@ -70,7 +71,13 @@ class Gates(object):
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return eval(f"self.R{gate_type.upper()}2({theta},noise={noise},num_processes={processes})")
+        gate_type = gate_type.lower()
+        if gate_type =="x":
+            return self.RX2(theta,noise=noise,num_processes=processes)
+        if gate_type =="y":
+            return self.RY2(theta,noise=noise,num_processes=processes)
+        if gate_type =="z":
+            return self.RZ2(theta,noise=noise,num_processes=processes)                    
     
     def TAT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
@@ -82,9 +89,10 @@ class Gates(object):
     def TNT(self,theta,gate_type,*args, **kwargs):
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
-        params = {"theta":theta,"gate_type":gate_type}
+        omega = kwargs.pop('omega', None)
+        params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",noise=noise,num_processes=processes)
+        return self.gates(type=gate_type+"TNT",omega=omega,noise=noise,num_processes=processes)
 
     def RX2(self,theta=None,*args, **kwargs):
         noise = kwargs.pop('noise', None)
@@ -165,17 +173,29 @@ class Gates(object):
 
         if d_in != d_dicke:
             if "2" in type:
-                J = S(N_in/2).dot(S(N_in/2))
+                if self.use_tensor:
+                    J = S(N_in/2,self.use_tensor,self.device).mm(S(N_in/2,self.use_tensor,self.device))
+                else:
+                    J = S(N_in/2).dot(S(N_in/2))
             else:
-                J = S(N_in/2)
+                J = S(N_in/2,self.use_tensor,self.device)
         else:
             j_array = get_jarray(N_in)[::-1]
             blocks = []
             for j in j_array:
-                blocks.append(S(j))
-            J = block_diag(blocks,format="csc")
+                if self.use_tensor:
+                    blocks.append(S(j,self.use_tensor,self.device))
+                else:
+                    blocks.append(S(j))
+            if not self.use_tensor:
+                J = block_diag(blocks,format="csc")
+            else:
+                J = torch.block_diag(*blocks)
             if "2" in type:
-                J = J.dot(J)     
+                if self.use_tensor:
+                    J = J.mm(J)
+                else:
+                    J = J.dot(J)     
         return J
     
     def Jx(self):
@@ -222,6 +242,8 @@ class Gates(object):
         state = self.state
         observable = kwargs.pop('observable', None)
         if observable is not None:
+            if self.use_tensor:
+                return observable.mm(state).diagonal().sum()
             return observable.dot(state).diagonal().sum()
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
@@ -240,19 +262,28 @@ class Gates(object):
         if "oat'" in type:
             J = get_J(type[4]+'2')
             if '2' in type:
-                J = J.dot(J)
+                if self.use_tensor:
+                    J = J.mm(J)
+                else:
+                    J = J.dot(J)
         elif "tnt'" in type:
             J_2 = get_J(type[4]+"2")
             J_prime = get_J(type[5])
             J = (J_2 - J_prime*N_in/2)
             if '2' in type:
-                J = J.dot(J)
+                if self.use_tensor:
+                    J = J.mm(J)
+                else:
+                    J = J.dot(J)
         elif "tat'" in type:
             J_2 = get_J(type[4]+"2")
             J_2_prime = get_J(type[5]+"2")
             J = (J_2-J_2_prime)
             if '2' in type:
-                J = J.dot(J)
+                if self.use_tensor:
+                    J = J.mm(J)
+                else:
+                    J = J.dot(J)
         else:
             if count_ops == 1:
                 J = get_J(type)
@@ -265,36 +296,63 @@ class Gates(object):
                     if "cov" in type or "n1n2_minus" in type or "n1n2_plus" in type:
                         n1 = kwargs.pop('n1', None)
                         n2 = kwargs.pop('n2', None)
-                        list_J_1 = ([get_J(type_J).dot(n1[order[type_J]]) for type_J in "xyz"])
-                        list_J_2 = ([get_J(type_J).dot(n2[order[type_J]]) for type_J in "xyz"])
+                        if self.use_tensor:
+                            list_J_1 = ([get_J(type_J)*(n1[order[type_J]]) for type_J in "xyz"])
+                            list_J_2 = ([get_J(type_J)*(n2[order[type_J]]) for type_J in "xyz"])
+                        else:
+                            list_J_1 = ([get_J(type_J).dot(n1[order[type_J]]) for type_J in "xyz"])
+                            list_J_2 = ([get_J(type_J).dot(n2[order[type_J]]) for type_J in "xyz"])
                         J_1 = reduce(lambda x,y:x+y,list_J_1)
                         J_2 = reduce(lambda x,y:x+y,list_J_2)
                         if "cov" in type:
-                            J = J_1.dot(J_2) + J_2.dot(J_1)
+                            if self.use_tensor:
+                                J = J_1.mm(J_2) + J_2.mm(J_1)
+                            else:
+                                J = J_1.dot(J_2) + J_2.dot(J_1)
                         elif "n1n2_minus" in type:
-                            J_1 = J_1.dot(J_1)
-                            J_2 = J_2.dot(J_2)
+                            if self.use_tensor:
+                                J_1 = J_1.mm(J_1)
+                                J_2 = J_2.mm(J_2)
+                            else:
+                                J_1 = J_1.dot(J_1)
+                                J_2 = J_2.dot(J_2)
                             J = J_1 - J_2
                         elif "n1n2_plus" in type:
-                            J_1 = J_1.dot(J_1)
-                            J_2 = J_2.dot(J_2)
+                            if self.use_tensor:
+                                J_1 = J_1.mm(J_1)
+                                J_2 = J_2.mm(J_2)
+                            else:
+                                J_1 = J_1.dot(J_1)
+                                J_2 = J_2.dot(J_2)
                             J = J_1 + J_2
-                    else:     
-                        list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
+                    else:
+                        if self.use_tensor:
+                            list_J = ([get_J(type_J)*(n[order[type_J]]) for type_J in type if type_J != "2"])
+                        else:
+                            list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
                         J = reduce(lambda x,y:x+y,list_J)
                         if "2" in type:
-                            J = J.dot(J)
+                            if self.use_tensor:
+                                J = J.mm(J)
+                            else:
+                                J = J.dot(J)
                 elif "theta" in type:
                     J = np.cos(self.theta)*get_J("y")+np.sin(self.theta)*get_J("z")
                     if "2" in type:
-                        J = J.dot(J)
+                        if self.use_tensor:
+                            J = J.mm(J)
+                        else:
+                            J = J.dot(J)
                 else:
                     if "j" in type and "2" in type:
                         list_J = ([get_J(type_J+"2") for type_J in "xyz"])
                     elif "2" in type:
                         list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
                     J = reduce(lambda x,y:x+y,list_J)
-        return J.dot(state).diagonal().sum()
+        if self.use_tensor:
+            return (J.type(torch.complex128) @ state.type(torch.complex128)).diagonal().sum()
+        else:
+            return J.dot(state).diagonal().sum()
 
 
     def gates(self,type="",*args, **kwargs):
@@ -311,40 +369,65 @@ class Gates(object):
             count_ops += 2
         if count_ops == 1:
             J = get_J(type)
-            expJ = expm(-1j*self.theta*J)
+            if self.use_tensor:
+                expJ = torch.matrix_exp(-1j*self.theta*J)
+            else:
+                expJ = expm(-1j*self.theta*J)
         elif count_ops == 2:
             if "tat" in type:
                 J_2 = get_J(type[0]+"2")
                 J_2_prime = get_J(type[1]+"2")
-                expJ = expm(-1j*self.theta*(J_2-J_2_prime))
+                if self.use_tensor:
+                    expJ = torch.matrix_exp(-1j*self.theta*(J_2-J_2_prime))
+                else:
+                    expJ = expm(-1j*self.theta*(J_2-J_2_prime))
             elif "tnt" in type:
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
-                expJ = expm(-1j*self.theta*(J_2 - J_prime*N_in/2))
+                omega = kwargs.pop('omega', None)
+                if self.use_tensor:
+                    expJ = torch.matrix_exp(-1j*(self.theta*J_2 - omega*J_prime))
+                else:
+                    expJ = expm(-1j*(self.theta*J_2 - omega*J_prime))
             elif "gms" in type:
                 phi = kwargs.pop('phi', None)
                 J = get_J(type[0])
                 J_prime = get_J(type[1])
                 S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
-                expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
+                if self.use_tensor:
+                    expJ = torch.matrix_exp(-1j*self.theta*S_phi.dot(S_phi)/4)
+                else:
+                    expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
             elif "rn" in type:
                 phi = kwargs.pop('phi', None)
                 J = get_J("x")
                 J_prime = get_J("y")
-                expJ = expm(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
+                if self.use_tensor:
+                    expJ = torch.matrix_exp(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
+                else:
+                    expJ = expm(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
 
         expJ_conj = daggx(expJ)
-        new_state = expJ.dot(self.state).dot(expJ_conj)
+        if self.use_tensor:
+            new_state = expJ.type(torch.complex128) @ self.state.type(torch.complex128) @ expJ_conj.type(torch.complex128)
+        else:
+            new_state = expJ.dot(self.state).dot(expJ_conj)
         self.state = new_state
 
         noise = kwargs.pop('noise', None)
         
         if noise is not None:
             num_processes = kwargs.pop('num_processes', None)
-            if num_processes is not None:
-                new_state = add_noise(self,noise,num_process=num_processes)
+            if not self.use_tensor:
+                if num_processes is not None:
+                    new_state = add_noise(self,noise,num_process=num_processes)
+                else:
+                    new_state = add_noise(self,noise)
             else:
-                new_state = add_noise(self,noise)
+                if num_processes is not None:
+                    new_state = add_noise(self,noise,num_process=num_processes,use_tensor=self.use_tensor,device=self.device)
+                else:
+                    new_state = add_noise(self,noise,use_tensor=self.use_tensor,device=self.device)
             self.state = new_state
 
         return self
@@ -362,3 +445,11 @@ class Gates(object):
         if result[-1] < 0:
             result[-1] = 0
         return result   
+
+if __name__ == '__main__':
+    N = 3
+    qc = circuit(N,False,'cuda')
+    qc.OAT(0.05,"x")
+    print(qc.state)
+    print(np.real(get_xi_2_S(qc,use_tensor=False)))
+    print(np.real(get_xi_2_R(qc,use_tensor=False)))
