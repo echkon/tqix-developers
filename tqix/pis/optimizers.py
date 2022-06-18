@@ -9,6 +9,8 @@ from tqix.pis import *
 from tqix import * 
 from scipy.sparse import block_diag
 from scipy import linalg
+import torch 
+import math 
 
 logger = logging.getLogger(__name__)
 
@@ -106,23 +108,42 @@ class GD:
     def calc_fubini_tensor(self,params):
         num_layers = len(self.route)-1 
         feature_map = self.route[0][0]
-        qc = circuit(self.N)
-        if feature_map == "RN2":
-            qc.RN(np.pi/2,0) 
-        gs = []
-        for num in range(num_layers):
-            type = self.route[num+1][1]
-            if self.route[num+1][0] == "OAT":
-                g = np.real(qc.expval("OAT'"+type+"2") - qc.expval("OAT'"+type)**2)
-                qc.OAT(params[num],type)
-            elif self.route[num+1][0] == "TAT":
-                g = np.real(qc.expval("TAT'"+type+"2") - qc.expval("TAT'"+type)**2)
-                qc.TAT(params[num],type)
-            elif self.route[num+1][0] == "TNT":
-                g = np.real(qc.expval("TNT'"+type+"2") - qc.expval("TNT'"+type)**2)
-                qc.TNT(params[num],type)
-            gs.append(g)
-        G = block_diag(gs,format="csc")
+        if torch.is_tensor(params):
+            qc = circuit(self.N,use_tensor=True,device=params.device)
+            if feature_map == "RN2":
+                qc.RN(np.pi/2,0) 
+            gs = []
+            for num in range(num_layers):
+                type = self.route[num+1][1]
+                if self.route[num+1][0] == "OAT":
+                    g = torch.real(qc.expval("OAT'"+type+"2") - qc.expval("OAT'"+type)**2)
+                    qc.OAT(params[num],type)
+                elif self.route[num+1][0] == "TAT":
+                    g = torch.real(qc.expval("TAT'"+type+"2") - qc.expval("TAT'"+type)**2)
+                    qc.TAT(params[num],type)
+                elif self.route[num+1][0] == "TNT":
+                    g = torch.real(qc.expval("TNT'"+type+"2") - qc.expval("TNT'"+type)**2)
+                    qc.TNT(params[num],omega=params[num]*self.N/2,gate_type=type)
+                gs.append(g)
+            G = torch.block_diag(*gs)
+        else:
+            qc = circuit(self.N)
+            if feature_map == "RN2":
+                qc.RN(np.pi/2,0) 
+            gs = []
+            for num in range(num_layers):
+                type = self.route[num+1][1]
+                if self.route[num+1][0] == "OAT":
+                    g = np.real(qc.expval("OAT'"+type+"2") - qc.expval("OAT'"+type)**2)
+                    qc.OAT(params[num],type)
+                elif self.route[num+1][0] == "TAT":
+                    g = np.real(qc.expval("TAT'"+type+"2") - qc.expval("TAT'"+type)**2)
+                    qc.TAT(params[num],type)
+                elif self.route[num+1][0] == "TNT":
+                    g = np.real(qc.expval("TNT'"+type+"2") - qc.expval("TNT'"+type)**2)
+                    qc.TNT(params[num],omega=params[num]*self.N/2,gate_type=type)
+                gs.append(g)
+            G = block_diag(gs,format="csc")
         return G 
 
     def optimize(self, num_vars: int, objective_function: Callable[[np.ndarray], float],
@@ -144,10 +165,13 @@ class GD:
                 value: is a float with the objective function value\n
                 nfev: is the number of objective function calls
         """
-        if initial_point is None:
-            initial_point = np.random.default_rng(52).random(num_vars)
-        if gradient_function is None:
-            gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
+        if torch.is_tensor(initial_point):
+            pass
+        else:
+            if initial_point is None:
+                initial_point = np.random.default_rng(52).random(num_vars)
+            if gradient_function is None:
+                gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
 
         if return_loss_hist:
             point, value, nfev,loss_hist = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
@@ -167,41 +191,77 @@ class GD:
             A tuple of (optimal parameters, optimal value, number of iterations).
         """
         loss_history = []
-        loss_history.append(objective_function(initial_point))
-        derivative = gradient_function(initial_point)
-        params = params_new = initial_point
-    
-        while self._t < self._maxiter:
-            if self._t > 0:
-                derivative = gradient_function(params)
-            self._t += 1
-            if self.use_qng:
-                G = self.calc_fubini_tensor(params)
-                pinv_G = linalg.pinv(G.toarray())
-                params_new = params - self.step_size * pinv_G.dot(derivative) 
-            else: 
-                params_new = params - self.step_size * derivative
-            loss = objective_function(params_new)
-            loss_history.append(loss)
-            
-            print("derivative,params,loss:",derivative,params_new,loss)
-            if np.linalg.norm(params - params_new) < self._tol:
-                if return_loss_hist:
-                        return params_new, objective_function(params_new), self._t, loss_history
-                return params_new, objective_function(params_new), self._t
-            elif loss_break != None:
-                if objective_function(params_new) < loss_break:
+        if torch.is_tensor(initial_point):
+            objective_function(initial_point).backward()
+            derivative = initial_point.grad
+            params = params_new = initial_point
+            while self._t < self._maxiter:
+                if self._t > 0:
+                    params = params.detach().requires_grad_()
+                    objective_function(params).backward()
+                    derivative = params.grad
+                self._t += 1
+                if self.use_qng:
+                    G = self.calc_fubini_tensor(params)
+                    pinv_G = torch.linalg.pinv(G)
+                    params_new = params - self.step_size * pinv_G @ derivative.type(torch.DoubleTensor)
+                else: 
+                    params_new = params - self.step_size * derivative
+                new_loss = objective_function(params_new)
+                loss_history.append(new_loss.item())               
+                print("derivative,params_new,new_loss:",derivative,params_new,new_loss)
+                if torch.linalg.norm(params - params_new) < self._tol:
                     if return_loss_hist:
-                        return params_new, objective_function(params_new), self._t, loss_history
-                    return params_new, objective_function(params_new), self._t
+                            return params_new, new_loss, self._t, loss_history
+                    return params_new,new_loss, self._t 
+                elif loss_break != None:
+                    if new_loss < loss_break:
+                        if return_loss_hist:
+                            return params_new, new_loss, self._t, loss_history
+                        return params_new,new_loss, self._t
+                    else:
+                        params = params_new
                 else:
                     params = params_new
-            else:
-                params = params_new
+            if return_loss_hist:
+                        return params_new,new_loss, self._t, loss_history
+            return params_new,new_loss, self._t
+
+        else:
+            derivative = gradient_function(initial_point)
+            params = params_new = initial_point
         
-        if return_loss_hist:
-                return params_new, objective_function(params_new), self._t, loss_history
-        return params_new, objective_function(params_new), self._t
+            while self._t < self._maxiter:
+                if self._t > 0:
+                    derivative = gradient_function(params)
+                self._t += 1
+                if self.use_qng:
+                    G = self.calc_fubini_tensor(params)
+                    pinv_G = linalg.pinv(G.toarray())
+                    params_new = params - self.step_size * pinv_G.dot(derivative) 
+                else: 
+                    params_new = params - self.step_size * derivative
+                new_loss = objective_function(params_new)
+                loss_history.append(new_loss)
+                
+                print("derivative,params,loss:",derivative,params_new,new_loss)
+                if np.linalg.norm(params - params_new) < self._tol:
+                    if return_loss_hist:
+                            return params_new,new_loss, self._t, loss_history
+                    return params_new,new_loss, self._t
+                elif loss_break != None:
+                    if new_loss < loss_break:
+                        if return_loss_hist:
+                            return params_new,new_loss, self._t, loss_history
+                        return params_new,new_loss, self._t
+                    else:
+                        params = params_new
+                else:
+                    params = params_new
+            
+            if return_loss_hist:
+                    return params_new,new_loss, self._t, loss_history
+            return params_new,new_loss, self._t
 
 class ADAM:
     """Adam and AMSGRAD optimizers.
@@ -337,51 +397,100 @@ class ADAM:
             A tuple of (optimal parameters, optimal value, number of iterations).
         """
         loss_history = []
-        loss_history.append(objective_function(initial_point))
-        derivative = gradient_function(initial_point)
-        self._t = 0
-        self._m = np.zeros(np.shape(derivative))
-        self._v = np.zeros(np.shape(derivative))
-        if self._amsgrad:
-            self._v_eff = np.zeros(np.shape(derivative))
-
-        params = params_new = initial_point
-        while self._t < self._maxiter:
-            if self._t > 0:
-                derivative = gradient_function(params)
-            self._t += 1
-            self._m = self._beta_1 * self._m + (1 - self._beta_1) * derivative
-            self._v = self._beta_2 * self._v + (1 - self._beta_2) * derivative * derivative
-            lr_eff = self._lr * np.sqrt(1 - self._beta_2 ** self._t) / (1 - self._beta_1 ** self._t)
-            if not self._amsgrad:
-                params_new = (params - lr_eff * self._m.flatten()
-                              / (np.sqrt(self._v.flatten()) + self._noise_factor))
-            else:
-                self._v_eff = np.maximum(self._v_eff, self._v)
-                params_new = (params - lr_eff * self._m.flatten()
-                              / (np.sqrt(self._v_eff.flatten()) + self._noise_factor))
-            loss = objective_function(params_new)
-            loss_history.append(loss)
-            print("derivative,params,loss,:",derivative,params_new,loss)
-            if self._snapshot_dir:
-                self.save_params(self._snapshot_dir)
-            if np.linalg.norm(params - params_new) < self._tol:
-                if return_loss_hist:
-                    return params_new, objective_function(params_new), self._t, loss_history
-                return params_new, objective_function(params_new), self._t
-            if loss_break != None:
-                if objective_function(params_new) < loss_break:
+        if torch.is_tensor(initial_point):
+            objective_function(initial_point).backward()
+            derivative = initial_point.grad
+            self._t = 0
+            self._m = torch.zeros(derivative.size())
+            self._v = torch.zeros(derivative.size())      
+            if self._amsgrad:
+                self._v_eff = torch.zeros(derivative.size())    
+            params = params_new = initial_point
+            while self._t < self._maxiter:
+                if self._t > 0:
+                    params = params.detach().requires_grad_()
+                    objective_function(params).backward()
+                    derivative = params.grad
+                self._t += 1
+                self._m = self._beta_1 * self._m + (1 - self._beta_1) * derivative
+                self._v = self._beta_2 * self._v + (1 - self._beta_2) * derivative * derivative
+                lr_eff = self._lr * math.sqrt(1 - self._beta_2 ** self._t) / (1 - self._beta_1 ** self._t)
+                if not self._amsgrad:
+                    params_new = (params - lr_eff * self._m.flatten()
+                                / (torch.sqrt(self._v.flatten()) + self._noise_factor))
+                else:
+                    self._v_eff = torch.maximum(self._v_eff, self._v)
+                    params_new = (params - lr_eff * self._m.flatten()
+                                / (torch.sqrt(self._v_eff.flatten()) + self._noise_factor))
+                new_loss = objective_function(params_new)
+                loss_history.append(new_loss)
+                print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                if self._snapshot_dir:
+                    self.save_params(self._snapshot_dir)
+                if torch.linalg.norm(params - params_new) < self._tol:
                     if return_loss_hist:
-                        return params_new, objective_function(params_new), self._t, loss_history
-                    return params_new, objective_function(params_new), self._t
+                        return params_new, new_loss, self._t, loss_history
+                    return params_new,new_loss, self._t
+                if loss_break != None:
+                    if new_loss < loss_break:
+                        if return_loss_hist:
+                            return params_new, new_loss, self._t, loss_history
+                        return params_new,new_loss, self._t
+                    else:
+                        params = params_new
                 else:
                     params = params_new
-            else:
-                params = params_new
 
-        if return_loss_hist:
-                    return params_new, objective_function(params_new), self._t, loss_history
-        return params_new, objective_function(params_new), self._t
+            if return_loss_hist:
+                        return params_new, new_loss, self._t, loss_history
+            return params_new, new_loss, self._t
+
+
+        else:
+            derivative = gradient_function(initial_point)
+            self._t = 0
+            self._m = np.zeros(np.shape(derivative))
+            self._v = np.zeros(np.shape(derivative))
+            if self._amsgrad:
+                self._v_eff = np.zeros(np.shape(derivative))
+
+            params = params_new = initial_point
+            while self._t < self._maxiter:
+                if self._t > 0:
+                    derivative = gradient_function(params)
+                self._t += 1
+                self._m = self._beta_1 * self._m + (1 - self._beta_1) * derivative
+                self._v = self._beta_2 * self._v + (1 - self._beta_2) * derivative * derivative
+                lr_eff = self._lr * np.sqrt(1 - self._beta_2 ** self._t) / (1 - self._beta_1 ** self._t)
+                if not self._amsgrad:
+                    params_new = (params - lr_eff * self._m.flatten()
+                                / (np.sqrt(self._v.flatten()) + self._noise_factor))
+                else:
+                    self._v_eff = np.maximum(self._v_eff, self._v)
+                    params_new = (params - lr_eff * self._m.flatten()
+                                / (np.sqrt(self._v_eff.flatten()) + self._noise_factor))
+                new_loss = objective_function(params_new)
+                loss_history.append(new_loss)
+                print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                if self._snapshot_dir:
+                    self.save_params(self._snapshot_dir)
+                if np.linalg.norm(params - params_new) < self._tol:
+                    if return_loss_hist:
+                        return params_new,new_loss, self._t, loss_history
+                    return params_new,new_loss, self._t
+                if loss_break != None:
+                    if new_loss < loss_break:
+                        if return_loss_hist:
+                            return params_new,new_loss, self._t, loss_history
+                        return params_new,new_loss, self._t
+                    else:
+                        params = params_new
+                else:
+                    params = params_new
+
+            if return_loss_hist:
+                        return params_new,new_loss, self._t, loss_history
+            return params_new,new_loss, self._t
 
     def optimize(self, num_vars: int, objective_function: Callable[[np.ndarray], float],
                  gradient_function: Optional[Callable[[np.ndarray], float]] = None,
@@ -403,8 +512,11 @@ class ADAM:
         """
         if initial_point is None:
             initial_point = np.random.default_rng(52).random(num_vars)
-        if gradient_function is None:
-            gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
+        if torch.is_tensor(initial_point):
+            pass
+        else:
+            if gradient_function is None:
+                gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
         if return_loss_hist:
             point, value, nfev,loss_hist = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
             return point, value, nfev,loss_hist
