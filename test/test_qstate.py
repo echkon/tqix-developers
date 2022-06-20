@@ -10,25 +10,20 @@ state = qc.state
 print(state)
 print(typex(state))
 
-print('test initial state')
-init_state = dotx(state,daggx(state))
-qc = circuit(N,init_state)
-state = qc.state
-print(state)
-print(typex(state))
-
 print('test gate with initial state')
-Gates().RZ(qc,np.pi/3)
+qc.RZ(np.pi/3)
 print(qc.state)
 
 print('test with dicke_ghz state')
 init_state = dicke_ghz(N)
-qc = circuit(N,init_state)
+qc = circuit(N,None,None,init_state)
 state = qc.state
 print(state)
 print(typex(state))
 
 print('test gate with dicke_ghz state')
-Gates().RZ(qc,np.pi/3)
-Gates().RZ(qc,np.pi/3).RY().RZ(theta=np.pi/4).RX(sobj=qc)
-print(qc.state)
+qc.RZ(np.pi/3)
+qc.RY(np.pi/5)
+qc.RZ(np.pi/4)
+qc.RX(np.pi/3)
+print(qc.state.toarray())

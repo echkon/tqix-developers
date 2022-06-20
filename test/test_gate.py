@@ -9,9 +9,9 @@ import time
 # for num_q in range(n_qubit):
 #     num_q += 1
 num_q=100
-qc = circuit(num_q,use_tensor=True,device='cuda')
+qc = circuit(num_q)
 start = time.time()
-qc.TNT(np.pi/3,omega=np.pi/3,gate_type="XY",noise=0.05)
+qc.TNT(np.pi/3,omega=np.pi/3,gate_type="XY",noise=0.05,num_processes=25)
 print(qc.state)
 print(qc.state.diagonal().sum())
 print("time:",time.time()-start)
