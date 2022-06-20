@@ -40,7 +40,7 @@ def circuit(N,use_tensor=None,device=None,*args):
             return sobj(torch.tensor(operx(psi)).to(device),N,use_tensor=use_tensor,device=device)
        return sobj(operx(psi).tolist(),N,use_tensor=use_tensor,device=device) 
     else:
-       return sobj(operx(args[0].tolist()),N,use_tensor=use_tensor,device=device)
+       return sobj(args[0],N,use_tensor=use_tensor,device=device)
 
 class sobj(Gates):
     # to crate a spin-object
