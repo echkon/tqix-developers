@@ -11,7 +11,7 @@ import time
 num_q=100
 qc = circuit(num_q)
 start = time.time()
-qc.TNT(np.pi/3,omega=np.pi/3,gate_type="XY",noise=0.05,num_processes=25)
+qc.OAT(np.pi/3,"X",noise=0.05)
 print(qc.state)
 print(qc.state.diagonal().sum())
 print("time:",time.time()-start)
