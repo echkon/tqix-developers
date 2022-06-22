@@ -11,7 +11,8 @@ def get_xi_2_H(alpha,beta,gamma,qc):
     mean_gamma = qc.expval(gamma)
     return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
-def get_xi_2_S(qc,return_n0=False,use_tensor=False):
+def get_xi_2_S(qc,return_n0=False):
+    use_tensor = qc.use_tensor
     if use_tensor:
         N = qc.N
         mean_x = qc.expval(type="x")
@@ -87,7 +88,8 @@ def get_xi_2_S(qc,return_n0=False,use_tensor=False):
             else:
                 return min(xi_2_S_1,xi_2_S_2)
 
-def get_xi_2_R(qc,use_tensor):
+def get_xi_2_R(qc):
+    use_tensor = qc.use_tensor
     if use_tensor:
         n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_tensor=True)
     else:

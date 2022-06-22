@@ -20,37 +20,47 @@ import torch
 __all__ =['circuit','sobj',
           'dbx','dicke_ghz']
 
-def circuit(N,use_tensor=None,device=None,*args):
+def circuit(N,**kwargs):
     """create a quantum circuit
 
     Parameters:
     ----------
     N: particles number
-    *args: initial state
-
     Return:
     -------
     init_state    
     """
-    if not args:
+    use_tensor = kwargs.pop('use_tensor', False)
+    init_state = kwargs.pop('initial_state', None)
+    num_process = kwargs.pop('num_process', None)
+    if use_tensor:
+        if torch.cuda.is_available():
+            device = "cuda"
+        else:
+            device = "cpu"
+    else:
+        device = None
+
+    if not init_state:
        j = N/2
        psi = dbx(j,-j) # all spins down
        if use_tensor:
             psi = psi.todense()
-            return sobj(torch.tensor(operx(psi)).to(device),N,use_tensor=use_tensor,device=device)
-       return sobj(operx(psi).tolist(),N,use_tensor=use_tensor,device=device) 
+            return sobj(torch.tensor(operx(psi)).to(device),N,use_tensor=use_tensor,device=device,num_process=num_process)
+       return sobj(operx(psi).tolist(),N,use_tensor=use_tensor,device=device,num_process=num_process) 
     else:
-       return sobj(args[0],N,use_tensor=use_tensor,device=device)
+       return sobj(init_state,N,use_tensor=use_tensor,device=device,num_process=num_process)
 
 class sobj(Gates):
     # to crate a spin-object
-    def __init__(self,state,N,use_tensor=None,device=None):
+    def __init__(self,state,N,use_tensor=None,device=None,num_process=None):
         super().__init__()
         self.state = state
         self.N = N
         self.use_tensor = use_tensor
         self.device = device
-       
+        self.num_process = num_process 
+        
     def print_state(self):
         state = self.state
         return state

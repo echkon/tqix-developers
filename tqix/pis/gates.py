@@ -417,15 +417,14 @@ class Gates(object):
         noise = kwargs.pop('noise', None)
         
         if noise is not None:
-            num_processes = kwargs.pop('num_processes', None)
             if not self.use_tensor:
-                if num_processes is not None:
-                    new_state = add_noise(self,noise,num_process=num_processes)
+                if self.num_process is not None:
+                    new_state = add_noise(self,noise,num_process=self.num_process)
                 else:
                     new_state = add_noise(self,noise)
             else:
-                if num_processes is not None:
-                    new_state = add_noise(self,noise,num_process=num_processes,use_tensor=self.use_tensor,device=self.device)
+                if self.num_process is not None:
+                    new_state = add_noise(self,noise,num_process=self.num_process,use_tensor=self.use_tensor,device=self.device)
                 else:
                     new_state = add_noise(self,noise,use_tensor=self.use_tensor,device=self.device)
             self.state = new_state
