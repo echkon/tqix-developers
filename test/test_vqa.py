@@ -16,9 +16,9 @@ def cost_function(theta,use_tensor=False,device=None):
     qc.TNT(theta[1],omega=theta[1],gate_type="ZX")
     qc.TAT(theta[2],"ZY")
     if use_tensor:
-        loss = torch.real(get_xi_2_S(qc,use_tensor=use_tensor))
+        loss = torch.real(get_xi_2_S(qc))
     else:
-        loss = np.real(get_xi_2_S(qc,use_tensor=use_tensor))
+        loss = np.real(get_xi_2_S(qc))
     return  loss
 # init_params = torch.tensor([0.00195902, 0.14166777, 0.01656466]).requires_grad_()
 
