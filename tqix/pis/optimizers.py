@@ -5,13 +5,14 @@ import logging
 import os
 import csv
 import numpy as np
+from sklearn.decomposition import sparse_encode
 from tqix.pis import *
 from tqix import * 
 from scipy.sparse import block_diag
 from scipy import linalg
 import torch 
 import math 
-
+import time 
 logger = logging.getLogger(__name__)
 
 # pylint: disable=invalid-name
@@ -149,7 +150,7 @@ class GD:
     def optimize(self, num_vars: int, objective_function: Callable[[np.ndarray], float],
                  gradient_function: Optional[Callable[[np.ndarray], float]] = None,
                  initial_point: Optional[np.ndarray] = None,
-                 return_loss_hist=None,loss_break=None 
+                 return_loss_hist=None,loss_break=None,return_time_iters=None, 
                  ) -> Tuple[np.ndarray, float, int]:
         """Perform optimization.
         Args:
@@ -173,15 +174,12 @@ class GD:
             if gradient_function is None:
                 gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
 
-        if return_loss_hist:
-            point, value, nfev,loss_hist = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
-            return point, value, nfev,loss_hist
-        point, value, nfev = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
-        return point, value, nfev
+        output = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,return_time_iters,loss_break)
+        return output
         
     
     def minimize(self, objective_function: Callable[[np.ndarray], float], initial_point: np.ndarray,
-                 gradient_function: Callable[[np.ndarray], float],return_loss_hist = False,loss_break = None) -> Tuple[np.ndarray, float, int]:
+                 gradient_function: Callable[[np.ndarray], float],return_loss_hist:bool,return_time_iters:bool, loss_break:bool) -> Tuple[np.ndarray, float, int]:
         """Run the minimization.
         Args:
             objective_function: A function handle to the objective function.
@@ -192,10 +190,12 @@ class GD:
         """
         loss_history = []
         if torch.is_tensor(initial_point):
+            tensor_times = []
             objective_function(initial_point).backward()
             derivative = initial_point.grad
             params = params_new = initial_point
             while self._t < self._maxiter:
+                start = time.time()
                 if self._t > 0:
                     params = params.detach().requires_grad_()
                     objective_function(params).backward()
@@ -204,34 +204,37 @@ class GD:
                 if self.use_qng:
                     G = self.calc_fubini_tensor(params)
                     pinv_G = torch.linalg.pinv(G)
-                    params_new = params - self.step_size * pinv_G @ derivative.type(torch.DoubleTensor)
+                    params_new = params - self.step_size * pinv_G @ derivative.type(torch.DoubleTensor).to(pinv_G.device)
                 else: 
                     params_new = params - self.step_size * derivative
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss.item())               
                 print("derivative,params_new,new_loss:",derivative,params_new,new_loss)
+                end = time.time()-start
+                tensor_times.append(end)
                 if torch.linalg.norm(params - params_new) < self._tol:
-                    if return_loss_hist:
-                            return params_new, new_loss, self._t, loss_history
+                    if return_loss_hist or return_time_iters:
+                            return params_new, new_loss, self._t, loss_history,tensor_times
                     return params_new,new_loss, self._t 
                 elif loss_break != None:
                     if new_loss < loss_break:
-                        if return_loss_hist:
-                            return params_new, new_loss, self._t, loss_history
+                        if return_loss_hist or return_time_iters:
+                            return params_new, new_loss, self._t, loss_history, sparse_times
                         return params_new,new_loss, self._t
                     else:
                         params = params_new
                 else:
                     params = params_new
-            if return_loss_hist:
-                        return params_new,new_loss, self._t, loss_history
+            if return_loss_hist or tensor_times:
+                        return params_new,new_loss, self._t, loss_history,return_time_iters
             return params_new,new_loss, self._t
 
         else:
             derivative = gradient_function(initial_point)
             params = params_new = initial_point
-        
+            sparse_times = []
             while self._t < self._maxiter:
+                start = time.time()
                 if self._t > 0:
                     derivative = gradient_function(params)
                 self._t += 1
@@ -243,24 +246,25 @@ class GD:
                     params_new = params - self.step_size * derivative
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss)
-                
                 print("derivative,params,loss:",derivative,params_new,new_loss)
+                end = time.time() - start 
+                sparse_times.append(end)
                 if np.linalg.norm(params - params_new) < self._tol:
-                    if return_loss_hist:
-                            return params_new,new_loss, self._t, loss_history
+                    if return_loss_hist or return_time_iters:
+                            return params_new,new_loss, self._t, loss_history,sparse_times
                     return params_new,new_loss, self._t
                 elif loss_break != None:
                     if new_loss < loss_break:
-                        if return_loss_hist:
-                            return params_new,new_loss, self._t, loss_history
+                        if return_loss_hist or return_time_iters:
+                            return params_new,new_loss, self._t, loss_history, sparse_times
                         return params_new,new_loss, self._t
                     else:
                         params = params_new
                 else:
                     params = params_new
             
-            if return_loss_hist:
-                    return params_new,new_loss, self._t, loss_history
+            if return_loss_hist or return_time_iters:
+                    return params_new,new_loss, self._t, loss_history , sparse_times 
             return params_new,new_loss, self._t
 
 class ADAM:
@@ -387,7 +391,7 @@ class ADAM:
         self._t = np.fromstring(t, dtype=int, sep=' ')
 
     def minimize(self, objective_function: Callable[[np.ndarray], float], initial_point: np.ndarray,
-                 gradient_function: Callable[[np.ndarray], float],return_loss_hist:bool,loss_break:int) -> Tuple[np.ndarray, float, int]:
+                 gradient_function: Callable[[np.ndarray], float],return_loss_hist:bool,return_time_iters:bool,loss_break:int) -> Tuple[np.ndarray, float, int]:
         """Run the minimization.
         Args:
             objective_function: A function handle to the objective function.
@@ -398,15 +402,17 @@ class ADAM:
         """
         loss_history = []
         if torch.is_tensor(initial_point):
+            tensor_times = []
             objective_function(initial_point).backward()
             derivative = initial_point.grad
             self._t = 0
-            self._m = torch.zeros(derivative.size())
-            self._v = torch.zeros(derivative.size())      
+            self._m = torch.zeros(derivative.size()).to(initial_point.device)
+            self._v = torch.zeros(derivative.size()).to(initial_point.device)    
             if self._amsgrad:
-                self._v_eff = torch.zeros(derivative.size())    
+                self._v_eff = torch.zeros(derivative.size()).to(initial_point.device)
             params = params_new = initial_point
             while self._t < self._maxiter:
+                start = time.time()
                 if self._t > 0:
                     params = params.detach().requires_grad_()
                     objective_function(params).backward()
@@ -423,31 +429,34 @@ class ADAM:
                     params_new = (params - lr_eff * self._m.flatten()
                                 / (torch.sqrt(self._v_eff.flatten()) + self._noise_factor))
                 new_loss = objective_function(params_new)
-                loss_history.append(new_loss)
+                loss_history.append(new_loss.item())
                 print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                end = time.time() - start 
+                tensor_times.append(end)
                 if self._snapshot_dir:
                     self.save_params(self._snapshot_dir)
                 if torch.linalg.norm(params - params_new) < self._tol:
-                    if return_loss_hist:
-                        return params_new, new_loss, self._t, loss_history
+                    if return_loss_hist or return_time_iters:
+                        return params_new, new_loss, self._t, loss_history, tensor_times
                     return params_new,new_loss, self._t
                 if loss_break != None:
                     if new_loss < loss_break:
-                        if return_loss_hist:
-                            return params_new, new_loss, self._t, loss_history
+                        if return_loss_hist or return_time_iters:
+                            return params_new, new_loss, self._t, loss_history, tensor_times
                         return params_new,new_loss, self._t
                     else:
                         params = params_new
                 else:
                     params = params_new
 
-            if return_loss_hist:
-                        return params_new, new_loss, self._t, loss_history
+            if return_loss_hist or return_time_iters:
+                        return params_new, new_loss, self._t, loss_history, tensor_times
             return params_new, new_loss, self._t
 
 
         else:
             derivative = gradient_function(initial_point)
+            sparse_times = []
             self._t = 0
             self._m = np.zeros(np.shape(derivative))
             self._v = np.zeros(np.shape(derivative))
@@ -456,6 +465,7 @@ class ADAM:
 
             params = params_new = initial_point
             while self._t < self._maxiter:
+                start = time.time()
                 if self._t > 0:
                     derivative = gradient_function(params)
                 self._t += 1
@@ -472,29 +482,32 @@ class ADAM:
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss)
                 print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                end = time.time() - start 
+                sparse_times.append(end)
                 if self._snapshot_dir:
                     self.save_params(self._snapshot_dir)
                 if np.linalg.norm(params - params_new) < self._tol:
-                    if return_loss_hist:
-                        return params_new,new_loss, self._t, loss_history
+                    if return_loss_hist or return_time_iters:
+                        return params_new,new_loss, self._t, loss_history, sparse_times
                     return params_new,new_loss, self._t
                 if loss_break != None:
                     if new_loss < loss_break:
-                        if return_loss_hist:
-                            return params_new,new_loss, self._t, loss_history
+                        if return_loss_hist or return_time_iters:
+                            return params_new,new_loss, self._t, loss_history, sparse_times
                         return params_new,new_loss, self._t
                     else:
                         params = params_new
                 else:
                     params = params_new
 
-            if return_loss_hist:
-                        return params_new,new_loss, self._t, loss_history
+            if return_loss_hist or return_time_iters:
+                        return params_new,new_loss, self._t, loss_history, sparse_times
             return params_new,new_loss, self._t
 
     def optimize(self, num_vars: int, objective_function: Callable[[np.ndarray], float],
                  gradient_function: Optional[Callable[[np.ndarray], float]] = None,
-                 initial_point: Optional[np.ndarray] = None, return_loss_hist = False,loss_break = None 
+                 initial_point: Optional[np.ndarray] = None, return_loss_hist = False,
+                 loss_break = None,return_time_iters=None
                  ) -> Tuple[np.ndarray, float, int]:
         """Perform optimization.
         Args:
@@ -517,8 +530,5 @@ class ADAM:
         else:
             if gradient_function is None:
                 gradient_function = lambda params: gradient_num_diff(params,objective_function, self._eps)
-        if return_loss_hist:
-            point, value, nfev,loss_hist = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
-            return point, value, nfev,loss_hist
-        point, value, nfev = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,loss_break)
-        return point, value, nfev
+        output = self.minimize(objective_function, initial_point, gradient_function,return_loss_hist,return_time_iters,loss_break)
+        return output

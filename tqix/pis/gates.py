@@ -129,12 +129,12 @@ class Gates(object):
         self.check_input_param(params)
         return self.gates("R-",noise=noise,num_processes=processes)
     
-    def GMS(self,theta,phi,gate_type,*args, **kwargs):
+    def GMS(self,theta,phi,*args, **kwargs):
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
-        params = {"theta":theta,"phi":phi,"gate_type":gate_type}
+        params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"GMS",phi=phi,noise=noise,num_processes=processes)
+        return self.gates(type="GMS",phi=phi,noise=noise,num_processes=processes)
 
     def RN(self,theta,phi,*args, **kwargs):
         noise = kwargs.pop('noise', None)
@@ -365,7 +365,7 @@ class Gates(object):
         for ops in ["x","y","z","+","-"]:
             if ops in type:
                 count_ops += 1
-        if "rn" in type:
+        if any([True for gate in ["rn","gms"] if gate in type]):
             count_ops += 2
         if count_ops == 1:
             J = get_J(type)
@@ -391,8 +391,8 @@ class Gates(object):
                     expJ = expm(-1j*(self.theta*J_2 - omega*J_prime))
             elif "gms" in type:
                 phi = kwargs.pop('phi', None)
-                J = get_J(type[0])
-                J_prime = get_J(type[1])
+                J = get_J("x")
+                J_prime = get_J("y")
                 S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
                 if self.use_tensor:
                     expJ = torch.matrix_exp(-1j*self.theta*S_phi.dot(S_phi)/4)
