@@ -243,6 +243,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
     if use_tensor:
         if num_process is None:
             rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor)
+            rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0) @ (rho_0)/((daggx(rho_0) @ (rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0 
             return new_state
@@ -265,12 +266,14 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
             for p in processes:
                 p.join()
             rho_0 = functools.reduce(lambda x,y: x+y,accumulate_states)
+            rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0) @ (rho_0)/((daggx(rho_0) @ (rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0 
             return new_state.to(device)
     else:
         if num_process is None:
-            accumulate_states = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor)
+            rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor)
+            rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0             
             return new_state
@@ -281,6 +284,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
             pool.close()
             pool.join()    
             rho_0 = functools.reduce(lambda x,y: x+y,accumulate_states)
+            rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0             
             return new_state
