@@ -9,8 +9,8 @@ import torch
 
 __all__ =['add_noise','calc_rho_0']
 
-def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor=False,result_queue=None):
-    if use_tensor:
+def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=False,result_queue=None):
+    if use_gpu:
         accumulate_states = rho_0
         for ik in iks:
             i,k = ik
@@ -193,21 +193,21 @@ def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor=
 
         return accumulate_states
 
-def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
+def add_noise(qc,noise=0.3,num_process=None,use_gpu=False,device=None):
     state = qc.state
     d_in = shapex(state)[0]
     N_in = qc.N
     d_dicke = get_dim(N_in)
 
     if d_in != d_dicke:
-        if use_tensor:
+        if use_gpu:
             state = torch.nn.functional.pad(state,(0,d_dicke-d_in,0,d_dicke-d_in)) 
         else:
             state = lil_matrix(np.pad(state.toarray(),((0,d_dicke-d_in),(0,d_dicke-d_in))))
     new_Nds = get_Nds(shapex(state)[0])
 
     assert N_in == new_Nds, "not full block"
-    if use_tensor:
+    if use_gpu:
         non_zero_arrays = state.nonzero(as_tuple=True)
         iks = list(zip(non_zero_arrays[0].detach().cpu().tolist(),non_zero_arrays[1].detach().cpu().tolist()))
     else:
@@ -215,7 +215,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
         iks = list(zip(non_zero_arrays[0],non_zero_arrays[1]))
     
     jmm1,all_iks  = get_jmm1_idx(N_in)
-    if use_tensor:
+    if use_gpu:
         rho_0 = torch.zeros(d_dicke, d_dicke).type(torch.complex128).to(device)
         if num_process is not None:
             rho = state.detach().cpu()
@@ -235,14 +235,14 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
         for i in range(num_process):    
             begin_idx = round(len_iks*i/num_process)
             end_idx = round(len_iks*(i+1)/num_process)
-            if use_tensor:
-                run_arguments.append((rho_0.detach().cpu(),iks[begin_idx:end_idx],jmm1,state.detach().cpu(),all_iks,j_min,j_max,N_in,d_dicke,use_tensor))
+            if use_gpu:
+                run_arguments.append((rho_0.detach().cpu(),iks[begin_idx:end_idx],jmm1,state.detach().cpu(),all_iks,j_min,j_max,N_in,d_dicke,use_gpu))
             else:
                 run_arguments.append((rho_0,iks[begin_idx:end_idx],jmm1,state,all_iks,j_min,j_max,N_in,d_dicke))
 
-    if use_tensor:
+    if use_gpu:
         if num_process is None:
-            rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor)
+            rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu)
             rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0) @ (rho_0)/((daggx(rho_0) @ (rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0 
@@ -272,7 +272,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_tensor=False,device=None):
             return new_state.to(device)
     else:
         if num_process is None:
-            rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_tensor)
+            rho_0 = calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu)
             rho_0 = 4/(3*N_in)*rho_0
             normalized_rho_0 = daggx(rho_0).dot(rho_0)/((daggx(rho_0).dot(rho_0)).diagonal().sum())
             new_state = (1-noise)*rho + noise*normalized_rho_0             

@@ -22,15 +22,15 @@ def find_mean_xi_r(noise,gate=""):
       min_xi_r = np.inf 
       min_theta = None
       for theta in angles:
-            qc = circuit(N)
+            qc = circuit(N,num_process=25)
             qc.RN(np.pi/2,0)
             start = time.time()
             if gate=="OAT":
-                  qc.OAT(theta,"Z",noise=noise,num_processes=25)
+                  qc.OAT(theta,"Z",noise=noise)
             elif gate == "TNT":
-                  qc.TNT(theta,"ZX",noise=noise,num_processes=25)
+                  qc.TNT(theta,"ZX",noise=noise)
             elif gate == "TAT":
-                  qc.TAT(theta,"ZY",noise=noise,num_processes=25)
+                  qc.TAT(theta,"ZY",noise=noise)
             xi_2_r = np.real(get_xi_2_R(qc))
             end = time.time() - start
             print(end)
@@ -43,21 +43,21 @@ def find_mean_xi_r(noise,gate=""):
 
       print("noise,xi_2_r,theta:",noise,min_xi_r,min_theta)
 
-find_mean_xi_r(None,gate="OAT")
+# find_mean_xi_r(None,gate="OAT")
 find_mean_xi_r(0.05,gate="OAT")
-find_mean_xi_r(0.1,gate="OAT")
-find_mean_xi_r(0.15,gate="OAT")
-find_mean_xi_r(0.2,gate="OAT")
+# find_mean_xi_r(0.1,gate="OAT")
+# find_mean_xi_r(0.15,gate="OAT")
+# find_mean_xi_r(0.2,gate="OAT")
 
-find_mean_xi_r(None,gate="TNT")
-find_mean_xi_r(0.05,gate="TNT")
-find_mean_xi_r(0.1,gate="TNT")
-find_mean_xi_r(0.15,gate="TNT")
-find_mean_xi_r(0.2,gate="TNT")
+# find_mean_xi_r(None,gate="TNT")
+# find_mean_xi_r(0.05,gate="TNT")
+# find_mean_xi_r(0.1,gate="TNT")
+# find_mean_xi_r(0.15,gate="TNT")
+# find_mean_xi_r(0.2,gate="TNT")
 
-find_mean_xi_r(None,gate="TAT")
-find_mean_xi_r(0.05,gate="TAT")
-find_mean_xi_r(0.1,gate="TAT")
-find_mean_xi_r(0.15,gate="TAT")
-find_mean_xi_r(0.2,gate="TAT")
+# find_mean_xi_r(None,gate="TAT")
+# find_mean_xi_r(0.05,gate="TAT")
+# find_mean_xi_r(0.1,gate="TAT")
+# find_mean_xi_r(0.15,gate="TAT")
+# find_mean_xi_r(0.2,gate="TAT")
 

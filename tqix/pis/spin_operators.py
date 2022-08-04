@@ -4,9 +4,9 @@ import torch
 
 __all__ = ['Sx','Sy','Sz','S_plus','S_minus','S_2']
 
-def Sx(S,use_tensor = False,device='cuda'):
+def Sx(S,use_gpu = False,device='cuda'):
     dim = int(2*S+1)
-    if use_tensor:
+    if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
         m_ind,m_prime_ind = torch.meshgrid(torch.arange(dim).to(device), torch.arange(dim).to(device),indexing='ij')
         m_prime_ind_plus = m_prime_ind+1
@@ -25,9 +25,9 @@ def Sx(S,use_tensor = False,device='cuda'):
         opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
 
-def Sy(S,use_tensor = False,device='cuda'):
+def Sy(S,use_gpu = False,device='cuda'):
     dim = int(2*S+1)
-    if use_tensor:
+    if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
         m_ind,m_prime_ind = torch.meshgrid(torch.arange(dim).to(device), torch.arange(dim).to(device),indexing='ij')
         m_prime_ind_plus = m_prime_ind+1
@@ -50,9 +50,9 @@ def Sy(S,use_tensor = False,device='cuda'):
         opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
 
-def Sz(S,use_tensor = False,device='cuda'):
+def Sz(S,use_gpu = False,device='cuda'):
     dim = int(2*S+1)
-    if use_tensor:
+    if use_gpu:
         m,_ = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
         m_ind,m_prime_ind = torch.meshgrid(torch.arange(dim).to(device), torch.arange(dim).to(device), indexing='ij')
         kron_delta = (m_ind == m_prime_ind).type(torch.int64) 
@@ -71,9 +71,9 @@ def Sz(S,use_tensor = False,device='cuda'):
         opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
 
-def S_minus(S,use_tensor = False,device='cuda'):
+def S_minus(S,use_gpu = False,device='cuda'):
     dim = int(2*S+1)
-    if use_tensor:
+    if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
         m_ind,m_prime_ind = torch.meshgrid(torch.arange(dim).to(device), torch.arange(dim).to(device), indexing='ij')
         m_prime_ind_plus = m_prime_ind+1
@@ -90,9 +90,9 @@ def S_minus(S,use_tensor = False,device='cuda'):
         opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
 
-def S_plus(S,use_tensor = False,device='cuda'):
+def S_plus(S,use_gpu = False,device='cuda'):
     dim = int(2*S+1)
-    if use_tensor:
+    if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
         m_ind,m_prime_ind = torch.meshgrid(torch.arange(dim).to(device), torch.arange(dim).to(device), indexing='ij')
         m_ind_plus = m_ind+1
@@ -117,6 +117,3 @@ def S_2(S):
     opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
  
-if __name__ == '__main__':
-    print(Sz(3,use_tensor = False,device='cuda').toarray())
-    print(Sz(3,use_tensor = True,device='cuda'))
