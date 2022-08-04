@@ -110,7 +110,7 @@ class GD:
         num_layers = len(self.route)-1 
         feature_map = self.route[0][0]
         if torch.is_tensor(params):
-            qc = circuit(self.N,use_tensor=True,device=params.device)
+            qc = circuit(self.N,use_gpu=True,device=params.device)
             if feature_map == "RN2":
                 qc.RN(np.pi/2,0) 
             gs = []
@@ -209,7 +209,7 @@ class GD:
                     params_new = params - self.step_size * derivative
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss.item())               
-                print("derivative,params_new,new_loss:",derivative,params_new,new_loss)
+                # print("derivative,params_new,new_loss:",derivative,params_new,new_loss)
                 end = time.time()-start
                 tensor_times.append(end)
                 if torch.linalg.norm(params - params_new) < self._tol:
@@ -246,7 +246,7 @@ class GD:
                     params_new = params - self.step_size * derivative
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss)
-                print("derivative,params,loss:",derivative,params_new,new_loss)
+                # print("derivative,params,loss:",derivative,params_new,new_loss)
                 end = time.time() - start 
                 sparse_times.append(end)
                 if np.linalg.norm(params - params_new) < self._tol:
@@ -430,7 +430,7 @@ class ADAM:
                                 / (torch.sqrt(self._v_eff.flatten()) + self._noise_factor))
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss.item())
-                print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                # print("derivative,params,new_loss:",derivative,params_new,new_loss)
                 end = time.time() - start 
                 tensor_times.append(end)
                 if self._snapshot_dir:
@@ -481,7 +481,7 @@ class ADAM:
                                 / (np.sqrt(self._v_eff.flatten()) + self._noise_factor))
                 new_loss = objective_function(params_new)
                 loss_history.append(new_loss)
-                print("derivative,params,new_loss:",derivative,params_new,new_loss)
+                # print("derivative,params,new_loss:",derivative,params_new,new_loss)
                 end = time.time() - start 
                 sparse_times.append(end)
                 if self._snapshot_dir:

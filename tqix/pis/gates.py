@@ -173,26 +173,26 @@ class Gates(object):
 
         if d_in != d_dicke:
             if "2" in type:
-                if self.use_tensor:
-                    J = S(N_in/2,self.use_tensor,self.device).mm(S(N_in/2,self.use_tensor,self.device))
+                if self.use_gpu:
+                    J = S(N_in/2,self.use_gpu,self.device).mm(S(N_in/2,self.use_gpu,self.device))
                 else:
                     J = S(N_in/2).dot(S(N_in/2))
             else:
-                J = S(N_in/2,self.use_tensor,self.device)
+                J = S(N_in/2,self.use_gpu,self.device)
         else:
             j_array = get_jarray(N_in)[::-1]
             blocks = []
             for j in j_array:
-                if self.use_tensor:
-                    blocks.append(S(j,self.use_tensor,self.device))
+                if self.use_gpu:
+                    blocks.append(S(j,self.use_gpu,self.device))
                 else:
                     blocks.append(S(j))
-            if not self.use_tensor:
+            if not self.use_gpu:
                 J = block_diag(blocks,format="csc")
             else:
                 J = torch.block_diag(*blocks)
             if "2" in type:
-                if self.use_tensor:
+                if self.use_gpu:
                     J = J.mm(J)
                 else:
                     J = J.dot(J)     
@@ -242,7 +242,7 @@ class Gates(object):
         state = self.state
         observable = kwargs.pop('observable', None)
         if observable is not None:
-            if self.use_tensor:
+            if self.use_gpu:
                 return observable.mm(state).diagonal().sum()
             return observable.dot(state).diagonal().sum()
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
@@ -262,7 +262,7 @@ class Gates(object):
         if "oat'" in type:
             J = get_J(type[4]+'2')
             if '2' in type:
-                if self.use_tensor:
+                if self.use_gpu:
                     J = J.mm(J)
                 else:
                     J = J.dot(J)
@@ -271,7 +271,7 @@ class Gates(object):
             J_prime = get_J(type[5])
             J = (J_2 - J_prime*N_in/2)
             if '2' in type:
-                if self.use_tensor:
+                if self.use_gpu:
                     J = J.mm(J)
                 else:
                     J = J.dot(J)
@@ -280,7 +280,7 @@ class Gates(object):
             J_2_prime = get_J(type[5]+"2")
             J = (J_2-J_2_prime)
             if '2' in type:
-                if self.use_tensor:
+                if self.use_gpu:
                     J = J.mm(J)
                 else:
                     J = J.dot(J)
@@ -296,7 +296,7 @@ class Gates(object):
                     if "cov" in type or "n1n2_minus" in type or "n1n2_plus" in type:
                         n1 = kwargs.pop('n1', None)
                         n2 = kwargs.pop('n2', None)
-                        if self.use_tensor:
+                        if self.use_gpu:
                             list_J_1 = ([get_J(type_J)*(n1[order[type_J]]) for type_J in "xyz"])
                             list_J_2 = ([get_J(type_J)*(n2[order[type_J]]) for type_J in "xyz"])
                         else:
@@ -305,12 +305,12 @@ class Gates(object):
                         J_1 = reduce(lambda x,y:x+y,list_J_1)
                         J_2 = reduce(lambda x,y:x+y,list_J_2)
                         if "cov" in type:
-                            if self.use_tensor:
+                            if self.use_gpu:
                                 J = J_1.mm(J_2) + J_2.mm(J_1)
                             else:
                                 J = J_1.dot(J_2) + J_2.dot(J_1)
                         elif "n1n2_minus" in type:
-                            if self.use_tensor:
+                            if self.use_gpu:
                                 J_1 = J_1.mm(J_1)
                                 J_2 = J_2.mm(J_2)
                             else:
@@ -318,7 +318,7 @@ class Gates(object):
                                 J_2 = J_2.dot(J_2)
                             J = J_1 - J_2
                         elif "n1n2_plus" in type:
-                            if self.use_tensor:
+                            if self.use_gpu:
                                 J_1 = J_1.mm(J_1)
                                 J_2 = J_2.mm(J_2)
                             else:
@@ -326,20 +326,20 @@ class Gates(object):
                                 J_2 = J_2.dot(J_2)
                             J = J_1 + J_2
                     else:
-                        if self.use_tensor:
+                        if self.use_gpu:
                             list_J = ([get_J(type_J)*(n[order[type_J]]) for type_J in type if type_J != "2"])
                         else:
                             list_J = ([get_J(type_J).dot(n[order[type_J]]) for type_J in type if type_J != "2"])
                         J = reduce(lambda x,y:x+y,list_J)
                         if "2" in type:
-                            if self.use_tensor:
+                            if self.use_gpu:
                                 J = J.mm(J)
                             else:
                                 J = J.dot(J)
                 elif "theta" in type:
                     J = np.cos(self.theta)*get_J("y")+np.sin(self.theta)*get_J("z")
                     if "2" in type:
-                        if self.use_tensor:
+                        if self.use_gpu:
                             J = J.mm(J)
                         else:
                             J = J.dot(J)
@@ -349,7 +349,7 @@ class Gates(object):
                     elif "2" in type:
                         list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
                     J = reduce(lambda x,y:x+y,list_J)
-        if self.use_tensor:
+        if self.use_gpu:
             return (J.type(torch.complex128) @ state.type(torch.complex128)).diagonal().sum()
         else:
             return J.dot(state).diagonal().sum()
@@ -369,7 +369,7 @@ class Gates(object):
             count_ops += 2
         if count_ops == 1:
             J = get_J(type)
-            if self.use_tensor:
+            if self.use_gpu:
                 expJ = torch.matrix_exp(-1j*self.theta*J)
             else:
                 expJ = expm(-1j*self.theta*J)
@@ -377,7 +377,7 @@ class Gates(object):
             if "tat" in type:
                 J_2 = get_J(type[0]+"2")
                 J_2_prime = get_J(type[1]+"2")
-                if self.use_tensor:
+                if self.use_gpu:
                     expJ = torch.matrix_exp(-1j*self.theta*(J_2-J_2_prime))
                 else:
                     expJ = expm(-1j*self.theta*(J_2-J_2_prime))
@@ -385,7 +385,7 @@ class Gates(object):
                 J_2 = get_J(type[0]+"2")
                 J_prime = get_J(type[1])
                 omega = kwargs.pop('omega', None)
-                if self.use_tensor:
+                if self.use_gpu:
                     expJ = torch.matrix_exp(-1j*(self.theta*J_2 - omega*J_prime))
                 else:
                     expJ = expm(-1j*(self.theta*J_2 - omega*J_prime))
@@ -394,7 +394,7 @@ class Gates(object):
                 J = get_J("x")
                 J_prime = get_J("y")
                 S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
-                if self.use_tensor:
+                if self.use_gpu:
                     expJ = torch.matrix_exp(-1j*self.theta*S_phi.dot(S_phi)/4)
                 else:
                     expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
@@ -402,13 +402,13 @@ class Gates(object):
                 phi = kwargs.pop('phi', None)
                 J = get_J("x")
                 J_prime = get_J("y")
-                if self.use_tensor:
+                if self.use_gpu:
                     expJ = torch.matrix_exp(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
                 else:
                     expJ = expm(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
 
         expJ_conj = daggx(expJ)
-        if self.use_tensor:
+        if self.use_gpu:
             new_state = expJ.type(torch.complex128) @ self.state.type(torch.complex128) @ expJ_conj.type(torch.complex128)
         else:
             new_state = expJ.dot(self.state).dot(expJ_conj)
@@ -417,22 +417,31 @@ class Gates(object):
         noise = kwargs.pop('noise', None)
         
         if noise is not None:
-            if not self.use_tensor:
+            if not self.use_gpu:
                 if self.num_process is not None:
                     new_state = add_noise(self,noise,num_process=self.num_process)
                 else:
                     new_state = add_noise(self,noise)
             else:
                 if self.num_process is not None:
-                    new_state = add_noise(self,noise,num_process=self.num_process,use_tensor=self.use_tensor,device=self.device)
+                    new_state = add_noise(self,noise,num_process=self.num_process,use_gpu=self.use_gpu,device=self.device)
                 else:
-                    new_state = add_noise(self,noise,use_tensor=self.use_tensor,device=self.device)
+                    new_state = add_noise(self,noise,use_gpu=self.use_gpu,device=self.device)
             self.state = new_state
 
         return self
     
     def measure(self,num_shots = None):
-        t_prob = np.real(csr_matrix(self.state).diagonal())
+        state = self.state 
+        device = self.state.device
+        return_tensor = False
+        if torch.is_tensor(state):
+            if state.is_cuda:
+                state = state.detach().cpu().numpy()
+            else:
+                state = state.numpy()
+            return_tensor = True 
+        t_prob = np.real(csr_matrix(state).diagonal())
         result = np.zeros_like(t_prob)
         mask_zeros = t_prob != 0
         for _ in range(num_shots):    
@@ -443,12 +452,6 @@ class Gates(object):
         result[-1] = 1 - np.sum(result[:-1])
         if result[-1] < 0:
             result[-1] = 0
+        if return_tensor:
+            return torch.tensor(result).to(device)
         return result   
-
-if __name__ == '__main__':
-    N = 3
-    qc = circuit(N,False,'cuda')
-    qc.OAT(0.05,"x")
-    print(qc.state)
-    print(np.real(get_xi_2_S(qc,use_tensor=False)))
-    print(np.real(get_xi_2_R(qc,use_tensor=False)))

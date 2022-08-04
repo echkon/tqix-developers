@@ -10,13 +10,13 @@ import pickle
 N=100
 loss_dict = {}
 
-def cost_function(theta,use_tensor=False):
-    qc = circuit(N,use_tensor=use_tensor)
+def cost_function(theta,use_gpu=False):
+    qc = circuit(N,use_gpu=use_gpu)
     qc.RN(np.pi/2,0)
     qc.OAT(theta[0],"Z") 
     qc.TNT(theta[1],omega=theta[1],gate_type="ZX")
     qc.TAT(theta[2],"ZY")
-    if use_tensor:
+    if use_gpu:
         loss = torch.real(get_xi_2_S(qc))
     else:
         loss = np.real(get_xi_2_S(qc))
@@ -30,23 +30,25 @@ def sparse(optimizer,loss_dict,mode):
     init_params = [0.00195902, 0.14166777, 0.01656466]
     opt_params, loss,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
     loss_dict[mode] = loss_hist
-    return loss_dict,time_iters
+    return loss_dict,time_iters,opt_params
 #tensor
 def tensor(optimizer,loss_dict,mode):
-    objective_function = lambda params: cost_function(params,use_tensor=True) 
+    objective_function = lambda params: cost_function(params,use_gpu=True) 
     init_params = torch.tensor([0.00195902, 0.14166777, 0.01656466]).to('cuda').requires_grad_()
     opt_params, loss,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
     loss_dict[mode] = loss_hist
     return loss_dict,time_iters
 
-optimizer = GD(lr=0.1,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
-loss_dict,_ = sparse(optimizer,loss_dict,"sparse_qng")
-print(loss_dict)
-# optimizer = GD(lr=0.03,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
-# loss_dict,_ = tensor(optimizer,loss_dict,"tensor_qng")
+# optimizer = GD(lr=0.1,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
+# loss_dict,_,spatse_qng_opt_params = sparse(optimizer,loss_dict,"sparse_qng")
+# print("sparse_qng_params:",spatse_qng_opt_params)
+optimizer = GD(lr=0.03,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
+loss_dict,_ = tensor(optimizer,loss_dict,"tensor_qng")
 
 # optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
-# loss_dict,_ = sparse(optimizer,loss_dict,"sparse_gd")
+# loss_dict,_,spatse_gd_opt_params = sparse(optimizer,loss_dict,"sparse_gd")
+# print("spatse_gd_opt_params:",spatse_gd_opt_params)
+
 # optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
 # loss_dict,_ = tensor(optimizer,loss_dict,"tensor_gd")
 
@@ -57,8 +59,9 @@ print(loss_dict)
 # optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=False,maxiter=200)
 # loss_dict,tensor_times = tensor(optimizer,loss_dict,"tensor_adam_non_amsgrad")
 
-# optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=True,maxiter=200)
-# loss_dict,_ = sparse(optimizer,loss_dict,"sparse_adam_amsgrad")
+optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=True,maxiter=200)
+loss_dict,_,spatse_adam_opt_params = sparse(optimizer,loss_dict,"sparse_adam_amsgrad")
+print("spatse_adam_opt_params:",spatse_adam_opt_params)
 # optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=True,maxiter=200)
 # loss_dict,_ = tensor(optimizer,loss_dict,"tensor_adam_amsgrad")
 
@@ -67,8 +70,8 @@ print(loss_dict)
 # print("losses:",loss_dict)
 # print("time:",time_results)
 
-# with open('vqa_loss_data.pickle', 'wb') as handle:
-#     pickle.dump(loss_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+with open('vqa_loss_data.pickle', 'wb') as handle:
+    pickle.dump(loss_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 # with open('vqa_time_data.pickle', 'wb') as handle:
 #     pickle.dump(time_results, handle, protocol=pickle.HIGHEST_PROTOCOL)
 

@@ -12,8 +12,8 @@ def get_xi_2_H(alpha,beta,gamma,qc):
     return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
 def get_xi_2_S(qc,return_n0=False):
-    use_tensor = qc.use_tensor
-    if use_tensor:
+    use_gpu = qc.use_gpu
+    if use_gpu:
         N = qc.N
         mean_x = qc.expval(type="x")
         mean_y = qc.expval(type="y")
@@ -89,14 +89,14 @@ def get_xi_2_S(qc,return_n0=False):
                 return min(xi_2_S_1,xi_2_S_2)
 
 def get_xi_2_R(qc):
-    use_tensor = qc.use_tensor
-    if use_tensor:
-        n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_tensor=True)
+    use_gpu = qc.use_gpu
+    if use_gpu:
+        n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_gpu=True)
     else:
         n0,xi_2_S = get_xi_2_S(qc,return_n0=True)
     N = qc.N
     mean_J = qc.expval(type="xyz",use_vector=True,n=n0)
-    if use_tensor:
+    if use_gpu:
         return (N**2/(4*torch.abs(mean_J)**2))*xi_2_S
     return (N**2/(4*np.abs(mean_J)**2))*xi_2_S
 
