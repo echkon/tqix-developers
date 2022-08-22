@@ -395,7 +395,7 @@ class Gates(object):
                 J_prime = get_J("y")
                 S_phi = 2*(J*np.cos(phi)+J_prime*np.sin(phi))
                 if self.use_gpu:
-                    expJ = torch.matrix_exp(-1j*self.theta*S_phi.dot(S_phi)/4)
+                    expJ = torch.matrix_exp(-1j*self.theta*(S_phi@S_phi)/4)
                 else:
                     expJ = expm(-1j*self.theta*S_phi.dot(S_phi)/4)
             elif "rn" in type:

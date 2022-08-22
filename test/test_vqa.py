@@ -2,13 +2,8 @@ from tqix.pis import *
 from tqix import *
 import numpy as np
 from matplotlib import pyplot as plt
-from torch.autograd import Variable
-from tqix.pis.optimizers import ADAM
 import torch 
-import pickle 
-
-N=100
-loss_dict = {}
+import numpy as np 
 
 def cost_function(theta,use_gpu=False):
     qc = circuit(N,use_gpu=use_gpu)
@@ -22,69 +17,65 @@ def cost_function(theta,use_gpu=False):
         loss = np.real(get_xi_2_S(qc))
     return  loss
 
-route = (("RN2",),("OAT","Z"),("TNT","ZX"),("TAT","ZY"))
+N=100 #number of qubits
+route = (("RN2",),("OAT","Z"),("TNT","ZX"),("TAT","ZY")) #define layers for QNG algorithm
+loss_dict = {}
+init_params = [0.00195902, 0.14166777, 0.01656466] #random init parameters for circuit
 
-#sparse
+#function to optimize circuit of sparse array
 def sparse(optimizer,loss_dict,mode):
     objective_function = lambda params: cost_function(params) 
-    init_params = [0.00195902, 0.14166777, 0.01656466]
-    opt_params, loss,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
-    loss_dict[mode] = loss_hist
-    return loss_dict,time_iters,opt_params
-#tensor
-def tensor(optimizer,loss_dict,mode):
-    objective_function = lambda params: cost_function(params,use_gpu=True) 
-    init_params = torch.tensor([0.00195902, 0.14166777, 0.01656466]).to('cuda').requires_grad_()
-    opt_params, loss,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
+    _,_,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
     loss_dict[mode] = loss_hist
     return loss_dict,time_iters
 
-# optimizer = GD(lr=0.1,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
-# loss_dict,_,spatse_qng_opt_params = sparse(optimizer,loss_dict,"sparse_qng")
-# print("sparse_qng_params:",spatse_qng_opt_params)
+#function to optimize circuit of tensor
+def tensor(optimizer,loss_dict,mode):
+    objective_function = lambda params: cost_function(params,use_gpu=True) 
+    init_params = torch.tensor(init_params).to('cuda').requires_grad_()
+    _, _,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
+    loss_dict[mode] = loss_hist
+    return loss_dict,time_iters
+
+#QNG
 optimizer = GD(lr=0.03,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
 loss_dict,_ = tensor(optimizer,loss_dict,"tensor_qng")
 
-# optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
-# loss_dict,_,spatse_gd_opt_params = sparse(optimizer,loss_dict,"sparse_gd")
-# print("spatse_gd_opt_params:",spatse_gd_opt_params)
+#GD
+optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
+loss_dict,_ = tensor(optimizer,loss_dict,"tensor_gd")
 
-# optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
-# loss_dict,_ = tensor(optimizer,loss_dict,"tensor_gd")
+#ADAM 
+optimizer = ADAM(lr=0.01,eps=1e-10,amsgrad=False,maxiter=200)
+loss_dict,sparse_times = sparse(optimizer,loss_dict,"sparse_adam")
 
-# optimizer = ADAM(lr=0.01,eps=1e-10,amsgrad=False,maxiter=200)
-# loss_dict,sparse_times = sparse(optimizer,loss_dict,"sparse_adam_non_amsgrad")
-# print(loss_dict)
+optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=False,maxiter=200)
+loss_dict,tensor_times = tensor(optimizer,loss_dict,"tensor_adam")
 
-# optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=False,maxiter=200)
-# loss_dict,tensor_times = tensor(optimizer,loss_dict,"tensor_adam_non_amsgrad")
-
-optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=True,maxiter=200)
-loss_dict,_,spatse_adam_opt_params = sparse(optimizer,loss_dict,"sparse_adam_amsgrad")
-print("spatse_adam_opt_params:",spatse_adam_opt_params)
-# optimizer = ADAM(lr=0.001,eps=1e-10,amsgrad=True,maxiter=200)
-# loss_dict,_ = tensor(optimizer,loss_dict,"tensor_adam_amsgrad")
-
-# time_results={"sparse_time":sparse_times,"tensor_time":tensor_times}
-
-# print("losses:",loss_dict)
-# print("time:",time_results)
-
-with open('vqa_loss_data.pickle', 'wb') as handle:
-    pickle.dump(loss_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-# with open('vqa_time_data.pickle', 'wb') as handle:
-#     pickle.dump(time_results, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#plot loss values with respect to iterations
+ax = plt.gca() 
+ax.plot(range(len(loss_dict["tensor_qng"] )),loss_dict["tensor_qng"] ,'c-*',label=r'$QNG;\eta=0.1$')
+ax.plot(range(len(loss_dict["tensor_gd"])),loss_dict["tensor_gd"],'y-^',label=r'$GD;\eta=0.03$')
+ax.plot(range(len(loss_dict["tensor_adam"])),loss_dict["tensor_adam"],'g-o',label=r'$Adam;\eta=0.01$')
 
 
+ax.set_xlabel("iterations")
+ax.set_ylabel(r"$C(\theta)$")
+ax.set_xlim(0,130)
+ax.set_ylim(0,15)
+lgd = ax.legend(loc='center left', bbox_to_anchor=(1, 0.25))
+plt.savefig("./loss_bm.eps", bbox_extra_artists=(lgd,), bbox_inches='tight')
 
+#for compare running tume between using tensor and sparse array structure, we plot ADAM as an example
+cumsum_vqa_time_res_sparse = np.cumsum(loss_dict['sparse_adam'])
+cumsum_vqa_time_res_tensor = np.cumsum(loss_dict['tensor_adam'])
+from matplotlib import pyplot as plt
+ax = plt.gca() 
+ax.plot(range(len(cumsum_vqa_time_res_sparse)),cumsum_vqa_time_res_sparse,'g--',label=r'$CPU$')
+ax.plot(range(len(cumsum_vqa_time_res_tensor)),cumsum_vqa_time_res_tensor,'r-',label=r'$GPU$')
 
-
-
-# print(opt_params,loss)
-# plt.figure()
-# ax = plt.gca() 
-# ax.plot(list(range(len(loss_hist))),loss_hist)
-# ax.set_xlabel("iteration")
-# ax.set_ylabel("loss")
-# plt.show()
-# plt.savefig("adam_loss.png")
+ax.set_xlabel("iterations")
+ax.set_ylabel("time(s)")
+ax.set_ylim(0,100)
+lgd = ax.legend(loc='upper right')
+plt.savefig("./timetensorsparse.eps", bbox_extra_artists=(lgd,), bbox_inches='tight')
