@@ -16,36 +16,52 @@ from tqix.qx import *
 from tqix.pis.util import *
 from scipy.sparse import csc_matrix
 from tqix.pis import *
-
+import torch 
 __all__ =['circuit','sobj',
           'dbx','dicke_ghz']
 
-def circuit(N,*args):
+def circuit(N,**kwargs):
     """create a quantum circuit
 
     Parameters:
     ----------
     N: particles number
-    *args: initial state
-
     Return:
     -------
     init_state    
     """
-    if not args:
+    use_gpu = kwargs.pop('use_gpu', False)
+    init_state = kwargs.pop('initial_state', None)
+    num_process = kwargs.pop('num_process', None)
+    if use_gpu:
+        if torch.cuda.is_available():
+            device = "cuda"
+        else:
+            print("your machine does not utilize gpu, the program will use torch tensor type on cpu")
+            device = "cpu"
+    else:
+        device = None
+
+    if not init_state:
        j = N/2
        psi = dbx(j,-j) # all spins down
-       return sobj(operx(psi).tolist(),N) 
+       if use_gpu:
+            psi = psi.todense()
+            return sobj(torch.tensor(operx(psi)).to(device),N,use_gpu=use_gpu,device=device,num_process=num_process)
+       return sobj(operx(psi).tolist(),N,use_gpu=use_gpu,device=device,num_process=num_process) 
     else:
-       return sobj(operx(args[0].tolist()),N)
+       return sobj(init_state,N,use_gpu=use_gpu,device=device,num_process=num_process)
 
 class sobj(Gates):
     # to crate a spin-object
-    def __init__(self,state,N):
+    def __init__(self,state,N,use_gpu=None,device=None,num_process=None):
         super().__init__()
         self.state = state
         self.N = N
-       
+        self.use_gpu = use_gpu
+        self.device = device
+        self.num_process = num_process 
+        
     def print_state(self):
         state = self.state
         return state
@@ -78,16 +94,3 @@ def dicke_ghz(N):
     e4 = dicke_bx(N,{(j,m1,m1):1})
     
     return csc_matrix(0.5*(e1+e2+e3+e4))
-    
-if __name__ == "__main__":
-    N=3
-    print('test with dicke_ghz state')
-    init_state = dicke_ghz(N)
-    qc = circuit(N,init_state)
-    state = qc.state
-    print(state)
-    print(typex(state))
-
-    print('test gate with dicke_ghz state')
-    qc.RZ(np.pi/3).RY().RZ(np.pi/4)
-    print(qc.state)

@@ -19,7 +19,7 @@ from scipy.sparse import csc_matrix
 __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
            'get_jmin','get_jarray','get_marray',
            'get_vidx','get_midx','get_jmm1_idx','get_mm1_idx_max','get_A',
-           'get_B','get_D','get_Lambda','get_alpha','dicke_bx'
+           'get_B','get_D','get_Lambda','get_alpha','dicke_bx','isclose','dicke_bx1','fit'
             ]
         
 def get_Nds(d):
@@ -216,3 +216,21 @@ def dicke_bx(N, jmm1):
         i,k = ik[key]
         rho[i,k] = jmm1[key]
     return csc_matrix(rho)
+
+def dicke_bx1(N,jmm1,ik,dim):
+    # create a dicke basis follow jmm1
+    # jmm1 as {(j,m,m1):p}
+
+    rho = np.zeros((dim,dim),dtype = complex)
+    for key in jmm1:
+        i,k = ik[key]
+        rho[i,k] = jmm1[key]
+    return csc_matrix(rho)
+
+def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+def fit(objective_function,optimizer,init_params,return_loss_hist=None,loss_break=None,return_time_iters=None):
+    output = optimizer.optimize(len(init_params), objective_function, initial_point=init_params,
+                return_loss_hist=return_loss_hist,loss_break=loss_break,return_time_iters=return_time_iters)
+    return output

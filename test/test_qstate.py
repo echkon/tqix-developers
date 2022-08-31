@@ -20,7 +20,7 @@ import numpy as np
 N = 20 #qubits
 theta=0.4
 phi=0.3
-qc = circuit(N,use_gpu=True)
+qc = circuit(N, use_gpu =True)
 omega = N*theta
 qc.TNT(theta,omega=omega,gate_type="ZX")
 prob = qc.measure(num_shots=1000)
