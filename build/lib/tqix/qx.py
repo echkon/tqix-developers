@@ -24,6 +24,7 @@ import numpy as np
 from random import random
 from tqix.qtool import dotx
 import scipy
+import torch 
 
 def qx(x):
     """ 
@@ -70,6 +71,8 @@ def shapex(x):
     """
     to return the dimention of x
     """
+    if torch.is_tensor(x):
+          x = x.detach().cpu().numpy()
     if scipy.sparse.issparse(x):
           x = x.toarray()
     if isqx(x):
@@ -152,6 +155,8 @@ def transx(x):
     return np.transpose(x)
 
 def daggx(x):
+    if torch.is_tensor(x):
+         return torch.transpose(torch.conj(x),0,1)
     x = conjx(x)
     return transx(x)
 

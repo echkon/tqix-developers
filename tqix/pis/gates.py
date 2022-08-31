@@ -433,7 +433,7 @@ class Gates(object):
     
     def measure(self,num_shots = None):
         state = self.state 
-        device = self.state.device
+        device = self.device
         return_tensor = False
         if torch.is_tensor(state):
             if state.is_cuda:

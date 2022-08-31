@@ -19,6 +19,7 @@ from matplotlib import cm
 from numpy import amax, meshgrid
 import numpy as np
 from tqix.quasi_prob import *
+import os 
 
 def husimi_2d(state,xrange,yrange,N = 100,fname='fig_husimi_2d.eps',
               cmap = 'viridis',alpha = 1.0):
@@ -191,8 +192,8 @@ try:
 except:
     pass
 
-def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
-                   fname = 'fig_husimi_spin_3d.eps',alpha = 1):
+def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',dirname ="",
+                   fname = 'fig_husimi_spin_3d.eps',alpha = 1,view=(120,120),use_axis=False):
     """ to plot Husimi visualization in Bloch sphere
     
     Parameters:
@@ -232,14 +233,23 @@ def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
     ax = fig.gca(projection='3d')
     ax.plot_surface(x, y, z, rstride=1, cstride=1, shade=False,
                     facecolors=cmap(norm(h)),linewidth=0,alpha=alpha)
+    if use_axis:
+        ax.quiver(1,0,0,1,0,0,color = 'navy', alpha = .8, lw = 3) #x arrow
+        ax.text(1.6,0,0.1,"Sx","x")
+        ax.quiver(0,1,0,0,1,0,color = 'navy', alpha = .8, lw = 3)#y arrow
+        ax.text(0,1.6,0.1,"Sy","y")
+        ax.quiver(0,0,1,0,0,1,color = 'navy', alpha = .8, lw = 3)#z arrow
+        ax.text(0.05,0.05,1.6,"Sz","z")
     plt.axis('off')
-
     _printout(fname)
-    # fig.savefig(fname,dpi=50,bbox_inches='tight')
-    plt.show()
+    ax.view_init(view)
+    elev,azim = view
+    ax.view_init(elev=elev, azim=azim)
+    fig.savefig(os.path.join(dirname,fname),dpi=50,bbox_inches='tight')
+    plt.close()
 
 def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
-                   fname = 'fig_wigner_spin_3d.eps',alpha = 1):
+                   fname = 'fig_wigner_spin_3d.eps',alpha = 1,view=(120,120),use_axis=False):
     """ to plot Husimi visualization in Bloch sphere
     
     Parameters:
@@ -281,11 +291,20 @@ def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
     ax = fig.add_subplot(1,1,1, projection='3d')
     ax.plot_surface(x, y, z, rstride=1, cstride=1, shade=False,
                     facecolors=cmap(norm(h)),linewidth=0,alpha=alpha)
+    if use_axis:
+        ax.quiver(1,0,0,1,0,0,color = 'navy', alpha = .8, lw = 3) #x arrow
+        ax.text(1.6,0,0.1,"Sx","x")
+        ax.quiver(0,1,0,0,1,0,color = 'navy', alpha = .8, lw = 3)#y arrow
+        ax.text(0,1.6,0.1,"Sy","y")
+        ax.quiver(0,0,1,0,0,1,color = 'navy', alpha = .8, lw = 3)#z arrow
+        ax.text(0.05,0.05,1.6,"Sz","z")
     plt.axis('off')
-
     _printout(fname)
-    fig.savefig(fname,dpi=50,bbox_inches='tight')
-
+    ax.view_init(view)
+    elev,azim = view
+    ax.view_init(elev=elev, azim=azim)
+    fig.savefig(f"{elev},{azim},{fname}",dpi=50,bbox_inches='tight')
+    plt.show(block=True)
 ###
 def _printout(fname):
     print('***')
