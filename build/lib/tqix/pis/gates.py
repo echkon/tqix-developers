@@ -165,10 +165,10 @@ class Gates(object):
         elif "z" in type:
             S = partial(Sz)
         
-        elif "+" in type:
+        elif "+" or "plus" in type:
             S = partial(S_plus)
         
-        elif "-" in type:
+        elif "-" or "minus" in type:
             S = partial(S_minus)
 
         if d_in != d_dicke:
@@ -249,11 +249,9 @@ class Gates(object):
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         type = type.lower()
         count_ops = 0
-        for ops in ["x","y","z","+","-"]:
+        for ops in ["x","y","z","+","-","j_plus","j_minus"]:
             if ops in type:
                 count_ops += 1
-        if "j" in type:
-                count_ops += 3
         if"cov" in type:
             count_ops += 6
         if "theta" in type or "n1n2_minus" in type or "n1n2_plus" in type:
@@ -344,10 +342,7 @@ class Gates(object):
                         else:
                             J = J.dot(J)
                 else:
-                    if "j" in type and "2" in type:
-                        list_J = ([get_J(type_J+"2") for type_J in "xyz"])
-                    elif "2" in type:
-                        list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2"])
+                    list_J = ([get_J(type_J+"2") for type_J in type if type_J != "2" or type_J != "j"])
                     J = reduce(lambda x,y:x+y,list_J)
         if self.use_gpu:
             return (J.type(torch.complex128) @ state.type(torch.complex128)).diagonal().sum()
