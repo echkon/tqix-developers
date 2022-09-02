@@ -20,11 +20,11 @@ def cost_function(theta,use_gpu=False):
 N=100 #number of qubits
 route = (("RN2",),("OAT","Z"),("TNT","ZX"),("TAT","ZY")) #define layers for QNG algorithm
 loss_dict = {}
-init_params = [0.00195902, 0.14166777, 0.01656466] #random init parameters for circuit
 
 #function to optimize circuit of sparse array
 def sparse(optimizer,loss_dict,mode):
     objective_function = lambda params: cost_function(params) 
+    init_params = [0.00195902, 0.14166777, 0.01656466] #random init parameters for circuit
     _,_,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
     loss_dict[mode] = loss_hist
     return loss_dict,time_iters
@@ -32,6 +32,7 @@ def sparse(optimizer,loss_dict,mode):
 #function to optimize circuit of tensor
 def tensor(optimizer,loss_dict,mode):
     objective_function = lambda params: cost_function(params,use_gpu=True) 
+    init_params = [0.00195902, 0.14166777, 0.01656466] #random init parameters for circuit
     init_params = torch.tensor(init_params).to('cuda').requires_grad_()
     _, _,_,loss_hist,time_iters = fit(objective_function,optimizer,init_params,return_loss_hist=True,return_time_iters = True)
     loss_dict[mode] = loss_hist
@@ -40,7 +41,7 @@ def tensor(optimizer,loss_dict,mode):
 #QNG
 optimizer = GD(lr=0.03,eps=1e-10,maxiter=200,use_qng=True,route=route,tol=1e-19,N=N)
 loss_dict,_ = tensor(optimizer,loss_dict,"tensor_qng")
-
+print(loss_dict)
 #GD
 optimizer = GD(lr=0.0001,eps=1e-10,maxiter=200,tol=1e-19,N=N)
 loss_dict,_ = tensor(optimizer,loss_dict,"tensor_gd")
