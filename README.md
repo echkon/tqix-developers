@@ -54,7 +54,7 @@
 # License
  >>> copyright (c) 2019 and later\
  >>> authors: Le Bin Ho\
- >>> contributors: Kieu Quang Tuan, Nguyen Tan Viet\
+ >>> contributors: Kieu Quang Tuan, Nguyen Tan Viet
 
 # Note for installation
 >>> download source code from our website:
