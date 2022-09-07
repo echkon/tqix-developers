@@ -8,9 +8,9 @@ import os
 from setuptools import setup
 
 # all information about tqix is here
-MAN = 1
+MAN = 2
 SUB = 0
-SUBS= 2
+SUBS= 1
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
 REQUIRES = ['numpy (>=1.8)', 'scipy (>=0.15)', 'cython (>=0.21)','scipy (>=1.7.1)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
