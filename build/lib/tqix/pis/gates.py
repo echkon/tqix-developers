@@ -16,7 +16,6 @@ from functools import partial
 import numpy as np
 import cmath as cm
 import random
-from sympy import csc
 from tqix.qx import *
 from tqix.qtool import dotx
 from tqix.pis.util import *
