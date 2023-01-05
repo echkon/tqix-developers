@@ -13,4 +13,4 @@
 
 # note for installation:
  >>> download source code and run:
- >>> > $sudo pip3 install .
+ > $sudo pip3 install .
