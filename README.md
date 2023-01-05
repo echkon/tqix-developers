@@ -14,5 +14,7 @@
 # note for installation:
  >>> download source code and run:
  >>> ```
- >>> $sudo pip3 install .
+ >>> $ pip3 install .
  >>> ```
+ >>> install from pypi, run:
+ >>> $ pip3 install tqix
