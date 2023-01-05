@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: tqix
-Version: 1.0.2
+Version: 2.0.1
 Summary: A Toolbox for Quantum in X
-Home-page: http://
+Home-page: https://github.com/echkon/tqix-developers
 Author: Binho Le
 Author-email: binho@kindai.ac.jp
 License: GNU

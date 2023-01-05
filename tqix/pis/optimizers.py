@@ -1,11 +1,10 @@
 """The Adam and AMSGRAD optimizers."""
 
-from typing import Optional, Callable, Tuple, List
+from typing import Optional, Callable, Tuple
 import logging
 import os
 import csv
 import numpy as np
-from sklearn.decomposition import sparse_encode
 from tqix.pis import *
 from tqix import * 
 from scipy.sparse import block_diag

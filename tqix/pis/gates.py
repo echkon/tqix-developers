@@ -11,10 +11,8 @@ ________________________________
 """
 
 #from numpy import
-from concurrent.futures import process
 from functools import partial
 import numpy as np
-import cmath as cm
 import random
 from tqix.qx import *
 from tqix.qtool import dotx

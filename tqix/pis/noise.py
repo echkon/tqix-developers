@@ -251,7 +251,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_gpu=False,device=None):
             import torch.multiprocessing as mp
             processes = []
             accumulate_states=[]
-            result_queue = mp.JoinableQueue(1)
+            result_queue = mp.JoinableQueue()
             for rank in range(num_process):
                 arg_list = list(run_arguments[rank])
                 arg_list.append(result_queue)

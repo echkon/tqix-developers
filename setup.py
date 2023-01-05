@@ -7,12 +7,15 @@ import os
 
 from setuptools import setup
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 # all information about tqix is here
-MAN = 1
+MAN = 2
 SUB = 0
-SUBS= 2
+SUBS= 1
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
-REQUIRES = ['numpy (>=1.8)', 'scipy (>=0.15)','scipy (>=1.7.1)']
+REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
 NAME = "tqix"
@@ -21,7 +24,7 @@ AUTHOR_EMAIL = ("binho@kindai.ac.jp")
 LICENSE = "GNU"
 DESCRIPTION = "A Toolbox for Quantum in X"
 KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
-URL = "http://"
+URL = "https://vqisinfo.wixsite.com/tqix/homes"
 PLATFORMS = ["Linux", "Mac OSX", "Unix", "Windows"]
 
 def write_version_py(filename='tqix/version.py'):
@@ -51,6 +54,9 @@ setup(name = NAME,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
       packages=PACKAGES,
+      long_description=long_description,
+      long_description_content_type="text/markdown",
+      python_requires=">=3.6",
 )
 
 
