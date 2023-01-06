@@ -6,7 +6,7 @@ APIs for the rest of tqix will be added later.
 
 Gate methods:
 -----------------
-.. autofunction:: tqix.pis.gates.Gates
+.. autoclass:: tqix.pis.gates.Gates
 .. autofunction:: tqix.pis.gates.Gates.RX
 .. autofunction:: tqix.pis.gates.Gates.get_J
 
