@@ -1,4 +1,4 @@
 Usage
 =====
 
-.. autofunction:: tqix.pis.gates.get_J
+.. autofunction:: tqix.pis.gates.Gates.get_J
