@@ -9,7 +9,25 @@ import torch
 
 __all__ =['add_noise','calc_rho_0']
 
-def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=False,result_queue=None):
+def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=False,result_queue=None):    
+    """_summary_
+
+    Args:
+        rho_0 (ndarray,tensor,sparse): initial rho_0 state
+        iks (List[tuple]): list of i,k indexes 
+        jmm1 (dict): dictionary of i,k keys and j,m,m1 values
+        state (ndarray,tensor,sparse): input state
+        all_iks (dict): dictionary of j,m,m1 keys and i,k values
+        j_min (int): minimum j index
+        j_max (int): maximum j index
+        N_in (int): number of qubits 
+        d_dicke (int): dimension of dicke basis 
+        use_gpu (bool, optional): If use gpu. Defaults to False.
+        result_queue (List, optional): List of queues processed. Defaults to None.
+
+    Returns:
+        accumulate_states : state after being added noise
+    """    
     if use_gpu:
         accumulate_states = rho_0
         for ik in iks:
@@ -194,6 +212,18 @@ def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=Fal
         return accumulate_states
 
 def add_noise(qc,noise=0.3,num_process=None,use_gpu=False,device=None):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object_
+        noise (float, optional): noise ratio to add . Defaults to 0.3.
+        num_process (int, optional): number of process for multi-processing. Defaults to None.
+        use_gpu (bool, optional): If use gpu. Defaults to False.
+        device (str, optional): name of compute device. Defaults to None.
+
+    Returns:
+        new_state: new state after adding noise
+    """    
     state = qc.state
     d_in = shapex(state)[0]
     N_in = qc.N

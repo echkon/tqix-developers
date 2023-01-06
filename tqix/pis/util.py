@@ -23,16 +23,15 @@ __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
             ]
         
 def get_Nds(d):
-    """ to get numper of particle from dimension d
-    
-    Paramater:
-    -------------
-    d: dimension
-    
-    Return:
-    -------------
-    N: number of particle """
-    
+    """_summary_
+    to get numper of particle from dimension d
+
+    Args:
+        d (int): dimension
+
+    Returns:
+        N: number of particle
+    """    
     d4 = d*4
     root = np.sqrt(d4)
     if int(root + 0.5)**2 == d4: #perfect quare number
@@ -41,30 +40,30 @@ def get_Nds(d):
         return int(np.sqrt(1+d4)-2)
         
 def get_dim(N):
-    """ to get dimension from number of particle N
-    Paramater:
-    -------------
-    N: number of particle
-    
-    Return:
-    -------------
-    d: dimension """
+    """_summary_
+    to get dimension from number of particle N
+
+    Args:
+        N (int): number of particle
+
+    Returns:
+        d: dimension 
+    """    
     
     d = (N/2 + 1)**2 - (N % 2)/4
     return int(d)
 
 
 def get_num_block(N):
-    """ to get number of block
-    
-    Paramater:
-    -------------
-    N: number of particle
-    
-    Return:
-    -------------
-    Nbj: Number of block j """
-    
+    """_summary_
+    to get number of block
+
+    Args:
+        N (int): number of particle
+
+    Returns:
+        Nbj: Number of block j
+    """    
     return int(N/2 + 1 -1/2*(N % 2))
     
 def get_array_block(N):
@@ -118,10 +117,27 @@ def get_marray(j):
     return marray
           
 def get_vidx(j,m):
+    """_summary_
+
+    Args:
+        j (int): j index
+        m (int): m index
+
+    Returns:
+        vidx
+    """    
     # to get index in vector state from j,m
     return int(j-m)
 
 def get_mm1_idx_max(N):
+    """_summary_
+
+    Args:
+        N (int): number of qubits
+
+    Returns:
+        [mm1,ik]
+    """    
     # to get mm1 or ik
 
     ik = {}
@@ -138,6 +154,18 @@ def get_mm1_idx_max(N):
 
 
 def get_midx(N,j,m,m1,block):
+    """_summary_
+
+    Args:
+        N (int): number of qubits
+        j (int): j index
+        m (int): m index
+        m1 (int): m1 index
+        block (List): list of blocks
+
+    Returns:
+        (i,k)
+    """    
     # to get index in density matrix
     # ref. qutip
     k = int(j-m1)
@@ -152,6 +180,14 @@ def get_midx(N,j,m,m1,block):
     return (i,k)
     
 def get_jmm1_idx(N):
+    """_summary_
+
+    Args:
+        N (int): number of qubits
+
+    Returns:
+        [jmm1,ik]
+    """    
     # get index i,k of density matrix from j,m,m1
     # and revert j,m,m1 from i,k
     # ref. qutip
@@ -171,6 +207,16 @@ def get_jmm1_idx(N):
     return [jmm1,ik]
 
 def get_A(j,m,type=""):
+    """_summary_
+
+    Args:
+        j (int): j index
+        m (int): m index
+        type (str, optional): type of A. Defaults to "".
+
+    Returns:
+        A_{type}
+    """    
     if type == "+":
         return np.sqrt((j-m)*(j+m+1))
     elif type == "-":
@@ -179,6 +225,16 @@ def get_A(j,m,type=""):
         return m 
 
 def get_B(j,m,type=""):
+    """_summary_
+
+    Args:
+        j (int): j index
+        m (int): m index
+        type (str, optional): type of A. Defaults to "".
+
+    Returns:
+        B_{type}
+    """   
     if type == "+":
         return np.sqrt((j-m)*(j-m-1))
     elif type == "-":
@@ -187,6 +243,16 @@ def get_B(j,m,type=""):
         return np.sqrt((j+m)*(j-m))
 
 def get_D(j,m,type=""):
+    """_summary_
+
+    Args:
+        j (int): j index
+        m (int): m index
+        type (str, optional): type of A. Defaults to "".
+
+    Returns:
+        D_{type}
+    """   
     if type == "+":
         return -np.sqrt((j+m+1)*(j+m+2))
     if type == "-":
@@ -195,6 +261,16 @@ def get_D(j,m,type=""):
         return np.sqrt((j+m+1)*(j-m+1))
 
 def get_Lambda(N,j,type=""):
+    """_summary_
+
+    Args:
+        j (int): j index
+        m (int): m index
+        type (str, optional): type of A. Defaults to "".
+
+    Returns:
+        Lambda_{type}
+    """   
     if type == "a":
         return (N/2+1)/(2*j*(j+1))
     elif type == "b":
@@ -203,9 +279,27 @@ def get_Lambda(N,j,type=""):
         return (N/2-j)/(2*(j+1)*(2*j+1))
 
 def get_alpha(N,j):
+    """_summary_
+
+    Args:
+        N (int): number of qubits
+        j (int): j indexes 
+
+    Returns:
+        alpha
+    """    
     return math.factorial(N)/(math.factorial(N/2-j)*math.factorial(N/2+j))
 
 def dicke_bx(N, jmm1):
+    """_summary_
+
+    Args:
+        N (int): _description_
+        jmm1 (dict): store p value at j,m,m1 indexes
+
+    Returns:
+        new state
+    """    
     # create a dicke basis follow jmm1
     # jmm1 as {(j,m,m1):p}
     
@@ -218,6 +312,17 @@ def dicke_bx(N, jmm1):
     return csc_matrix(rho)
 
 def dicke_bx1(N,jmm1,ik,dim):
+    """_summary_
+
+    Args:
+        N (int): number of qubits
+        jmm1 (dict): stores p value at j,m,m1 indexes 
+        ik (dict): stores i,k indexes wrt j,m,m1
+        dim (int): dimension of rho 
+
+    Returns:
+        new state
+    """    
     # create a dicke basis follow jmm1
     # jmm1 as {(j,m,m1):p}
 
@@ -228,9 +333,33 @@ def dicke_bx1(N,jmm1,ik,dim):
     return csc_matrix(rho)
 
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    """_summary_
+    Check if 2 numbers is closed
+    Args:
+        a (float)
+        b (float)
+        rel_tol (float, optional): Defaults to 1e-09.
+        abs_tol (float, optional): Defaults to 0.0.
+
+    Returns:
+        bool 
+    """    
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 def fit(objective_function,optimizer,init_params,return_loss_hist=None,loss_break=None,return_time_iters=None):
+    """_summary_
+
+    Args:
+        objective_function (func): objetive function to minimize
+        optimizer (func): optimizer function 
+        init_params (List): list of initial parameters
+        return_loss_hist (bool, optional): return history of objective values. Defaults to None.
+        loss_break (bool, optional): early stopping. Defaults to None.
+        return_time_iters (bool, optional): return time each iterations. Defaults to None.
+
+    Returns:
+        output
+    """    
     output = optimizer.optimize(len(init_params), objective_function, initial_point=init_params,
                 return_loss_hist=return_loss_hist,loss_break=loss_break,return_time_iters=return_time_iters)
     return output

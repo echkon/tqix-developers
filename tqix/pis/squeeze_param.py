@@ -6,12 +6,32 @@ import torch
 __all__ = ['get_xi_2_H','get_xi_2_S','get_xi_2_R','get_xi_2_D','get_xi_2_E','get_xi_2_F']
 
 def get_xi_2_H(alpha,beta,gamma,qc):
+    """_summary_
+
+    Args:
+        alpha (str): type of alpha
+        beta (str): type of beta
+        gamma (str): type of gamma
+        qc (Circuit): circuit object 
+
+    Returns:
+        xi_2_H 
+    """    
     var_alpha = qc.var(alpha)
     mean_beta = qc.expval(beta)
     mean_gamma = qc.expval(gamma)
     return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
 def get_xi_2_S(qc,return_n0=False):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object
+        return_n0 (bool, optional): If return n0. Defaults to False.
+
+    Returns:
+        xi_2_S
+    """    
     use_gpu = qc.use_gpu
     if use_gpu:
         N = qc.N
@@ -89,6 +109,14 @@ def get_xi_2_S(qc,return_n0=False):
                 return min(xi_2_S_1,xi_2_S_2)
 
 def get_xi_2_R(qc):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object
+
+    Returns:
+        xi_2_R
+    """    
     use_gpu = qc.use_gpu
     if use_gpu:
         n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_gpu=True)
@@ -101,12 +129,30 @@ def get_xi_2_R(qc):
     return (N**2/(4*np.abs(mean_J)**2))*xi_2_S
 
 def get_xi_2_D(qc,n):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object
+        n (ndarray,tensor): vector n 
+
+    Returns:
+        xi_2_D
+    """    
     N = qc.N
     var = qc.var(type="xyz",use_vector=True,n=n)
     mean = qc.expval(type="xyz",use_vector=True,n=n)   
     return (N*var)/(N**2/4-mean**2)
 
 def get_xi_2_E(qc,n):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object
+        n (ndarray,tensor): vector n 
+
+    Returns:
+        xi_2_E
+    """    
     N = qc.N
     var_Jvec = qc.var(type="xyz",use_vector=True,n=n)
     mean_Jvec = qc.expval(type="xyz",use_vector=True,n=n)
@@ -114,6 +160,17 @@ def get_xi_2_E(qc,n):
     return (N*var_Jvec)/(mean_J_2-N/2-mean_Jvec**2)
 
 def get_xi_2_F(qc,n1,n2,n3):
+    """_summary_
+
+    Args:
+        qc (Circuit): circuit object
+        n1 (ndarray,tensor): vector n1 
+        n2 (ndarray,tensor): vector n2
+        n3 (ndarray,tensor): vector n3
+
+    Returns:
+        xi_2_F
+    """    
     N=qc.N
     var_J_n1 = qc.var(type="xyz",use_vector=True,n=n1)
     mean_J_n2 = qc.expval(type="xyz",use_vector=True,n=n2)

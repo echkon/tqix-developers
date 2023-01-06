@@ -21,15 +21,16 @@ __all__ =['circuit','sobj',
           'dbx','dicke_ghz']
 
 def circuit(N,**kwargs):
-    """create a quantum circuit
-
-    Parameters:
-    ----------
-    N: particles number
-    Return:
-    -------
-    init_state    
     """
+    create a quantum circuit
+
+    Args:
+        N (int): number of qubit
+
+    Returns:
+        init state
+    """    
+
     use_gpu = kwargs.pop('use_gpu', False)
     init_state = kwargs.pop('initial_state', None)
     num_process = kwargs.pop('num_process', None)
@@ -55,6 +56,15 @@ def circuit(N,**kwargs):
 class sobj(Gates):
     # to crate a spin-object
     def __init__(self,state,N,use_gpu=None,device=None,num_process=None):
+        """_summary_
+        class stores state of collective spins 
+        Args:
+            state (ndarray): can be in scipy sparse array or torch tensor
+            N (int): number of particles
+            use_gpu (boolean): option to use gpu.
+            device (str): name of device.
+            num_process (int): number of processes for adding noise.
+        """       
         super().__init__()
         self.state = state
         self.N = N
@@ -67,6 +77,15 @@ class sobj(Gates):
         return state
 
 def dbx(j,m):
+    """_summary_
+
+    Args:
+        j (int)
+        m (int)
+
+    Returns:
+        state : state in dicked basis
+    """    
     # creat dicke basis with pure state
     # input: j,m 
     # output: a vector basis
@@ -81,6 +100,14 @@ def dbx(j,m):
     return csc_matrix(state)
 
 def dicke_ghz(N):
+    """_summary_
+
+    Args:
+        N (int): number of qubit
+
+    Returns:
+        state : state in dicked ghz  
+    """    
     # this is an example to get ghz state
     # def: GHZ = (|N/2,N/2> + |N/2,-N/2>)√2
         

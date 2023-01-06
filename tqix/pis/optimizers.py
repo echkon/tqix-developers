@@ -106,6 +106,14 @@ class GD:
             self.theta = theta
 
     def calc_fubini_tensor(self,params):
+        """_summary_
+        We calculate fubini tensor (note currently only apply for OAT,TNT,TAT gates)
+        Args:
+            params (List): list of parameters
+
+        Returns:
+            G : fubini tensor
+        """        
         num_layers = len(self.route)-1 
         feature_map = self.route[0][0]
         if torch.is_tensor(params):
@@ -151,7 +159,8 @@ class GD:
                  initial_point: Optional[np.ndarray] = None,
                  return_loss_hist=None,loss_break=None,return_time_iters=None, 
                  ) -> Tuple[np.ndarray, float, int]:
-        """Perform optimization.
+        '''
+        Perform optimization.
         Args:
             num_vars: Number of parameters to be optimized.
             objective_function: Handle to a function that computes the objective function.
@@ -164,7 +173,7 @@ class GD:
                 point: is a 1D numpy.ndarray[float] containing the solution\n
                 value: is a float with the objective function value\n
                 nfev: is the number of objective function calls
-        """
+        '''
         if torch.is_tensor(initial_point):
             pass
         else:
