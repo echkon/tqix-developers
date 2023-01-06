@@ -3,11 +3,11 @@ Welcome to tqix's documentation!
 
 **Tqix** (/t'kis/) tqix is an open-source software providing some convenient tools 
 for quantum measurement, quantum metrology, quantum tomography and more.
-
+ 
 Contents
 ---------
 .. toctree::
-   usage 
+   api
    licensed
    installation
 

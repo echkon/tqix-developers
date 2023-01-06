@@ -26,9 +26,9 @@ import torch
 __all__ = ['Gates']
 
 class Gates(object):
-    """
+    """_summary_
     Class contains gate operations of tqix.pis
-    """    
+    """       
 
     def __init__(self):
         self.state = None        
@@ -37,11 +37,10 @@ class Gates(object):
     def RX(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
-
-        Returns:
-            state : state after being acted upon by RX  
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RX  
+        :rtype: ndarray, tensor, sparse
         """        
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
@@ -281,7 +280,7 @@ class Gates(object):
         :param type: type of J operator
         :type type: str
         :return: operator matrix representation 
-        :rtype: ndarray, tensor
+        :rtype: ndarray, tensor, sparse
         """                        
           
         if "x" in type:
