@@ -11,7 +11,7 @@ Contents
    licensed
    installation
 
-Check out the :doc:'usage' setion for further information.
+Check out the :doc:'api' setion for further information.
 
 
 
