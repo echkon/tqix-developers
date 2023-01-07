@@ -13,7 +13,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # all information about tqix is here
 MAN = 2
 SUB = 0
-SUBS= 2
+SUBS= 3
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
 REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
@@ -24,7 +24,7 @@ AUTHOR_EMAIL = ("binho@kindai.ac.jp")
 LICENSE = "GNU"
 DESCRIPTION = "A Toolbox for Quantum in X"
 KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
-URL = "https://vqisinfo.wixsite.com/tqix/homes"
+URL = "https://vqisinfo.wixsite.com/tqix"
 PLATFORMS = ["Linux", "Mac OSX", "Unix", "Windows"]
 
 def write_version_py(filename='tqix/version.py'):
