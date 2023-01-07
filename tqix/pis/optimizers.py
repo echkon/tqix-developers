@@ -19,18 +19,19 @@ __all__ = ['ADAM','GD','gradient_num_diff']
 
 def gradient_num_diff(x_center, f, epsilon, max_evals_grouped=1):
     """
-    We compute the gradient with the numeric differentiation in the parallel way,
-    around the point x_center.
 
-    Args:
-        x_center (ndarray): point around which we compute the gradient
-        f (func): the function of which the gradient is to be computed.
-        epsilon (float): the epsilon used in the numeric differentiation.
-        max_evals_grouped (int): max evals grouped
-    Returns:
-        grad: the gradient computed
+    :param x_center: point around which we compute the gradient
+    :type x_center: ndarray
+    :param f: the function of which the gradient is to be computed.
+    :type f: func
+    :param epsilon: the epsilon used in the numeric differentiation.
+    :type epsilon: float
+    :param max_evals_grouped: max evals grouped, defaults to 1
+    :type max_evals_grouped: int, optional
+    :return: the gradient computed
+    :rtype: ndarray
+    """    
 
-    """
     # forig = f(*((x_center,)))
 
     grad = []
@@ -93,7 +94,30 @@ def gradient_num_diff(x_center, f, epsilon, max_evals_grouped=1):
     return np.array(grad)
 
 class GD:
+    """
+        Gradient descent optimizer class (ref. qiskit)
+    """    
     def __init__(self,lr: float,eps : float,maxiter: int,tol: float = 1e-6,use_qng=False,route=None,N=None,theta=None):
+        """
+
+        :param lr: learning rate
+        :type lr: float
+        :param eps: Value >=0, Epsilon to be used for finite differences if no analytic gradient method is given.
+        :type eps: float
+        :param maxiter: maximum iterations
+        :type maxiter: int
+        :param tol: tolerance for termination, defaults to 1e-6
+        :type tol: float, optional
+        :param use_qng: option to use quantum gradient descent, defaults to False
+        :type use_qng: bool, optional
+        :param route: the structure of circuit; for example, if we have a circuit which
+        has route=(("RN2",),("OAT","Z"),("TNT","ZX"),("TAT","ZY")) , defaults to None
+        :type route: Tuple[Tuple[str,str]], optional
+        :param N: number of qubits, defaults to None
+        :type N: int, optional
+        :param theta: list of theta angle, defaults to None
+        :type theta: List[float], optional
+        """        
         self._maxiter = maxiter
         self._t = 0
         self.step_size = lr
@@ -106,13 +130,13 @@ class GD:
             self.theta = theta
 
     def calc_fubini_tensor(self,params):
-        """_summary_
+        """
         We calculate fubini tensor (note currently only apply for OAT,TNT,TAT gates)
-        Args:
-            params (List): list of parameters
 
-        Returns:
-            G : fubini tensor
+        :param params: list of parameters
+        :type params: List
+        :return: G - fubini tensor
+        :rtype: ndarray, torch, sparse
         """        
         num_layers = len(self.route)-1 
         feature_map = self.route[0][0]
@@ -159,21 +183,24 @@ class GD:
                  initial_point: Optional[np.ndarray] = None,
                  return_loss_hist=None,loss_break=None,return_time_iters=None, 
                  ) -> Tuple[np.ndarray, float, int]:
-        '''
-        Perform optimization.
-        Args:
-            num_vars: Number of parameters to be optimized.
-            objective_function: Handle to a function that computes the objective function.
-            gradient_function: Handle to a function that computes the gradient of the objective
-                function.
-            variable_bounds: deprecated
-            initial_point: The initial point for the optimization.
-        Returns:
-            A tuple (point, value, nfev) where\n
-                point: is a 1D numpy.ndarray[float] containing the solution\n
-                value: is a float with the objective function value\n
-                nfev: is the number of objective function calls
-        '''
+        """
+        :param num_vars: Number of parameters to be optimized.
+        :type num_vars: int
+        :param objective_function: Handle to a function that computes the objective function.
+        :type objective_function: func
+        :param gradient_function: Handle to a function that computes the gradient of the objective function., defaults to None
+        :type gradient_function: func, optional
+        :param initial_point: The initial point for the optimization., defaults to None
+        :type initial_point: Optional[np.ndarray], optional
+        :param return_loss_hist: return history of loss values, defaults to None
+        :type return_loss_hist: bool, optional
+        :param loss_break: early stopping, defaults to None
+        :type loss_break: bool, optional
+        :param return_time_iters: return time each iterations, defaults to None
+        :type return_time_iters: bool, optional
+        :return: output
+        :rtype: Tuple[np.ndarray, float, int]
+        """        
         if torch.is_tensor(initial_point):
             pass
         else:
@@ -189,13 +216,22 @@ class GD:
     def minimize(self, objective_function: Callable[[np.ndarray], float], initial_point: np.ndarray,
                  gradient_function: Callable[[np.ndarray], float],return_loss_hist:bool,return_time_iters:bool, loss_break:bool) -> Tuple[np.ndarray, float, int]:
         """Run the minimization.
-        Args:
-            objective_function: A function handle to the objective function.
-            initial_point: The initial iteration point.
-            gradient_function: A function handle to the gradient of the objective function.
-        Returns:
-            A tuple of (optimal parameters, optimal value, number of iterations).
-        """
+
+        :param objective_function: A function handle to the objective function.
+        :type objective_function: func
+        :param initial_point: The initial iteration point.
+        :type initial_point: np.ndarray
+        :param gradient_function: A function handle to the gradient of the objective function.
+        :type gradient_function: func
+        :param return_loss_hist: return loss history
+        :type return_loss_hist: bool
+        :param return_time_iters: return time each iterations
+        :type return_time_iters: bool
+        :param loss_break: early stopping
+        :type loss_break: bool
+        :return: A tuple of (optimal parameters, optimal value, number of iterations).
+        :rtype: Tuple[np.ndarray, float, int]
+        """        
         loss_history = []
         if torch.is_tensor(initial_point):
             tensor_times = []
@@ -289,7 +325,8 @@ class ADAM:
         [2]: Sashank J. Reddi and Satyen Kale and Sanjiv Kumar (2018),
              On the Convergence of Adam and Beyond.
              `arXiv:1904.09237 <https://arxiv.org/abs/1904.09237>`_
-    """
+    (ref. qiskit)
+    """    
 
     _OPTIONS = ['maxiter', 'tol', 'lr', 'beta_1', 'beta_2',
                 'noise_factor', 'eps', 'amsgrad', 'snapshot_dir']
@@ -305,19 +342,27 @@ class ADAM:
                  amsgrad: bool = False,
                  snapshot_dir: Optional[str] = None) -> None:
         """
-        Args:
-            maxiter: Maximum number of iterations
-            tol: Tolerance for termination
-            lr: Value >= 0, Learning rate.
-            beta_1: Value in range 0 to 1, Generally close to 1.
-            beta_2: Value in range 0 to 1, Generally close to 1.
-            noise_factor: Value >= 0, Noise factor
-            eps : Value >=0, Epsilon to be used for finite differences if no analytic
-                gradient method is given.
-            amsgrad: True to use AMSGRAD, False if not
-            snapshot_dir: If not None save the optimizer's parameter
-                after every step to the given directory
-        """
+
+        :param maxiter: Maximum number of iterations, defaults to 10000
+        :type maxiter: int, optional
+        :param tol: Tolerance for termination, defaults to 1e-6
+        :type tol: float, optional
+        :param lr: Learning rate, defaults to 1e-3
+        :type lr: float, optional
+        :param beta_1: Value in range 0 to 1, Generally close to 1., defaults to 0.9
+        :type beta_1: float, optional
+        :param beta_2: Value in range 0 to 1, Generally close to 1., defaults to 0.99
+        :type beta_2: float, optional
+        :param noise_factor: Value >= 0, Noise factor, defaults to 1e-8
+        :type noise_factor: float, optional
+        :param eps: Value >=0, Epsilon to be used for finite differences if no analytic
+                gradient method is given., defaults to 1e-10
+        :type eps: float, optional
+        :param amsgrad: True to use AMSGRAD, defaults to False
+        :type amsgrad: bool, optional
+        :param snapshot_dir: If not None save the optimizer's parameter after every step to the given directory, defaults to None
+        :type snapshot_dir: Optional[str], optional
+        """        
         super().__init__()
         self._maxiter = maxiter
         self._snapshot_dir = snapshot_dir
@@ -348,13 +393,15 @@ class ADAM:
                 writer.writeheader()
 
     def save_params(self, snapshot_dir: str) -> None:
-        """Save the current iteration parameters to a file called ``adam_params.csv``.
+        """
+        Save the current iteration parameters to a file called ``adam_params.csv``.
         Note:
             The current parameters are appended to the file, if it exists already.
             The file is not overwritten.
-        Args:
-            snapshot_dir: The directory to store the file in.
-        """
+
+        :param snapshot_dir: The directory to store the file in.
+        :type snapshot_dir: str
+        """        
         if self._amsgrad:
             with open(os.path.join(snapshot_dir, 'adam_params.csv'),
                       mode='a', encoding="utf8") as csv_file:
@@ -371,9 +418,11 @@ class ADAM:
 
     def load_params(self, load_dir: str) -> None:
         """Load iteration parameters for a file called ``adam_params.csv``.
-        Args:
-            load_dir: The directory containing ``adam_params.csv``.
-        """
+
+        :param load_dir: The directory containing ``adam_params.csv``
+        :type load_dir: str
+        """        
+
         with open(os.path.join(load_dir, 'adam_params.csv'),
                   mode='r', encoding="utf8") as csv_file:
             if self._amsgrad:
@@ -400,14 +449,23 @@ class ADAM:
 
     def minimize(self, objective_function: Callable[[np.ndarray], float], initial_point: np.ndarray,
                  gradient_function: Callable[[np.ndarray], float],return_loss_hist:bool,return_time_iters:bool,loss_break:int) -> Tuple[np.ndarray, float, int]:
-        """Run the minimization.
-        Args:
-            objective_function: A function handle to the objective function.
-            initial_point: The initial iteration point.
-            gradient_function: A function handle to the gradient of the objective function.
-        Returns:
-            A tuple of (optimal parameters, optimal value, number of iterations).
         """
+
+        :param objective_function: A function handle to the objective function.
+        :type objective_function: func
+        :param initial_point: The initial iteration point.
+        :type initial_point: np.ndarray
+        :param gradient_function: A function handle to the gradient of the objective function.
+        :type gradient_function: func
+        :param return_loss_hist: return history of losses
+        :type return_loss_hist: bool
+        :param return_time_iters: return time each iterations
+        :type return_time_iters: bool
+        :param loss_break: early stopping
+        :type loss_break: int
+        :return: output
+        :rtype: Tuple[np.ndarray, float, int]
+        """        
         loss_history = []
         if torch.is_tensor(initial_point):
             tensor_times = []
@@ -518,19 +576,24 @@ class ADAM:
                  loss_break = None,return_time_iters=None
                  ) -> Tuple[np.ndarray, float, int]:
         """Perform optimization.
-        Args:
-            num_vars: Number of parameters to be optimized.
-            objective_function: Handle to a function that computes the objective function.
-            gradient_function: Handle to a function that computes the gradient of the objective
-                function.
-            variable_bounds: deprecated
-            initial_point: The initial point for the optimization.
-        Returns:
-            A tuple (point, value, nfev) where\n
-                point: is a 1D numpy.ndarray[float] containing the solution\n
-                value: is a float with the objective function value\n
-                nfev: is the number of objective function calls
-        """
+
+        :param num_vars: Number of parameters to be optimized.
+        :type num_vars: int
+        :param objective_function: Handle to a function that computes the objective function.
+        :type objective_function: func
+        :param gradient_function: Handle to a function that computes the gradient of the objective function, defaults to None
+        :type gradient_function: func, optional
+        :param initial_point: The initial point for the optimization, defaults to None
+        :type initial_point: Optional[np.ndarray], optional
+        :param return_loss_hist: return history of loss values, defaults to False
+        :type return_loss_hist: bool, optional
+        :param loss_break: early stopping, defaults to None
+        :type loss_break: bool, optional
+        :param return_time_iters: return time each iterations, defaults to None
+        :type return_time_iters: bool, optional
+        :return: output
+        :rtype: Tuple[np.ndarray, float, int]
+        """        
         if initial_point is None:
             initial_point = np.random.default_rng(52).random(num_vars)
         if torch.is_tensor(initial_point):

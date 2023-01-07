@@ -23,15 +23,14 @@ __all__ = ['get_Nds','get_dim','get_num_block','get_array_block',
             ]
         
 def get_Nds(d):
-    """_summary_
-    to get numper of particle from dimension d
+    """to get number of qubits from dimension d
 
-    Args:
-        d (int): dimension
-
-    Returns:
-        N: number of particle
+    :param d: dimension
+    :type d: int
+    :return: N
+    :rtype: number of qubits
     """    
+
     d4 = d*4
     root = np.sqrt(d4)
     if int(root + 0.5)**2 == d4: #perfect quare number
@@ -40,33 +39,36 @@ def get_Nds(d):
         return int(np.sqrt(1+d4)-2)
         
 def get_dim(N):
-    """_summary_
-    to get dimension from number of particle N
+    """to get dimension from number of qubits N
 
-    Args:
-        N (int): number of particle
-
-    Returns:
-        d: dimension 
-    """    
+    :param N: number of qubits
+    :type N: int
+    :return: d
+    :rtype: dimension
+    """     
     
     d = (N/2 + 1)**2 - (N % 2)/4
     return int(d)
 
 
 def get_num_block(N):
-    """_summary_
-    to get number of block
+    """to get number of block
 
-    Args:
-        N (int): number of particle
-
-    Returns:
-        Nbj: Number of block j
+    :param N: number of qubits
+    :type N: int
+    :return: Nbj
+    :rtype:  Number of block j
     """    
     return int(N/2 + 1 -1/2*(N % 2))
     
 def get_array_block(N):
+    """an array of block
+
+    :param N: number of qubits
+    :type N: int
+    :return: array_block
+    :rtype: list
+    """    
     # an array of block
     num_block = get_num_block(N)
     array_block = [i * (N+2-i) for i in range(1, num_block+1)]
@@ -117,27 +119,25 @@ def get_marray(j):
     return marray
           
 def get_vidx(j,m):
-    """_summary_
-
-    Args:
-        j (int): j index
-        m (int): m index
-
-    Returns:
-        vidx
+    """to get index in vector state from j,m
+    :param j: j index
+    :type j: int
+    :param m: m index
+    :type m: int
+    :return: vidx
+    :rtype: int
     """    
     # to get index in vector state from j,m
     return int(j-m)
 
 def get_mm1_idx_max(N):
-    """_summary_
-
-    Args:
-        N (int): number of qubits
-
-    Returns:
-        [mm1,ik]
+    """to get mm1 or ik
+    :param N: number of qubits
+    :type N: int
+    :return: [mm1,ik]
+    :rtype: list
     """    
+   
     # to get mm1 or ik
 
     ik = {}
@@ -154,18 +154,22 @@ def get_mm1_idx_max(N):
 
 
 def get_midx(N,j,m,m1,block):
-    """_summary_
+    """to get index in density matrix
+        ref. qutip
 
-    Args:
-        N (int): number of qubits
-        j (int): j index
-        m (int): m index
-        m1 (int): m1 index
-        block (List): list of blocks
-
-    Returns:
-        (i,k)
-    """    
+    :param N: number of qubits
+    :type N: int
+    :param j: j index
+    :type j: int
+    :param m: m index
+    :type m: int
+    :param m1: m1 index
+    :type m1: int
+    :param block: list of blocks
+    :type block: list
+    :return: (i,k)
+    :rtype: tuple
+    """     
     # to get index in density matrix
     # ref. qutip
     k = int(j-m1)
@@ -180,14 +184,16 @@ def get_midx(N,j,m,m1,block):
     return (i,k)
     
 def get_jmm1_idx(N):
-    """_summary_
+    """get index i,k of density matrix from j,m,m1
+    and revert j,m,m1 from i,k
+    ref. qutip
 
-    Args:
-        N (int): number of qubits
-
-    Returns:
-        [jmm1,ik]
+    :param N: number of qubits
+    :type N: int
+    :return: [jmm1,ik]
+    :rtype: list
     """    
+
     # get index i,k of density matrix from j,m,m1
     # and revert j,m,m1 from i,k
     # ref. qutip
@@ -207,15 +213,16 @@ def get_jmm1_idx(N):
     return [jmm1,ik]
 
 def get_A(j,m,type=""):
-    """_summary_
+    """
 
-    Args:
-        j (int): j index
-        m (int): m index
-        type (str, optional): type of A. Defaults to "".
-
-    Returns:
-        A_{type}
+    :param j: j index
+    :type j: int
+    :param m: m index
+    :type m: int
+    :param type: type of A, defaults to ""
+    :type type: str, optional
+    :return: A_{type}
+    :rtype: float
     """    
     if type == "+":
         return np.sqrt((j-m)*(j+m+1))
@@ -225,16 +232,17 @@ def get_A(j,m,type=""):
         return m 
 
 def get_B(j,m,type=""):
-    """_summary_
+    """
 
-    Args:
-        j (int): j index
-        m (int): m index
-        type (str, optional): type of A. Defaults to "".
-
-    Returns:
-        B_{type}
-    """   
+    :param j: j index
+    :type j: int
+    :param m: m index
+    :type m: int
+    :param type: type of B, defaults to ""
+    :type type: str, optional
+    :return: B_{type}
+    :rtype: float
+    """    
     if type == "+":
         return np.sqrt((j-m)*(j-m-1))
     elif type == "-":
@@ -243,16 +251,17 @@ def get_B(j,m,type=""):
         return np.sqrt((j+m)*(j-m))
 
 def get_D(j,m,type=""):
-    """_summary_
+    """
 
-    Args:
-        j (int): j index
-        m (int): m index
-        type (str, optional): type of A. Defaults to "".
-
-    Returns:
-        D_{type}
-    """   
+    :param j: j index
+    :type j: int
+    :param m: m index
+    :type m: int 
+    :param type: type of D, defaults to ""
+    :type type: str, optional
+    :return: D_{type}
+    :rtype: float
+    """    
     if type == "+":
         return -np.sqrt((j+m+1)*(j+m+2))
     if type == "-":
@@ -261,16 +270,17 @@ def get_D(j,m,type=""):
         return np.sqrt((j+m+1)*(j-m+1))
 
 def get_Lambda(N,j,type=""):
-    """_summary_
+    """
 
-    Args:
-        j (int): j index
-        m (int): m index
-        type (str, optional): type of A. Defaults to "".
-
-    Returns:
-        Lambda_{type}
-    """   
+    :param N: number of qubits
+    :type N: int
+    :param j: j index
+    :type j: int
+    :param type: type of lambda, defaults to ""
+    :type type: str, optional
+    :return: Lambda_{type}
+    :rtype: float
+    """      
     if type == "a":
         return (N/2+1)/(2*j*(j+1))
     elif type == "b":
@@ -279,26 +289,27 @@ def get_Lambda(N,j,type=""):
         return (N/2-j)/(2*(j+1)*(2*j+1))
 
 def get_alpha(N,j):
-    """_summary_
+    """
 
-    Args:
-        N (int): number of qubits
-        j (int): j indexes 
-
-    Returns:
-        alpha
-    """    
+    :param N: number of qubits
+    :type N: int
+    :param j: j index
+    :type j: int
+    :return: alpha
+    :rtype: float
+    """     
     return math.factorial(N)/(math.factorial(N/2-j)*math.factorial(N/2+j))
 
 def dicke_bx(N, jmm1):
-    """_summary_
+    """create a dicke basis follow jmm1
+    jmm1 as {(j,m,m1):p}
 
-    Args:
-        N (int): _description_
-        jmm1 (dict): store p value at j,m,m1 indexes
-
-    Returns:
-        new state
+    :param N: number of qubits
+    :type N: int
+    :param jmm1: store p value at j,m,m1 indexes
+    :type jmm1: dict
+    :return: new state
+    :rtype: ndarray, tensor, sparse
     """    
     # create a dicke basis follow jmm1
     # jmm1 as {(j,m,m1):p}
@@ -312,6 +323,20 @@ def dicke_bx(N, jmm1):
     return csc_matrix(rho)
 
 def dicke_bx1(N,jmm1,ik,dim):
+    """create a dicke basis follow jmm1
+    jmm1 as {(j,m,m1):p}
+
+    :param N: number of qubits
+    :type N: int
+    :param jmm1: stores p value at j,m,m1 indexes 
+    :type jmm1: dict
+    :param ik: stores i,k indexes wrt j,m,m1
+    :type ik: dict
+    :param dim: dimension of rho 
+    :type dim: int
+    :return: new state
+    :rtype: ndarray, tensor, sparse
+    """    
     """_summary_
 
     Args:
@@ -333,33 +358,39 @@ def dicke_bx1(N,jmm1,ik,dim):
     return csc_matrix(rho)
 
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
-    """_summary_
-    Check if 2 numbers is closed
-    Args:
-        a (float)
-        b (float)
-        rel_tol (float, optional): Defaults to 1e-09.
-        abs_tol (float, optional): Defaults to 0.0.
+    """Check if 2 numbers is closed
 
-    Returns:
-        bool 
-    """    
+    :param a: first number 
+    :type a: float
+    :param b: second number
+    :type b: float
+    :param rel_tol:  defaults to 1e-09
+    :type rel_tol: float, optional
+    :param abs_tol: defaults to 0.0
+    :type abs_tol: float, optional
+    :return: True/False
+    :rtype: bool
+    """     
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 def fit(objective_function,optimizer,init_params,return_loss_hist=None,loss_break=None,return_time_iters=None):
-    """_summary_
+    """
 
-    Args:
-        objective_function (func): objetive function to minimize
-        optimizer (func): optimizer function 
-        init_params (List): list of initial parameters
-        return_loss_hist (bool, optional): return history of objective values. Defaults to None.
-        loss_break (bool, optional): early stopping. Defaults to None.
-        return_time_iters (bool, optional): return time each iterations. Defaults to None.
-
-    Returns:
-        output
-    """    
+    :param objective_function: objetive function to minimize
+    :type objective_function: func
+    :param optimizer: optimizer function 
+    :type optimizer: func
+    :param init_params: list of initial parameters
+    :type init_params: list
+    :param return_loss_hist: return history of objective values, defaults to None
+    :type return_loss_hist: bool, optional
+    :param loss_break: early stopping, defaults to None
+    :type loss_break: bool, optional
+    :param return_time_iters: return time each iterations, defaults to None
+    :type return_time_iters: bool, optional
+    :return: output
+    :rtype: tuple
+    """      
     output = optimizer.optimize(len(init_params), objective_function, initial_point=init_params,
                 return_loss_hist=return_loss_hist,loss_break=loss_break,return_time_iters=return_time_iters)
     return output

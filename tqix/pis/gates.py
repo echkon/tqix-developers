@@ -31,6 +31,8 @@ class Gates(object):
     """       
 
     def __init__(self):
+        """init class of Gates 
+        """        
         self.state = None        
         self.theta = None
 

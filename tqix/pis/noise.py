@@ -9,25 +9,34 @@ import torch
 
 __all__ =['add_noise','calc_rho_0']
 
-def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=False,result_queue=None):    
-    """_summary_
+def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=False,result_queue=None):
+    """
 
-    Args:
-        rho_0 (ndarray,tensor,sparse): initial rho_0 state
-        iks (List[tuple]): list of i,k indexes 
-        jmm1 (dict): dictionary of i,k keys and j,m,m1 values
-        state (ndarray,tensor,sparse): input state
-        all_iks (dict): dictionary of j,m,m1 keys and i,k values
-        j_min (int): minimum j index
-        j_max (int): maximum j index
-        N_in (int): number of qubits 
-        d_dicke (int): dimension of dicke basis 
-        use_gpu (bool, optional): If use gpu. Defaults to False.
-        result_queue (List, optional): List of queues processed. Defaults to None.
-
-    Returns:
-        accumulate_states : state after being added noise
-    """    
+    :param rho_0: initial rho_0 state
+    :type rho_0: ndarray,tensor,sparse
+    :param iks: list of i,k indexes 
+    :type iks: List[tuple]
+    :param jmm1: dictionary of i,k keys and j,m,m1 values
+    :type jmm1: dict
+    :param state: input state
+    :type state: ndarray, tensor, sparse
+    :param all_iks: dictionary of j,m,m1 keys and i,k values
+    :type all_iks: dict
+    :param j_min: minimum j index
+    :type j_min: int
+    :param j_max: maximum j index
+    :type j_max: int
+    :param N_in: number of qubits 
+    :type N_in: int
+    :param d_dicke: dimension of dicke basis 
+    :type d_dicke: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param result_queue: List of queues processed, defaults to None
+    :type result_queue: List, optional
+    :return: calculated rho_0 state
+    :rtype: ndarray, tensor, sparse 
+    """        
     if use_gpu:
         accumulate_states = rho_0
         for ik in iks:
@@ -212,18 +221,22 @@ def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=Fal
         return accumulate_states
 
 def add_noise(qc,noise=0.3,num_process=None,use_gpu=False,device=None):
-    """_summary_
+    """
 
-    Args:
-        qc (Circuit): circuit object_
-        noise (float, optional): noise ratio to add . Defaults to 0.3.
-        num_process (int, optional): number of process for multi-processing. Defaults to None.
-        use_gpu (bool, optional): If use gpu. Defaults to False.
-        device (str, optional): name of compute device. Defaults to None.
-
-    Returns:
-        new_state: new state after adding noise
+    :param qc: circuit object
+    :type qc: Circuit
+    :param noise: noise ratio to add, defaults to 0.3
+    :type noise: float, optional
+    :param num_process: number of process for multi-processing, defaults to None
+    :type num_process: int, optional
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to None
+    :type device: str, optional
+    :return: new state after being added noise
+    :rtype: ndarray, tensor, sparse
     """    
+
     state = qc.state
     d_in = shapex(state)[0]
     N_in = qc.N
