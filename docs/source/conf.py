@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 project = 'tqix 2.0.3'
 copyright = '2023, Nguyen Tan Viet'
 author = 'Nguyen Tan Viet'
-release = '2.0.2'
+release = '2.0.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
