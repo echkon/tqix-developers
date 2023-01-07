@@ -147,7 +147,7 @@ class Gates(object):
     def RX2(self,theta=None,*args, **kwargs):
         """
 
-        :math:`R_x^2(\\theta) = e^{-i\\theta J_x^2}`
+        :math:`R_{x^2}(\\theta) = e^{-i\\theta J_x^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -163,7 +163,7 @@ class Gates(object):
     def RY2(self,theta=None,*args, **kwargs):
         """
 
-        :math:`R_y^2(\\theta) = e^{-i\\theta J_y^2}`
+        :math:`R_{y^2}(\\theta) = e^{-i\\theta J_y^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -179,7 +179,7 @@ class Gates(object):
     def RZ2(self,theta=None,*args, **kwargs):
         """
 
-        :math:`R_z^2(\\theta) = e^{-i\\theta J_z^2}`
+        :math:`R_{z^2}(\\theta) = e^{-i\\theta J_z^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
