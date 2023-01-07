@@ -37,12 +37,7 @@ class Gates(object):
     def RX(self,theta=None,*args, **kwargs):
         """_summary_
 
-        .. math::
-            :nowrap:
-
-            \\begin{eqnarray}
-            R_x(\\theta) = e^{-i\\theta J_x}
-            \\end{eqnarray}
+        :math: `R_x(\\theta) = e^{-i\\theta J_x}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -58,12 +53,13 @@ class Gates(object):
     def RY(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_y(\\theta) = e^{-i\\theta J_y}`
 
-        Returns:
-            state : state after being acted upon by RY  
-        """        
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RY
+        :rtype: ndarray, tensor, sparse
+        """       
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
@@ -73,11 +69,12 @@ class Gates(object):
     def RZ(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_z(\\theta) = e^{-i\\theta J_z}`
 
-        Returns:
-            state : state after being acted upon by RZ
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RZ  
+        :rtype: ndarray, tensor, sparse
         """        
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
@@ -88,12 +85,16 @@ class Gates(object):
     def OAT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `U_{\\rm OAT} = e^{-it\\chi J_\\alpha^2}`
 
-        Returns:
-            state : state after being acted upon by OAT
-        """        
+        :param theta: angle
+        :type theta: float
+        :param gate_type: type of gate
+        :type gate_type: str
+        :return: new state after being acted upon by OAT
+        :rtype: ndarray, tensor, sparse
+        """
+
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
@@ -109,12 +110,15 @@ class Gates(object):
     def TAT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `U_{\\rm TAT} = e^{-it\\chi (J_\\alpha^2 - J_\\beta^2)}`
 
-        Returns:
-            state : state after being acted upon by TAT 
-        """        
+        :param theta: angle 
+        :type theta: float
+        :param gate_type: type of gate
+        :type gate_type: str
+        :return: new state after being acted upon by TAT 
+        :rtype: ndarray, tensor, sparse
+        """             
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
@@ -124,12 +128,15 @@ class Gates(object):
     def TNT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `U_{\\rm TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
 
-        Returns:
-            state : state after being acted upon by TNT
-        """  
+        :param theta: angle
+        :type theta: float
+        :param gate_type: type of gate
+        :type gate_type: str
+        :return: new state after being acted upon by TNT
+        :rtype: ndarray, tensor, sparse
+        """        
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         omega = kwargs.pop('omega', None)
@@ -140,12 +147,13 @@ class Gates(object):
     def RX2(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_x^2(\\theta) = e^{-i\\theta J_x^2}`
 
-        Returns:
-            state : state after being acted upon by RX2
-        """  
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RX2
+        :rtype: ndarray, tensor, sparse
+        """        
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
@@ -155,11 +163,12 @@ class Gates(object):
     def RY2(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_y^2(\\theta) = e^{-i\\theta J_y^2}`
 
-        Returns:
-            state : state after being acted upon by RY2
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RY2
+        :rtype: ndarray, tensor, sparse
         """  
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
@@ -170,12 +179,13 @@ class Gates(object):
     def RZ2(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_z^2(\\theta) = e^{-i\\theta J_z^2}`
 
-        Returns:
-            state : state after being acted upon by RZ2 
-        """  
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by RZ2
+        :rtype: ndarray, tensor, sparse
+        """   
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
@@ -185,11 +195,12 @@ class Gates(object):
     def R_plus(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_+(\\theta) = e^{-i\\theta J_+}`
 
-        Returns:
-            state : state after being acted upon by R_plus
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by R_plus
+        :rtype: ndarray, tensor, sparse
         """  
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
@@ -200,11 +211,12 @@ class Gates(object):
     def R_minus(self,theta=None,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float): angle.
+        :math: `R_-(\\theta) = e^{-i\\theta J_-}`
 
-        Returns:
-            state : state after being acted upon by R_minus
+        :param theta: angle, defaults to None
+        :type theta: float, optional
+        :return: new state after being acted upon by R_minus
+        :rtype: ndarray, tensor, sparse
         """  
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
@@ -215,13 +227,16 @@ class Gates(object):
     def GMS(self,theta,phi,*args, **kwargs):
         """_summary_
 
-        Args:
-            theta (float)
-            phi (float)
+        :math: `U_{\\rm GMS} = e^{-i\\theta (J_x\\cos\\phi + J_y\\sin\\phi)^2}`
 
-        Returns:
-            state : state after being acted upon by GMS
+        :param theta: theta angle
+        :type theta: float
+        :param phi: phi angle
+        :type phi: float
+        :return: new state after being acted upon by GMS
+        :rtype: ndarray, tensor, sparse
         """        
+
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi}
@@ -230,14 +245,16 @@ class Gates(object):
 
     def RN(self,theta,phi,*args, **kwargs):
         """_summary_
+        
+        :math:  `R_{\\bm n}(\\theta,\\phi)= e^{-i\\theta \bm J_{\\bm n}}={\\rm exp}[i\\theta (J_x\\sin\\phi - J_y\\cos\\phi)]`
 
-        Args:
-            theta (float)
-            phi (float)
-
-        Returns:
-            state : state after being acted upon by RN
-        """        
+        :param theta: theta angle
+        :type theta: float
+        :param phi: phi angle
+        :type phi: float
+        :return: new state after being acted upon by RN
+        :rtype: ndarray, tensor, sparse
+        """              
         noise = kwargs.pop('noise', None)
         processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi}
@@ -246,14 +263,12 @@ class Gates(object):
 
     def check_input_param(self,params):
         """_summary_
-        Check input value not None 
 
-        Args:
-            params (dict)
-
-        Raises:
-            ValueError: inform variable is None
+        :param params: parameters to check
+        :type params: dict
+        :raises ValueError: the parameter is None
         """        
+        
         self.theta = params["theta"]
         for param,value in params.items():
             if value == None:
@@ -262,14 +277,16 @@ class Gates(object):
     def get_N_d_d_dicked(self,state):
         """_summary_
 
-        Args:
-            state : state of qubits
-
-        Returns:
-            d_in (int): dimension of state 
-            N_int (int): number of qubits
-            d_dicke (int): dimension of dicke basis 
+        :param state: state of qubits
+        :type state: ndarray, tensor, sparse
+        :return: d_in
+        :rtype: int
+        :return: N_in
+        :rtype: int
+        :return: d_dicke
+        :rtype: int
         """        
+
         d_in = shapex(state)[0]
         N_in = self.N
         d_dicke = get_dim(N_in)
@@ -288,7 +305,7 @@ class Gates(object):
         :type type: str
         :return: operator matrix representation 
         :rtype: ndarray, tensor, sparse
-        """                        
+        """                           
           
         if "x" in type:
             S = partial(Sx)
@@ -335,9 +352,9 @@ class Gates(object):
     def Jx(self):
         """_summary_
 
-        Returns:
-            Jx
-        """        
+        :return: Jx
+        :rtype: ndarray, tensor, sparse
+        """            
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         return get_J("x")
@@ -345,9 +362,9 @@ class Gates(object):
     def Jy(self):
         """_summary_
 
-        Returns:
-            Jy
-        """        
+        :return: Jy
+        :rtype: ndarray, tensor, sparse
+        """      
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         return get_J("y")
@@ -355,9 +372,9 @@ class Gates(object):
     def Jz(self):
         """_summary_
 
-        Returns:
-            Jz 
-        """        
+        :return: Jz
+        :rtype: ndarray, tensor, sparse
+        """      
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         return get_J("z")
@@ -365,9 +382,9 @@ class Gates(object):
     def J_plus(self):
         """_summary_
 
-        Returns:
-            J_plus
-        """        
+        :return: J_plus
+        :rtype: ndarray, tensor, sparse
+        """      
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         return get_J("+")
@@ -375,9 +392,9 @@ class Gates(object):
     def J_minus(self):
         """_summary_
 
-        Returns:
-            J_minus
-        """        
+        :return: J_minus
+        :rtype: ndarray, tensor, sparse
+        """    
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(self.state)
         get_J = partial(self.get_J,N_in,d_in,d_dicke)
         return get_J("-")
@@ -385,12 +402,11 @@ class Gates(object):
     def var(self,type="",*args, **kwargs):
         """_summary_
 
-        Args:
-            type (str): type of variance
-
-        Returns:
-            var : variance of state 
-        """        
+        :param type: type of variance, defaults to ""
+        :type type: str, optional
+        :return: variance of state 
+        :rtype: complex
+        """            
         use_vector = kwargs.pop('use_vector', None)
         n = kwargs.pop('n', None)
         if use_vector:
@@ -408,12 +424,11 @@ class Gates(object):
     def expval(self,type="",*args, **kwargs):
         """_summary_
 
-        Args:
-            type (str): type of expectation
-
-        Returns:
-            expval : expected value of state 
-        """        
+        :param type: type of expectation, defaults to ""
+        :type type: str, optional
+        :return: expected value of state 
+        :rtype: complex
+        """          
         state = self.state
         observable = kwargs.pop('observable', None)
         if observable is not None:
@@ -533,11 +548,10 @@ class Gates(object):
     def gates(self,type="",*args, **kwargs):
         """_summary_
 
-        Args:
-            type (str): type of gate
-
-        Returns:
-            state : state after being acted upon by gate operation 
+        :param type: type of gate, defaults to ""
+        :type type: str, optional
+        :return: new state after being acted upon by gate operation 
+        :rtype: ndarray, tensor, sparse
         """        
         state = self.state
         d_in,N_in,d_dicke = self.get_N_d_d_dicked(state)
@@ -617,12 +631,11 @@ class Gates(object):
     def measure(self,num_shots = None):
         """_summary_
 
-        Args:
-            num_shots (int): number of shots for measurement
-
-        Returns:
-            result : resulted measurement 
-        """        
+        :param num_shots: number of shots for measurement, defaults to None
+        :type num_shots: int, optional
+        :return: resulted measurement 
+        :rtype: ndarray, tensor, sparse
+        """              
         state = self.state 
         device = self.device
         return_tensor = False
