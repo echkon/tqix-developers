@@ -38,7 +38,11 @@ class Gates(object):
         """_summary_
 
         .. math::
-            \ begin{align}R_x(\ theta) = e^{-i\ theta J_x}\end{align}
+            :nowrap:
+            
+            \begin{eqnarray}
+            R_x(\theta) = e^{-i\theta J_x}
+            \end{eqnarray}
 
         :param theta: angle, defaults to None
         :type theta: float, optional
