@@ -85,7 +85,7 @@ class Gates(object):
     def OAT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        :math: `U_{\\rm OAT} = e^{-it\\chi J_\\alpha^2}`
+        :math: `U_{OAT} = e^{-it\\chi J_\\alpha^2}`
 
         :param theta: angle
         :type theta: float
@@ -110,7 +110,7 @@ class Gates(object):
     def TAT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        :math: `U_{\\rm TAT} = e^{-it\\chi (J_\\alpha^2 - J_\\beta^2)}`
+        :math: `U_{TAT} = e^{-it\\chi (J_\\alpha^2 - J_\\beta^2)}`
 
         :param theta: angle 
         :type theta: float
@@ -128,7 +128,7 @@ class Gates(object):
     def TNT(self,theta,gate_type,*args, **kwargs):
         """_summary_
 
-        :math: `U_{\\rm TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
+        :math: `U_{TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
 
         :param theta: angle
         :type theta: float
@@ -227,7 +227,7 @@ class Gates(object):
     def GMS(self,theta,phi,*args, **kwargs):
         """_summary_
 
-        :math: `U_{\\rm GMS} = e^{-i\\theta (J_x\\cos\\phi + J_y\\sin\\phi)^2}`
+        :math: `U_{GMS} = e^{-i\\theta (J_x\\cos\\phi + J_y\\sin\\phi)^2}`
 
         :param theta: theta angle
         :type theta: float
@@ -246,7 +246,7 @@ class Gates(object):
     def RN(self,theta,phi,*args, **kwargs):
         """_summary_
         
-        :math:  `R_{\\bm n}(\\theta,\\phi)= e^{-i\\theta \bm J_{\\bm n}}={\\rm exp}[i\\theta (J_x\\sin\\phi - J_y\\cos\\phi)]`
+        :math:  `R_{n}(\\theta,\\phi)= e^{-i\\theta J_{n}}={exp}[i\\theta (J_x\\sin\\phi - J_y\\cos\\phi)]`
 
         :param theta: theta angle
         :type theta: float
