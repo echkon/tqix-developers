@@ -162,7 +162,7 @@ def get_xi_2_E(qc,n):
     return (N*var_Jvec)/(mean_J_2-N/2-mean_Jvec**2)
 
 def get_xi_2_F(qc,n1,n2,n3):
-    """_summary_
+    """
 
     :param qc: circuit object
     :type qc: Circuit
