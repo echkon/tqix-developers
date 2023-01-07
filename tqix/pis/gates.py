@@ -26,7 +26,7 @@ import torch
 __all__ = ['Gates']
 
 class Gates(object):
-    """_summary_
+    """
     Class contains gate operations of tqix.pis
     """       
 
@@ -35,9 +35,9 @@ class Gates(object):
         self.theta = None
 
     def RX(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_x(\\theta) = e^{-i\\theta J_x}`
+        :math:`R_x(\\theta) = e^{-i\\theta J_x}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -51,9 +51,9 @@ class Gates(object):
         return self.gates("Rx",noise=noise,num_processes=processes)
     
     def RY(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_y(\\theta) = e^{-i\\theta J_y}`
+        :math:`R_y(\\theta) = e^{-i\\theta J_y}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -67,9 +67,9 @@ class Gates(object):
         return self.gates("Ry",noise=noise,num_processes=processes)
     
     def RZ(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_z(\\theta) = e^{-i\\theta J_z}`
+        :math:`R_z(\\theta) = e^{-i\\theta J_z}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -83,9 +83,9 @@ class Gates(object):
         return self.gates("Rz",noise=noise,num_processes=processes)
     
     def OAT(self,theta,gate_type,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `U_{OAT} = e^{-it\\chi J_\\alpha^2}`
+        :math:`U_{OAT} = e^{-it\\chi J_\\alpha^2}`
 
         :param theta: angle
         :type theta: float
@@ -108,9 +108,9 @@ class Gates(object):
             return self.RZ2(theta,noise=noise,num_processes=processes)                    
     
     def TAT(self,theta,gate_type,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `U_{TAT} = e^{-it\\chi (J_\\alpha^2 - J_\\beta^2)}`
+        :math:`U_{TAT} = e^{-it\\chi (J_\\alpha^2 - J_\\beta^2)}`
 
         :param theta: angle 
         :type theta: float
@@ -126,9 +126,9 @@ class Gates(object):
         return self.gates(type=gate_type+"TAT",noise=noise,num_processes=processes)
     
     def TNT(self,theta,gate_type,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `U_{TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
+        :math:`U_{TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
 
         :param theta: angle
         :type theta: float
@@ -145,9 +145,9 @@ class Gates(object):
         return self.gates(type=gate_type+"TNT",omega=omega,noise=noise,num_processes=processes)
 
     def RX2(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_x^2(\\theta) = e^{-i\\theta J_x^2}`
+        :math:`R_x^2(\\theta) = e^{-i\\theta J_x^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -161,9 +161,9 @@ class Gates(object):
         return self.gates("Rx2",noise=noise,num_processes=processes)
     
     def RY2(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_y^2(\\theta) = e^{-i\\theta J_y^2}`
+        :math:`R_y^2(\\theta) = e^{-i\\theta J_y^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -177,9 +177,9 @@ class Gates(object):
         return self.gates("Ry2",noise=noise,num_processes=processes)
     
     def RZ2(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_z^2(\\theta) = e^{-i\\theta J_z^2}`
+        :math:`R_z^2(\\theta) = e^{-i\\theta J_z^2}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -193,9 +193,9 @@ class Gates(object):
         return self.gates("Rz2",noise=noise,num_processes=processes)
     
     def R_plus(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_+(\\theta) = e^{-i\\theta J_+}`
+        :math:`R_+(\\theta) = e^{-i\\theta J_+}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -209,9 +209,9 @@ class Gates(object):
         return self.gates("R+",noise=noise,num_processes=processes)
     
     def R_minus(self,theta=None,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `R_-(\\theta) = e^{-i\\theta J_-}`
+        :math:`R_-(\\theta) = e^{-i\\theta J_-}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
@@ -225,9 +225,9 @@ class Gates(object):
         return self.gates("R-",noise=noise,num_processes=processes)
     
     def GMS(self,theta,phi,*args, **kwargs):
-        """_summary_
+        """
 
-        :math: `U_{GMS} = e^{-i\\theta (J_x\\cos\\phi + J_y\\sin\\phi)^2}`
+        :math:`U_{GMS} = e^{-i\\theta (J_x\\cos\\phi + J_y\\sin\\phi)^2}`
 
         :param theta: theta angle
         :type theta: float
@@ -244,9 +244,9 @@ class Gates(object):
         return self.gates(type="GMS",phi=phi,noise=noise,num_processes=processes)
 
     def RN(self,theta,phi,*args, **kwargs):
-        """_summary_
+        """
         
-        :math:  `R_{n}(\\theta,\\phi)= e^{-i\\theta J_{n}}={exp}[i\\theta (J_x\\sin\\phi - J_y\\cos\\phi)]`
+        :math:`R_{n}(\\theta,\\phi)= e^{-i\\theta J_{n}}={exp}[i\\theta (J_x\\sin\\phi - J_y\\cos\\phi)]`
 
         :param theta: theta angle
         :type theta: float
@@ -262,7 +262,7 @@ class Gates(object):
         return self.gates(type="RN",phi=phi,noise=noise,num_processes=processes)
 
     def check_input_param(self,params):
-        """_summary_
+        """
 
         :param params: parameters to check
         :type params: dict
@@ -275,7 +275,7 @@ class Gates(object):
                 raise ValueError(f"{param} is None")
     
     def get_N_d_d_dicked(self,state):
-        """_summary_
+        """
 
         :param state: state of qubits
         :type state: ndarray, tensor, sparse
@@ -293,7 +293,7 @@ class Gates(object):
         return d_in,N_in,d_dicke
 
     def get_J(self,N_in,d_in,d_dicke,type):
-        """_summary_
+        """
 
         :param N_in: number of qubits
         :type N_in: int
@@ -350,7 +350,7 @@ class Gates(object):
         return J
     
     def Jx(self):
-        """_summary_
+        """
 
         :return: Jx
         :rtype: ndarray, tensor, sparse
@@ -360,7 +360,7 @@ class Gates(object):
         return get_J("x")
     
     def Jy(self):
-        """_summary_
+        """
 
         :return: Jy
         :rtype: ndarray, tensor, sparse
@@ -370,7 +370,7 @@ class Gates(object):
         return get_J("y")
     
     def Jz(self):
-        """_summary_
+        """
 
         :return: Jz
         :rtype: ndarray, tensor, sparse
@@ -380,7 +380,7 @@ class Gates(object):
         return get_J("z")
     
     def J_plus(self):
-        """_summary_
+        """
 
         :return: J_plus
         :rtype: ndarray, tensor, sparse
@@ -390,7 +390,7 @@ class Gates(object):
         return get_J("+")
     
     def J_minus(self):
-        """_summary_
+        """
 
         :return: J_minus
         :rtype: ndarray, tensor, sparse
@@ -400,7 +400,7 @@ class Gates(object):
         return get_J("-")
     
     def var(self,type="",*args, **kwargs):
-        """_summary_
+        """
 
         :param type: type of variance, defaults to ""
         :type type: str, optional
@@ -422,7 +422,7 @@ class Gates(object):
         return exp_val_J_2-exp_val_J**2
     
     def expval(self,type="",*args, **kwargs):
-        """_summary_
+        """
 
         :param type: type of expectation, defaults to ""
         :type type: str, optional
@@ -546,7 +546,7 @@ class Gates(object):
 
 
     def gates(self,type="",*args, **kwargs):
-        """_summary_
+        """
 
         :param type: type of gate, defaults to ""
         :type type: str, optional
@@ -629,7 +629,7 @@ class Gates(object):
         return self
     
     def measure(self,num_shots = None):
-        """_summary_
+        """
 
         :param num_shots: number of shots for measurement, defaults to None
         :type num_shots: int, optional
