@@ -313,18 +313,6 @@ class GD:
 
 class ADAM:
     """Adam and AMSGRAD optimizers.
-    Adam [1] is a gradient-based optimization algorithm that is relies on adaptive estimates of
-    lower-order moments. The algorithm requires little memory and is invariant to diagonal
-    rescaling of the gradients. Furthermore, it is able to cope with non-stationary objective
-    functions and noisy and/or sparse gradients.
-    AMSGRAD [2] (a variant of Adam) uses a 'long-term memory' of past gradients and, thereby,
-    improves convergence properties.
-    References:
-        [1]: Kingma, Diederik & Ba, Jimmy (2014), Adam: A Method for Stochastic Optimization.
-             `arXiv:1412.6980 <https://arxiv.org/abs/1412.6980>`_
-        [2]: Sashank J. Reddi and Satyen Kale and Sanjiv Kumar (2018),
-             On the Convergence of Adam and Beyond.
-             `arXiv:1904.09237 <https://arxiv.org/abs/1904.09237>`_
     (ref. qiskit)
     """    
 
@@ -395,8 +383,11 @@ class ADAM:
     def save_params(self, snapshot_dir: str) -> None:
         """
         Save the current iteration parameters to a file called ``adam_params.csv``.
+        
         Note:
+        
             The current parameters are appended to the file, if it exists already.
+
             The file is not overwritten.
 
         :param snapshot_dir: The directory to store the file in.

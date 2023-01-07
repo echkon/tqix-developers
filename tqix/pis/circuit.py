@@ -82,8 +82,10 @@ class sobj(Gates):
 
 def dbx(j,m):
     """
-    creat dicke basis with pure state
+    create dicke basis with pure state
+
     input: j,m 
+    
     output: a vector basis
 
     :param j: index j

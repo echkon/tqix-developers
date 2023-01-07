@@ -175,17 +175,6 @@ def get_xi_2_F(qc,n1,n2,n3):
     :return: xi_2_F
     :rtype: complex
     """    
-    """
-
-    Args:
-        qc (Circuit): circuit object
-        n1 (ndarray,tensor): vector n1 
-        n2 (ndarray,tensor): vector n2
-        n3 (ndarray,tensor): vector n3
-
-    Returns:
-        xi_2_F
-    """    
     N=qc.N
     var_J_n1 = qc.var(type="xyz",use_vector=True,n=n1)
     mean_J_n2 = qc.expval(type="xyz",use_vector=True,n=n2)

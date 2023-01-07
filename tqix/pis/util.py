@@ -112,6 +112,7 @@ def get_marray(j):
           
 def get_vidx(j,m):
     """to get index in vector state from j,m
+
     :param j: j index
     :type j: int
     :param m: m index
@@ -124,6 +125,7 @@ def get_vidx(j,m):
 
 def get_mm1_idx_max(N):
     """to get mm1 or ik
+
     :param N: number of qubits
     :type N: int
     :return: [mm1,ik]
@@ -177,7 +179,9 @@ def get_midx(N,j,m,m1,block):
     
 def get_jmm1_idx(N):
     """get index i,k of density matrix from j,m,m1
+
     and revert j,m,m1 from i,k
+
     ref. qutip
 
     :param N: number of qubits
@@ -316,6 +320,7 @@ def dicke_bx(N, jmm1):
 
 def dicke_bx1(N,jmm1,ik,dim):
     """create a dicke basis follow jmm1
+
     jmm1 as {(j,m,m1):p}
 
     :param N: number of qubits
@@ -328,17 +333,6 @@ def dicke_bx1(N,jmm1,ik,dim):
     :type dim: int
     :return: new state
     :rtype: ndarray, tensor, sparse
-    """    
-    """_summary_
-
-    Args:
-        N (int): number of qubits
-        jmm1 (dict): stores p value at j,m,m1 indexes 
-        ik (dict): stores i,k indexes wrt j,m,m1
-        dim (int): dimension of rho 
-
-    Returns:
-        new state
     """    
     # create a dicke basis follow jmm1
     # jmm1 as {(j,m,m1):p}
