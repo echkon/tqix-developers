@@ -1,4 +1,4 @@
-Squeeze params methods:
+Squeeze param methods:
 -----------------------------
 .. autofunction:: tqix.pis.squeeze_param.get_xi_2_H
 .. autofunction:: tqix.pis.squeeze_param.get_xi_2_S

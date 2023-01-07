@@ -75,45 +75,37 @@ def get_array_block(N):
     return array_block
 
 def get_jmin(N):
-    """ to get j min
+    """to get j min
 
-    Paramater:
-    -------------
-    N: number of particle
-
-    Return:
-    -------------
-    jmin: min of j """
-
+    :param N: number of qubits
+    :type N: int
+    :return: jmin - min of j
+    :rtype: int
+    """    
     if N % 2 == 0:
         return 0
     else:
         return 0.5
         
 def get_jarray(N):
-    """ to get array of j from N
+    """to get array of j from N
 
-    Paramater:
-    -------------
-    N: number of particle
-
-    Return:
-    -------------
-    jarray: a array of j"""
-
+    :param N: number of qubits
+    :type N: int
+    :return: jarray - a array of j
+    :rtype: list
+    """    
     jarray = np.arange(get_jmin(N),N/2 + 1,1)
     return jarray
        
 def get_marray(j):
-    """ to get array of m from j
+    """to get array of m from j
 
-    Paramater:
-    -------------
-    j: number of j
-
-    Return:
-    -------------
-    marray: a array of j"""
+    :param j: j index
+    :type j: int
+    :return: marray - a array of j
+    :rtype: list
+    """    
 
     marray = np.arange(-j,j+1,1)
     return marray
