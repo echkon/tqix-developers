@@ -37,7 +37,7 @@ class Gates(object):
     def RX(self,theta=None,*args, **kwargs):
         """_summary_
 
-        :math: `R_x(\\theta) = e^{-i\\theta J_x}`
+        :math: `R_x(\theta) = e^{-i\theta J_x}`
 
         :param theta: angle, defaults to None
         :type theta: float, optional
