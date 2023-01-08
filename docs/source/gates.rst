@@ -4,16 +4,12 @@ Gate class and its methods:
 .. autoclass:: tqix.pis.gates.Gates
 .. autofunction:: tqix.pis.gates.Gates.init
 
+.. line-block::
 When adding noise to state after applying a gate operation, additional arguments need 
-
 to be added when calling gate methods: 
-
 noise (int): noise ratio 
-
 num_processes (int): number of processes for multiprocessing noise adding. 
-
 The gate methods can have these additional arguments include: 
-
 RX, RY, RZ, OAT, TAT, TNT, RX2, RY2, RZ2, R_plus, R_minus, GMS, RN 
 
 .. autofunction:: tqix.pis.gates.Gates.RX
