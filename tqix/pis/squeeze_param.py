@@ -6,12 +6,36 @@ import torch
 __all__ = ['get_xi_2_H','get_xi_2_S','get_xi_2_R','get_xi_2_D','get_xi_2_E','get_xi_2_F']
 
 def get_xi_2_H(alpha,beta,gamma,qc):
+    """
+
+    :param alpha: type of alpha
+    :type alpha: str
+    :param beta: type of beta
+    :type beta: str
+    :param gamma: type of gamma
+    :type gamma: str
+    :param qc: circuit object 
+    :type qc: Circuit
+    :return: xi_2_H
+    :rtype: complex
+    """    
+
     var_alpha = qc.var(alpha)
     mean_beta = qc.expval(beta)
     mean_gamma = qc.expval(gamma)
     return (2*var_alpha)/np.sqrt(mean_beta**2+mean_gamma**2) 
 
 def get_xi_2_S(qc,return_n0=False):
+    """
+
+    :param qc: circuit object
+    :type qc: Circuit
+    :param return_n0: if return n0. Defaults to False., defaults to False
+    :type return_n0: bool, optional
+    :return: xi_2_S
+    :rtype: complex
+    """    
+
     use_gpu = qc.use_gpu
     if use_gpu:
         N = qc.N
@@ -89,6 +113,13 @@ def get_xi_2_S(qc,return_n0=False):
                 return min(xi_2_S_1,xi_2_S_2)
 
 def get_xi_2_R(qc):
+    """
+
+    :param qc: circuit object
+    :type qc: Circuit
+    :return: xi_2_R
+    :rtype: complex
+    """    
     use_gpu = qc.use_gpu
     if use_gpu:
         n0,xi_2_S = get_xi_2_S(qc,return_n0=True,use_gpu=True)
@@ -101,12 +132,29 @@ def get_xi_2_R(qc):
     return (N**2/(4*np.abs(mean_J)**2))*xi_2_S
 
 def get_xi_2_D(qc,n):
+    """
+
+    :param qc: circuit object
+    :type qc: Circuit
+    :param n: vector n 
+    :type n: list, ndarray, tensor
+    :return: xi_2_D
+    :rtype: complex
+    """    
     N = qc.N
     var = qc.var(type="xyz",use_vector=True,n=n)
     mean = qc.expval(type="xyz",use_vector=True,n=n)   
     return (N*var)/(N**2/4-mean**2)
 
 def get_xi_2_E(qc,n):
+    """
+    :param qc: circuit object
+    :type qc: Circuit
+    :param n: vector n 
+    :type n: list,ndarray,tensor
+    :return: xi_2_E
+    :rtype: complex
+    """    
     N = qc.N
     var_Jvec = qc.var(type="xyz",use_vector=True,n=n)
     mean_Jvec = qc.expval(type="xyz",use_vector=True,n=n)
@@ -114,6 +162,19 @@ def get_xi_2_E(qc,n):
     return (N*var_Jvec)/(mean_J_2-N/2-mean_Jvec**2)
 
 def get_xi_2_F(qc,n1,n2,n3):
+    """
+
+    :param qc: circuit object
+    :type qc: Circuit
+    :param n1: vector n1 
+    :type n1: list,ndarray,tensor
+    :param n2: vector n2
+    :type n2: list,ndarray,tensor
+    :param n3: vector n3
+    :type n3: list,ndarray,tensor
+    :return: xi_2_F
+    :rtype: complex
+    """    
     N=qc.N
     var_J_n1 = qc.var(type="xyz",use_vector=True,n=n1)
     mean_J_n2 = qc.expval(type="xyz",use_vector=True,n=n2)

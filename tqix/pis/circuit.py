@@ -21,15 +21,13 @@ __all__ =['circuit','sobj',
           'dbx','dicke_ghz']
 
 def circuit(N,**kwargs):
-    """create a quantum circuit
-
-    Parameters:
-    ----------
-    N: particles number
-    Return:
-    -------
-    init_state    
     """
+
+    :param N: number of qubits
+    :type N: int
+    :return: initial state
+    :rtype: ndarray, tensor, sparse
+    """    
     use_gpu = kwargs.pop('use_gpu', False)
     init_state = kwargs.pop('initial_state', None)
     num_process = kwargs.pop('num_process', None)
@@ -53,8 +51,24 @@ def circuit(N,**kwargs):
        return sobj(init_state,N,use_gpu=use_gpu,device=device,num_process=num_process)
 
 class sobj(Gates):
+    """
+    class stores state of qubits
+    """    
     # to crate a spin-object
     def __init__(self,state,N,use_gpu=None,device=None,num_process=None):
+        """
+
+        :param state: state of qubits
+        :type state: ndarray,tensor,sparse
+        :param N: number of qubits
+        :type N: int
+        :param use_gpu: if use gpu, defaults to None
+        :type use_gpu: bool, optional
+        :param device: name of compute device, defaults to None
+        :type device: str, optional
+        :param num_process: number of processes, defaults to None
+        :type num_process: int, optional
+        """        
         super().__init__()
         self.state = state
         self.N = N
@@ -67,6 +81,21 @@ class sobj(Gates):
         return state
 
 def dbx(j,m):
+    """
+    create dicke basis with pure state
+
+    input: j,m 
+    
+    output: a vector basis
+
+    :param j: index j
+    :type j: int
+    :param m: index m
+    :type m: int
+    :raises ValueError: j must in bound -j ≤ m ≤ j
+    :return: state in dicked basis
+    :rtype: ndarray, tensor, sparse
+    """    
     # creat dicke basis with pure state
     # input: j,m 
     # output: a vector basis
@@ -81,6 +110,13 @@ def dbx(j,m):
     return csc_matrix(state)
 
 def dicke_ghz(N):
+    """
+
+    :param N: number of qubits
+    :type N: int
+    :return: state in dicked ghz basis
+    :rtype: ndarray, tensor, sparse
+    """    
     # this is an example to get ghz state
     # def: GHZ = (|N/2,N/2> + |N/2,-N/2>)√2
         
