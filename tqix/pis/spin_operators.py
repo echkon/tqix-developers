@@ -5,6 +5,17 @@ import torch
 __all__ = ['Sx','Sy','Sz','S_plus','S_minus','S_2']
 
 def Sx(S,use_gpu = False,device='cuda'):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to 'cuda'
+    :type device: str, optional
+    :return: spin operator
+    :rtype: ndarray, tensor, sparse
+    """    
     dim = int(2*S+1)
     if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
@@ -26,6 +37,17 @@ def Sx(S,use_gpu = False,device='cuda'):
     return opr
 
 def Sy(S,use_gpu = False,device='cuda'):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to 'cuda'
+    :type device: str, optional
+    :return: spin operator
+    :rtype: ndarray, tensor, sparse
+    """    
     dim = int(2*S+1)
     if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
@@ -51,6 +73,17 @@ def Sy(S,use_gpu = False,device='cuda'):
     return opr
 
 def Sz(S,use_gpu = False,device='cuda'):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to 'cuda'
+    :type device: str, optional
+    :return: spin operator
+    :rtype: ndarray, tensor, sparse
+    """    
     dim = int(2*S+1)
     if use_gpu:
         m,_ = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
@@ -72,6 +105,17 @@ def Sz(S,use_gpu = False,device='cuda'):
     return opr
 
 def S_minus(S,use_gpu = False,device='cuda'):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to 'cuda'
+    :type device: str, optional
+    :return: spin operator
+    :rtype: ndarray, tensor, sparse
+    """      
     dim = int(2*S+1)
     if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
@@ -91,6 +135,17 @@ def S_minus(S,use_gpu = False,device='cuda'):
     return opr
 
 def S_plus(S,use_gpu = False,device='cuda'):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :param use_gpu: if use gpu, defaults to False
+    :type use_gpu: bool, optional
+    :param device: name of compute device, defaults to 'cuda'
+    :type device: str, optional
+    :return: spin operator
+    :rtype: ndarray, tensor, sparse
+    """    
     dim = int(2*S+1)
     if use_gpu:
         m,m_prime = torch.arange(-S,S+1).flip([0]).to(device),torch.arange(-S,S+1).flip([0]).to(device)
@@ -110,6 +165,13 @@ def S_plus(S,use_gpu = False,device='cuda'):
     return opr
 
 def S_2(S):
+    """
+
+    :param S: dimension of spin operator
+    :type S: int
+    :return: opr: spin operator
+    :rtype: ndarray, tensor, sparse
+    """    
     dim = int(2*S+1)
     m_ind,m_prime_ind = np.meshgrid(np.arange(dim), np.arange(dim), indexing='ij')
     non_zero_row_inds,non_zero_col_inds = np.nonzero((m_ind == m_prime_ind).astype(np.int64))

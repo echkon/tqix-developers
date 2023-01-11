@@ -66,6 +66,12 @@ https://github.com/echkon/tqix-developers
 >>> then run:\
  >>> $pip3 install .
 
-# Instruction for running basic example:
->>> Please refer our tutorial for detail:
-https://vqisinfo.wixsite.com/tqix/tutorials
+# note for installation:
+ >>> download source code and run:
+ >>> ```
+ >>> $ pip3 install .
+ >>> ```
+ >>> install from pypi, run:
+ >>> ```
+ >>> $ pip3 install tqix
+ >>> ```
