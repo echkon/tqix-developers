@@ -7,6 +7,7 @@ Gate class and its methods:
 .. line-block::
 When adding noise to state after applying a gate operation, an additional argument need 
 to be added when calling gate methods: 
+
 noise (int): noise ratio.
 
 The gate methods can have the additional argument include: 
