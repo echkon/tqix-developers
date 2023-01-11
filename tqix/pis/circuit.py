@@ -25,8 +25,8 @@ def circuit(N,**kwargs):
 
     :param N: number of qubits
     :type N: int
-    :return: initial state
-    :rtype: ndarray, tensor, sparse
+    :return: sobj
+    :rtype: instance of sobj
     """    
     use_gpu = kwargs.pop('use_gpu', False)
     init_state = kwargs.pop('initial_state', None)
