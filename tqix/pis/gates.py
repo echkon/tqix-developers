@@ -46,11 +46,9 @@ class Gates(object):
         :return: new state after being acted upon by RX  
         :rtype: ndarray, tensor, sparse
         """        
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx",noise=noise,num_processes=processes)
+        return self.gates("Rx",*args, **kwargs)
     
     def RY(self,theta=None,*args, **kwargs):
         """
@@ -62,11 +60,9 @@ class Gates(object):
         :return: new state after being acted upon by RY
         :rtype: ndarray, tensor, sparse
         """       
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params) 
-        return self.gates("Ry",noise=noise,num_processes=processes)
+        return self.gates("Ry",*args, **kwargs)
     
     def RZ(self,theta=None,*args, **kwargs):
         """
@@ -78,11 +74,9 @@ class Gates(object):
         :return: new state after being acted upon by RZ  
         :rtype: ndarray, tensor, sparse
         """        
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz",noise=noise,num_processes=processes)
+        return self.gates("Rz",*args, **kwargs)
     
     def OAT(self,theta,gate_type,*args, **kwargs):
         """
@@ -97,17 +91,15 @@ class Gates(object):
         :rtype: ndarray, tensor, sparse
         """
 
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
         gate_type = gate_type.lower()
         if gate_type =="x":
-            return self.RX2(theta,noise=noise,num_processes=processes)
+            return self.RX2(theta,*args, **kwargs)
         if gate_type =="y":
-            return self.RY2(theta,noise=noise,num_processes=processes)
+            return self.RY2(theta,*args, **kwargs)
         if gate_type =="z":
-            return self.RZ2(theta,noise=noise,num_processes=processes)                    
+            return self.RZ2(theta,*args, **kwargs)                    
     
     def TAT(self,theta,gate_type,*args, **kwargs):
         """
@@ -121,13 +113,11 @@ class Gates(object):
         :return: new state after being acted upon by TAT 
         :rtype: ndarray, tensor, sparse
         """             
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"gate_type":gate_type}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TAT",noise=noise,num_processes=processes)
+        return self.gates(type=gate_type+"TAT",*args, **kwargs)
     
-    def TNT(self,theta,gate_type,*args, **kwargs):
+    def TNT(self,theta,gate_type,omega,*args, **kwargs):
         """
 
         :math:`U_{TNT} = e^{-it(\\chi J_\\alpha^2-\\Omega J_\\beta)}`
@@ -139,12 +129,9 @@ class Gates(object):
         :return: new state after being acted upon by TNT
         :rtype: ndarray, tensor, sparse
         """        
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
-        omega = kwargs.pop('omega', None)
         params = {"theta":theta,"gate_type":gate_type,"omega":omega}
         self.check_input_param(params)
-        return self.gates(type=gate_type+"TNT",omega=omega,noise=noise,num_processes=processes)
+        return self.gates(type=gate_type+"TNT",omega=omega,*args, **kwargs)
 
     def RX2(self,theta=None,*args, **kwargs):
         """
@@ -156,11 +143,9 @@ class Gates(object):
         :return: new state after being acted upon by RX2
         :rtype: ndarray, tensor, sparse
         """        
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rx2",noise=noise,num_processes=processes)
+        return self.gates("Rx2",*args, **kwargs)
     
     def RY2(self,theta=None,*args, **kwargs):
         """
@@ -172,11 +157,9 @@ class Gates(object):
         :return: new state after being acted upon by RY2
         :rtype: ndarray, tensor, sparse
         """  
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Ry2",noise=noise,num_processes=processes)
+        return self.gates("Ry2",*args, **kwargs)
     
     def RZ2(self,theta=None,*args, **kwargs):
         """
@@ -188,11 +171,9 @@ class Gates(object):
         :return: new state after being acted upon by RZ2
         :rtype: ndarray, tensor, sparse
         """   
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("Rz2",noise=noise,num_processes=processes)
+        return self.gates("Rz2",*args, **kwargs)
     
     def R_plus(self,theta=None,*args, **kwargs):
         """
@@ -204,11 +185,9 @@ class Gates(object):
         :return: new state after being acted upon by R_plus
         :rtype: ndarray, tensor, sparse
         """  
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R+",noise=noise,num_processes=processes)
+        return self.gates("R+",*args, **kwargs)
     
     def R_minus(self,theta=None,*args, **kwargs):
         """
@@ -220,11 +199,9 @@ class Gates(object):
         :return: new state after being acted upon by R_minus
         :rtype: ndarray, tensor, sparse
         """  
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta}
         self.check_input_param(params)
-        return self.gates("R-",noise=noise,num_processes=processes)
+        return self.gates("R-",*args, **kwargs)
     
     def GMS(self,theta,phi,*args, **kwargs):
         """
@@ -239,11 +216,9 @@ class Gates(object):
         :rtype: ndarray, tensor, sparse
         """        
 
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
-        return self.gates(type="GMS",phi=phi,noise=noise,num_processes=processes)
+        return self.gates(type="GMS",phi=phi,*args, **kwargs)
 
     def RN(self,theta,phi,*args, **kwargs):
         """
@@ -257,11 +232,9 @@ class Gates(object):
         :return: new state after being acted upon by RN
         :rtype: ndarray, tensor, sparse
         """              
-        noise = kwargs.pop('noise', None)
-        processes = kwargs.pop('num_processes', None)
         params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
-        return self.gates(type="RN",phi=phi,noise=noise,num_processes=processes)
+        return self.gates(type="RN",phi=phi,*args, **kwargs)
 
     def check_input_param(self,params):
         """
@@ -613,7 +586,10 @@ class Gates(object):
             new_state = expJ.dot(self.state).dot(expJ_conj)
         self.state = new_state
 
-        noise = kwargs.pop('noise', None)
+        if args != ():
+            noise = args[0]
+        else:
+            noise = kwargs.pop('noise', None)
         
         if noise is not None:
             if not self.use_gpu:

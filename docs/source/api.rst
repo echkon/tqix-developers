@@ -7,7 +7,7 @@ APIs for the rest of tqix will be added later.
 Contents
 ---------
 .. toctree:: 
-    circuit 
+    sobj 
     gates
     noise
     spinOperators

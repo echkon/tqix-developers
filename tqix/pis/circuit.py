@@ -25,7 +25,7 @@ def circuit(N,**kwargs):
 
     :param N: number of qubits
     :type N: int
-    :return: sobj
+    :return: spin state of circuit 
     :rtype: instance of sobj
     """    
     use_gpu = kwargs.pop('use_gpu', False)

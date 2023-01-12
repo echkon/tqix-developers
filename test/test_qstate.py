@@ -17,11 +17,11 @@
 from tqix import *
 from tqix.pis import *
 import numpy as np
-N = 100 #qubits
+N = 10 #qubits
 theta=0.4
 phi=0.3
 qc = circuit(N, use_gpu =False)
-qc.RX(np.pi/3,noise=0.05)
+qc.RX(np.pi/3,0.05)
 # prob = qc.measure(num_shots=1000)
 #to get state information
 # psi = qc.state #sparse matrix
