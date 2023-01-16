@@ -16,7 +16,7 @@ from tqix.povm.stoke import *
 from tqix.povm.mub import *
 from tqix.povm.sic import *
 
-__all__: ['_pauli','_stoke','_mub','_sic']
+__all__ = ['_pauli','_stoke','_mub','_sic']
 
 def _pauli(n):
     # to return Pauli POVM of
