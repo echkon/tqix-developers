@@ -11,16 +11,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # all information about tqix is here
-MAN = 2
+MAN = 3
 SUB = 0
-SUBS= 4
+SUBS= 1
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
 REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','sklearn']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
 NAME = "tqix"
 AUTHOR = ("Binho Le")
-AUTHOR_EMAIL = ("binho@kindai.ac.jp")
+AUTHOR_EMAIL = ("binho@fris.tohoku.ac.jp")
 LICENSE = "GNU"
 DESCRIPTION = "A Toolbox for Quantum in X"
 KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
