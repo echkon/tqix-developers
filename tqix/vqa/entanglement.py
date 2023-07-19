@@ -4,8 +4,8 @@
 
 import qiskit
 import numpy as np
-import vqa.circuits
-import vqa.constants
+import tqix.vqa.circuits
+import tqix.vqa.constants
 from math import comb
 
 def concentratable_entanglement(
