@@ -15,7 +15,7 @@ MAN = 3
 SUB = 0
 SUBS= 1
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
-REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','sklearn']
+REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','sklearn','qiskit (>=0.43.0)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm','tqix/vqa']
 
 NAME = "tqix"
