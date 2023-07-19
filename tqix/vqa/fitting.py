@@ -7,8 +7,8 @@
 
 
 import qiskit
-import vqa.constants
-import vqa.bounds
+import tqix.vqa.constants
+import tqix.vqa.bounds
 
 import numpy as np
 from numpy.linalg import inv
