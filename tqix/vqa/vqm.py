@@ -7,7 +7,7 @@
 
 import qiskit
 import numpy as np
-import vqa.fitting 
+import tqix.vqa.fitting 
 
 from qiskit.extensions import UnitaryGate
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
