@@ -6,10 +6,7 @@ __all__ = ['training']
 
 
 import qiskit
-import vqa.constants
-#import vqa.circuits
-#import vqa.bounds
-#import vqa.entanglement
+import tqix.vqa.constants
 
 import numpy as np
 #from autograd.numpy.linalg import inv
