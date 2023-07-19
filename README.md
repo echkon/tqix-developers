@@ -7,6 +7,8 @@
      for quantum measurement, quantum metrology, quantum tomography, and others.
 >>> In version 2.0.1 we add a library called tqix.pis for large-scale quantum simulation.     
 
+>>> In version 3.0.1 we add a library called tqix.vqa for Variational Quantum Algorithms
+
 # Structure of the program
 
     \tqix
