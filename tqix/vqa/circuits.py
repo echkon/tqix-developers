@@ -502,9 +502,9 @@ def measure(qc: qiskit.QuantumCircuit, qubits, cbits = []):
     
     counts = qiskit.execute(
             qc, backend = vqa.constants.backend,
-            shots = vqa.constants.num_shots).result().get_counts()
+            shots = tqix.vqa.constants.num_shots).result().get_counts()
 
-    return counts.get("0" * len(qubits), 0) / vqa.constants.num_shots
+    return counts.get("0" * len(qubits), 0) / tqix.vqa.constants.num_shots
 
 
 def measure_theor(qc: qiskit.QuantumCircuit, qubits, cbits = []):
@@ -526,7 +526,7 @@ def measure_theor(qc: qiskit.QuantumCircuit, qubits, cbits = []):
         qc.measure(qubits[i], cbits[i])
     
     counts = qiskit.execute(
-            qc, backend = vqa.constants.backend,
+            qc, backend = tqix.vqa.constants.backend,
             shots = nshorts).result().get_counts()
 
     return counts.get("0" * len(qubits), 0) / nshorts
@@ -550,9 +550,9 @@ def measure_all(qc: qiskit.QuantumCircuit):
         qc.measure(qubits[i], cbits[i])
     #qc.measure_all()
 
-    shots = vqa.constants.num_shots
+    shots = tqix.vqa.constants.num_shots
     counts = qiskit.execute(
-            qc, backend=vqa.constants.backend,
+            qc, backend= tqix.vqa.constants.backend,
             shots=shots).result().get_counts()
 
     new_counts = dict()
