@@ -6,9 +6,9 @@
 """
 
 import qiskit
-import vqa.circuits
-import vqa.constants
-import vqa.vqm
+import tqix.vqa.circuits
+import tqix.vqa.constants
+import tqix.vqa.vqm
 
 import numpy as np
 from numpy.linalg import inv, multi_dot, eigh, matrix_rank, norm
