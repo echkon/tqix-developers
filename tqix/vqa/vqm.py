@@ -38,7 +38,7 @@ def training(qc: qiskit.QuantumCircuit,
     """
     
 
-    return vqa.fitting.fit(qc,qcirs,which_train,cost_func,grad_func,opt_func,num_steps)
+    return tqix.vqa.fitting.fit(qc,qcirs,which_train,cost_func,grad_func,opt_func,num_steps)
     
 
 def qc_add(qc, qcirs):
