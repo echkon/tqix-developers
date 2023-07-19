@@ -11,9 +11,9 @@ ________________________________
 
 import os
 import sys
-import warnings
+#import warnings
 
-import tqix.version
+#import tqix.version
 from tqix.version import version as __version__
 import sys
 
