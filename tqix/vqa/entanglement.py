@@ -23,7 +23,7 @@ def concentratable_entanglement(
     swap_qc = create_swap_test_state(qc.copy())
    
     list_measured = list(range(0, n_qubit))
-    prob = vqa.circuits.measure(swap_qc, list_measured)
+    prob = tqix.vqa.circuits.measure(swap_qc, list_measured)
     return 1 - prob
 
 def concentratable_entanglement_theor(
@@ -41,7 +41,7 @@ def concentratable_entanglement_theor(
     swap_qc = create_swap_test_state(qc.copy()) #full qubits
    
     list_measured = list(range(0, n_qubit))
-    prob = vqa.circuits.measure_theor(swap_qc, list_measured)
+    prob = tqix.vqa.circuits.measure_theor(swap_qc, list_measured)
     return 1 - prob
 
     

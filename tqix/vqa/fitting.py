@@ -27,8 +27,8 @@ def trace_f_invq(qc, qcirs):
     """
         
     #calculate F and Q here
-    qfim = vqa.bounds.sld_qfim(qc.copy(),qcirs)          
-    cfim = vqa.bounds.cfim(qc.copy(),qcirs) 
+    qfim = tqix.vqa.bounds.sld_qfim(qc.copy(),qcirs)          
+    cfim = tqix.vqa.bounds.cfim(qc.copy(),qcirs) 
     inv_qfim = inv(qfim + np.eye(len(qfim)) * 10e-10)
     
     return 1 - np.trace(cfim @ inv_qfim)/len(qcirs[1][2]) #[1]:u_phase,[1][2]:phases
@@ -46,9 +46,9 @@ def bound_sld_cls(qc, qcirs):
         - Numpy array: The cost function
     """
     
-    sld_bound = vqa.bounds.sld_bound(qc.copy(),qcirs) 
-    rld_bound = vqa.bounds.rld_bound(qc.copy(),qcirs) 
-    cls_bound = vqa.bounds.cls_bound(qc.copy(),qcirs)
+    sld_bound = tqix.vqa.bounds.sld_bound(qc.copy(),qcirs) 
+    rld_bound = tqix.vqa.bounds.rld_bound(qc.copy(),qcirs) 
+    cls_bound = tqix.vqa.bounds.cls_bound(qc.copy(),qcirs)
 
     return 1 - sld_bound/cls_bound
 
@@ -65,8 +65,8 @@ def bound_rld_cls(qc, qcirs):
         - Numpy array: The cost function
     """
        
-    rld_bound = vqa.bounds.rld_bound(qc.copy(),qcirs)  
-    cls_bound = vqa.bounds.cls_bound(qc.copy(),qcirs)
+    rld_bound = tqix.vqa.bounds.rld_bound(qc.copy(),qcirs)  
+    cls_bound = tqix.vqa.bounds.cls_bound(qc.copy(),qcirs)
     
     return 1 - rld_bound/cls_bound
 
@@ -83,8 +83,8 @@ def norm2(qc, qcirs):
         - Numpy array: The cost function
     """
     #calculate F and Q here
-    qfim = vqa.bounds.sld_qfim(qc.copy(),qcirs)          
-    cfim = vqa.bounds.cfim(qc.copy(),qcirs)
+    qfim = tqix.vqa.bounds.sld_qfim(qc.copy(),qcirs)          
+    cfim = tqix.vqa.bounds.cfim(qc.copy(),qcirs)
     inv_qfim = inv(qfim + np.eye(len(qfim)) * 10e-10)
     
     return np.linalg.norm(cfim - qfim, ord = 2) #np.trace(inv_qfim) 
@@ -101,7 +101,7 @@ def cost_func_sld(qc, qcirs):
     Returns:
         - Numpy array: The cost function
     """
-    sld_qfim = vqa.bounds.sld_bound(qc.copy(),qcirs)     
+    sld_qfim = tqix.vqa.bounds.sld_bound(qc.copy(),qcirs)     
         
     return sld_qfim
 
@@ -117,7 +117,7 @@ def cost_func_cls(qc, qcirs):
     Returns:
         - Numpy array: The cost function
     """
-    cfim = vqa.bounds.cls_bound(qc.copy(),qcirs)     
+    cfim = tqix.vqa.bounds.cls_bound(qc.copy(),qcirs)     
         
     return cfim
 
@@ -139,7 +139,7 @@ def grad_cost(qc, qcirs, cost_func, which_train):
     """
     
     
-    s = vqa.constants.step_size
+    s = tqix.vqa.constants.step_size
     grad_cost = [] #to reset index
         
     for i in which_train:
@@ -218,7 +218,7 @@ def sgd(params, dev_cost, i):
     Returns:
         - params
     """
-    learning_rate = vqa.constants.learning_rate
+    learning_rate = tqix.vqa.constants.learning_rate
     params -= learning_rate*dev_cost
     return params
     
@@ -244,7 +244,7 @@ def adam(params, dev_cost, iteration):
         mhat = m[i] / (1 - beta1**(iteration + 1))
         vhat = v[i] / (1 - beta2**(iteration + 1))
    
-        params[i] -= vqa.constants.learning_rate * mhat / (np.sqrt(vhat) + epsilon)
+        params[i] -= tqix.vqa.constants.learning_rate * mhat / (np.sqrt(vhat) + epsilon)
     
     return params
     
