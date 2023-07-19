@@ -6,8 +6,8 @@ __all__ = ['plateau']
 
 
 import qiskit
-import vqa.constants
-import vqa.circuits
+import tqix.vqa.constants
+import tqix.vqa.circuits
 import copy
 
 import numpy as np
