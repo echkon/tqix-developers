@@ -7,6 +7,7 @@ __all__ = ['training']
 
 import qiskit
 import tqix.vqa.constants
+import tqix.vqa.entanglement
 
 import numpy as np
 #from autograd.numpy.linalg import inv
@@ -62,7 +63,7 @@ def _cost_func(qc,cirs,coefs,params,ofset):
     """
     #calculate ce 
     qc1 = cirs(qc, coefs, params)
-    ces = vqa.entanglement.concentratable_entanglement(qc1)
+    ces = tqix.vqa.entanglement.concentratable_entanglement(qc1)
            
     return np.abs(ofset - ces), ces
 
@@ -85,7 +86,7 @@ def _grad_func(qc,cirs,coefs,params,ofset):
     """
     
     
-    s = vqa.constants.step_size
+    s = tqix.vqa.constants.step_size
     grad_cost = [] #to reset index
 
     indx = list(range(0, len(params)))       
@@ -152,7 +153,7 @@ def sgd(params, dev_cost, i):
     Returns:
         - params
     """
-    learning_rate = vqa.constants.learning_rate
+    learning_rate = tqix.vqa.constants.learning_rate
     params -= learning_rate*dev_cost
     return params
 
@@ -179,7 +180,7 @@ def adam(params, dev_cost, iteration):
         mhat = m[i] / (1 - beta1**(iteration + 1))
         vhat = v[i] / (1 - beta2**(iteration + 1))
    
-        params[i] -= vqa.constants.learning_rate * mhat / (np.sqrt(vhat) + epsilon)
+        params[i] -= tqix.vqa.constants.learning_rate * mhat / (np.sqrt(vhat) + epsilon)
     
     return params
     
