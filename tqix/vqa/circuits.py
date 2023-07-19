@@ -8,7 +8,7 @@ import qiskit
 import numpy as np
 from qiskit.circuit.library import GMS
 
-import vqa.constants
+import tqix.vqa.constants
 
 #
 # ansatz
