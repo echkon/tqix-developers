@@ -38,7 +38,7 @@ def plateau(qc: qiskit.QuantumCircuit,
     grads = []
     
     for _ in range(num_samples):
-        params = vqa.circuits.create_params(cirs,coefs,num_qubits,['random',params[1],params[2],'random'])  
+        params = tqix.vqa.circuits.create_params(cirs,coefs,num_qubits,['random',params[1],params[2],'random'])  
         grad = gradf(qc.copy(),cirs,coefs,params,cost_func)      
         grads.append(grad) 
         
@@ -62,7 +62,7 @@ def gradf(qc: qiskit.QuantumCircuit,cirs,coefs,params,cost_func):
         - gradient of loss function w.r.t. theta_0 
     """
     
-    s = vqa.constants.step_size    
+    s = tqix.vqa.constants.step_size    
     params1, params2 = copy.deepcopy(params), copy.deepcopy(params)
     params1[0][0] += s #[0][0]the first paramater
     params2[0][0] -= s
