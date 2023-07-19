@@ -75,3 +75,8 @@ https://github.com/echkon/tqix-developers
  >>> ```
  >>> $ pip3 install tqix
  >>> ```
+ 
+ >>> For some reason, let's try this:
+ >>> pip install -r requirements.txt
+>>> pip install . --no-build-isolation
+
