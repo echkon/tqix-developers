@@ -52,8 +52,8 @@ def sld_qfim_inverse(qc, qcirs):
         - qfim 
     """ 
     
-    cir = vqa.vqm.qc_add(qc.copy(), qcirs)
-    rho = vqa.circuits.state_density(cir.copy()) #rho after evolve
+    cir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    rho = tqix.vqa.circuits.state_density(cir.copy()) #rho after evolve
     grho = _grad_rho(qc.copy(), qcirs)
     
     d = len(grho) # number of paramaters
@@ -82,8 +82,8 @@ def sld_qfim_sylvester(qc, qcirs):
         - qfim 
     """ 
     
-    cir = vqa.vqm.qc_add(qc.copy(), qcirs)
-    rho = vqa.circuits.state_density(cir.copy()) #rho after evolve
+    cir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    rho = tqix.vqa.circuits.state_density(cir.copy()) #rho after evolve
     grho = _grad_rho(qc.copy(), qcirs)
     
     d = len(grho) # number of paramaters
@@ -109,8 +109,8 @@ def sld_qfim_eigens(qc, qcirs):
         - qfim 
     """ 
     
-    cir = vqa.vqm.qc_add(qc.copy(), qcirs)
-    rho = vqa.circuits.state_density(cir.copy()) #rho after evolve
+    cir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    rho = tqix.vqa.circuits.state_density(cir.copy()) #rho after evolve
     grho = _grad_rho(qc.copy(), qcirs)
     
     d = len(grho) # number of paramaters
@@ -172,8 +172,8 @@ def rld_qfim(qc, qcirs):
     Returns:
         - qfim via rld   
     """ 
-    qc_func = vqa.vqm.qc_add(qc.copy(), qcirs)
-    rho = vqa.circuits.state_density(qc_func.copy())
+    qc_func = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    rho = tqix.vqa.circuits.state_density(qc_func.copy())
     grho = _grad_rho(qc.copy(), qcirs)
     
     d = len(grho) # number of estimated parameters  
@@ -228,12 +228,12 @@ def cfim(qc, qcirs):
         - cfim
     """
     # measurements
-    qc_copy = vqa.vqm.qc_add(qc.copy(), qcirs)
-    pro = vqa.circuits.measure_born(qc_copy)
+    qc_copy = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    pro = tqix.vqa.circuits.measure_born(qc_copy)
                 
     dpro = []
     d = len(qcirs[1][2]) #[1]:u_phase,[1][2]:phases
-    s = vqa.constants.step_size
+    s = tqix.vqa.constants.step_size
     
     #remove zeros indexs
     idxs = np.where(pro<=10e-18)
@@ -247,9 +247,9 @@ def cfim(qc, qcirs):
         qcirs1[1][2][i] += s #[1]:u_phase,[1][2]:phases
         qcirs2[1][2][i] -= s
         
-        plus = vqa.vqm.qc_add(qc.copy(), qcirs1) 
-        minus = vqa.vqm.qc_add(qc.copy(), qcirs2)
-        gr = (vqa.circuits.measure_born(plus)-vqa.circuits.measure_born(minus))/(2*s)
+        plus = tqix.vqa.vqm.qc_add(qc.copy(), qcirs1) 
+        minus = tqix.vqa.vqm.qc_add(qc.copy(), qcirs2)
+        gr = (tqix.vqa.circuits.measure_born(plus)-tqix.vqa.circuits.measure_born(minus))/(2*s)
         gr = np.delete(gr, idxs)
         dpro.append(np.array(gr))
     
@@ -302,16 +302,16 @@ def _grad_rho(qc, qcirs):
     """
     
     dp = [] #array of matrices rho
-    s = vqa.constants.step_size 
+    s = tqix.vqa.constants.step_size 
   
     for i in range(0, len(qcirs[1][2])):
         qcirs1, qcirs2 = copy.deepcopy(qcirs), copy.deepcopy(qcirs)       
         qcirs1[1][2][i] += s
         qcirs2[1][2][i] -= s
         
-        plus = vqa.vqm.qc_add(qc.copy(), qcirs1) 
-        minus = vqa.vqm.qc_add(qc.copy(), qcirs2)       
-        dp.append((vqa.circuits.state_density(plus)-vqa.circuits.state_density(minus))/(2*s))
+        plus = tqix.vqa.vqm.qc_add(qc.copy(), qcirs1) 
+        minus = tqix.vqa.vqm.qc_add(qc.copy(), qcirs2)       
+        dp.append((tqix.vqa.circuits.state_density(plus)-tqix.vqa.circuits.state_density(minus))/(2*s))
         
     return dp
 
