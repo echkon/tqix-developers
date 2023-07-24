@@ -32,6 +32,7 @@ from tqix.qmeas import *
 from tqix.qoper import *
 from tqix.qtool import *
 from tqix.backend import *
+from tqix.qmetro import *
 
 from tqix.quasi_prob import *
 from tqix.visualize import *
