@@ -9,10 +9,8 @@ ________________________________
 ________________________________
 """
 # quantum toolbox for operators
-# quantum toolbox for fisher information
 
-__all__ = ['dotx', 'tensorx', 'ptracex','deposex',
-           'integrate']
+__all__ = ['dotx', 'tensorx', 'ptracex','deposex']
 
 import numpy as np
 from numpy import arccos
