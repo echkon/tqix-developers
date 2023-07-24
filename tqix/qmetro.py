@@ -10,7 +10,7 @@ ________________________________
 """
 # for quantum metrology
 
-__all__ = ['qfimx']
+__all__ = ['qfimx', 'Hx', 'Ux']
 
 import numpy as np
 from scipy.linalg import expm,inv

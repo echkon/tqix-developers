@@ -23,7 +23,10 @@ state = tq.normx(ghx + ghy + ghz)
 print(state)
 
 # def Hamiltonia
-H = phases[0]*jx + phases[1]*jy + phases[2]*jx
+H = tq.Hx([jx,jy,jz],phases)
+U = tq.Ux([jx,jy,jz],phases,tm)
+print(H)
+print(U)
 
 # calculate Ak
 Ax = tq.integrate(jx,H,tm)
