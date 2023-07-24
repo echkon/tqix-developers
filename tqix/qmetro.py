@@ -10,17 +10,57 @@ ________________________________
 """
 # for quantum metrology
 
-__all__ = ['qfim']
+__all__ = ['qfimx']
 
 import numpy as np
-from numpy import arccos
-from cmath import phase
-from numpy.linalg import multi_dot
 from scipy.linalg import expm,inv
 
-def qfim():
-    
+def qfimx(state,H):
+    """calculate quantum fisher information
 
+    Args:
+        state (matrix): quantum state (density matrix)
+        H (function): Hamiltonian
+        
+    Returns:
+        qfim: quantum fisher information matrix    
+    """
+    return 1
+
+def Hx(h_opt,c_opt):
+    """to create Hamiltonian from h_opt and c_opt
+
+    Args:
+        h_opt (list): list of hamiltonian 
+        c_opt (list): list of coefficients
+
+    Returns:
+        Hx: Hamiltonian
+    """
+    if len(h_opt) != len(c_opt):
+        raise TypeError("list length does not match")
+    else:
+        H = 0.0
+        for i in len(h_opt):
+            H += h_opt[i]*c_opt[i]
+        return H    
+
+def Ux(h_opt,c_opt,t):
+    """to create Unitary operator from h_opt and c_opt
+
+    Args:
+        h_opt (list): list of hamiltonian 
+        c_opt (list): list of coefficients
+        t (float): time
+
+    Returns:
+        Ux: Unitary operator
+    """
+    return expm(-1j*t*Hx(h_opt,c_opt))
+            
+###
+#def _drho():
+    
 def _integrate(A,H,t):
     """calculate integrate exp(itH)@A@exp(-itH)
 
