@@ -164,7 +164,7 @@ def joper(N,*args):
        return joper(N,'x')-1j*joper(N,'y')
 
 def jnoper(N,i,*args):
-    # spin jn operators
+    # spin jn operators @ site i
     # N: interager: number of spin-1/2
     # args: 'x','y','z','+','-'
 
