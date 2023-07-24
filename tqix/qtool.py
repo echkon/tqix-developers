@@ -9,6 +9,7 @@ ________________________________
 ________________________________
 """
 # quantum toolbox for operators
+# quantum toolbox for fisher information
 
 __all__ = ['dotx', 'tensorx', 'ptracex','deposex']
 

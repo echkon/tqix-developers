@@ -14,7 +14,8 @@ __all__ = ['bx','bz',
            'obasis','dbasis','zbasis','dzbasis',
            'coherent','squeezed', 'position','spin_coherent',
            'ghz', 'w', 'dicke', 'random', 
-           'add_random_noise','add_white_noise']
+           'add_random_noise','add_white_noise',
+           'ghz_minmax']
 
 from numpy import conj,transpose, kron, sqrt, exp, pi, sin, cos
 
@@ -256,6 +257,30 @@ def add_white_noise(state,p = 0.0):
        state = operx(state)
     dim = state.shape[0]
     return qx((1-p)*state+p*eyex(dim)/dim)
+
+def ghz_minmax(A):
+    """to create a ghz-like state with 
+    min-max eigenvalues of operator A
+
+    Args:
+        A (complex): operator
+
+    Raises:
+        TypeError: if A is not an oper
+
+    Returns:
+        matrix: ghz state
+    """
+    # check is A is an oper or not
+    if typex(A) != 'oper':
+       msg = 'A must be an operator'
+       raise TypeError(msg)
+    
+    # get min-max eigenvalues
+    w,vk = eigenx(A)
+    idx_min = np.argmin(w)
+    idx_max = np.argmax(w)
+    return (1/np.sqrt(2.0)*(vk[idx_min]+vk[idx_max]))
 
 #####
 def _up_down():
