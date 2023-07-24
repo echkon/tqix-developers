@@ -4,6 +4,19 @@ import sys
 
 import tqix as tq
 
+# define number of qubits
+num_qubits = 3
+
+# call angular momentum operator
+print(tq.jnoper(num_qubits,2,'z'))
+
+[jx, jy, jz] = tq.joper(num_qubits)
+print(jx)
+print(jy)
+print(jz)
+
+
+"""
 # run for N
 num_qubits = 3
 tm = 3.0
@@ -43,4 +56,5 @@ nonmar_index = np.argmin(qbound_nonmar)
 
 print(ts[mar_index],mar_min)
 print(ts[nonmar_index],nonmar_min)
+"""
 

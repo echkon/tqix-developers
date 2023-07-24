@@ -179,7 +179,7 @@ def jnoper(N,i,*args):
                res = tensorx(res,eyex(2))
         else:
            res = eyex(2)
-           for j in range(1,i):
+           for j in range(0,i):
                res = tensorx(res,eyex(2))
            res = tensorx(res,sigmax())
            for j in range(i+1,N-1):
@@ -195,7 +195,7 @@ def jnoper(N,i,*args):
                res = tensorx(res,eyex(2))
         else:
            res = eyex(2)
-           for j in range(1,i):
+           for j in range(0,i):
                res = tensorx(res,eyex(2))
            res = tensorx(res,sigmay())
            for j in range(i+1,N-1):
@@ -211,7 +211,7 @@ def jnoper(N,i,*args):
                res = tensorx(res,eyex(2))
         else:
            res = eyex(2)
-           for j in range(1,i):
+           for j in range(0,i):
                res = tensorx(res,eyex(2))
            res = tensorx(res,sigmaz())
            for j in range(i+1,N-1):
