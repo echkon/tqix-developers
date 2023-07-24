@@ -18,6 +18,7 @@ import numpy as np
 from numpy import arccos
 from cmath import phase
 from numpy.linalg import multi_dot
+from scipy.linalg import expm,inv
 
 def dotx(*args):
     """

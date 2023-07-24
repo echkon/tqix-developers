@@ -6,7 +6,11 @@ import tqix as tq
 
 # define number of qubits
 num_qubits = 3
+tm = 3.0
 
+phases = [np.pi/6.,np.pi/6.,np.pi/6.]
+
+#Get Axyz from intergate
 # call angular momentum operator
 [jx, jy, jz] = tq.joper(num_qubits)
 
@@ -17,6 +21,16 @@ ghz = tq.ghz_minmax(jz)
 
 state = tq.normx(ghx + ghy + ghz)
 print(state)
+
+# def Hamiltonia
+H = phases[0]*jx + phases[1]*jy + phases[2]*jx
+
+# calculate Ak
+Ax = tq.integrate(jx,H,tm)
+Ay = tq.integrate(jy,H,tm)
+Az = tq.integrate(jz,H,tm)
+
+print(Ax,Ay,Az)
 
 
 
