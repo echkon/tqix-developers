@@ -8,12 +8,16 @@ import tqix as tq
 num_qubits = 3
 
 # call angular momentum operator
-print(tq.jnoper(num_qubits,2,'z'))
-
 [jx, jy, jz] = tq.joper(num_qubits)
-print(jx)
-print(jy)
-print(jz)
+
+# create ghz_minmax
+ghx = tq.ghz_minmax(jx)
+ghy = tq.ghz_minmax(jy)
+ghz = tq.ghz_minmax(jz)
+
+state = tq.normx(ghx + ghy + ghz)
+print(state)
+
 
 
 """
