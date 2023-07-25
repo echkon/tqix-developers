@@ -126,7 +126,7 @@ def _droh(rho,U,A):
     """
     drhos = []
     for i in range(len(A)):
-        dU = -1j*dotx(U,Ak[i])
+        dU = -1j*dotx(U,A[i])
         dUU = dotx(dU,rho,daggx(U))
         UdU = dotx(U,rho,daggx(dU))
         drhos.append(dUU + UdU)
