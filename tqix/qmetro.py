@@ -13,7 +13,7 @@ ________________________________
 __all__ = ['qfimx', 'Hx', 'Ux', 'Ax']
 
 import numpy as np
-from tqix.qx import daggx, dotx, eigenx
+from tqix.qx import daggx, dotx, eigenx, operx
 from scipy.linalg import expm,inv
 
 def qfimx(inp_state,h_opt,c_opt,t):
