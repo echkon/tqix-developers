@@ -10,10 +10,11 @@ ________________________________
 """
 # for quantum metrology
 
-__all__ = ['qfimx', 'Hx', 'Ux', 'Ax']
+__all__ = ['qfimx', 'qboundx' 'Hx', 'Ux', 'Ax']
 
 import numpy as np
-from tqix.qx import daggx, dotx, eigenx, operx
+from tqix.qx import daggx, dotx, eigenx, operx, tracex
+from tqix.qoper import eyex
 from scipy.linalg import expm,inv
 
 def qfimx(inp_state,h_opt,c_opt,t):
@@ -58,7 +59,26 @@ def qfimx(inp_state,h_opt,c_opt,t):
                         Q[k,l] += 2*np.real(num1*num2)/de
                   
     return np.real(Q)     
+
+def qboundx(inp_state,h_opt,c_opt,t):
+    """calculate quantum bound
+
+    Args:
+        inp_state (matrix): input quantum state 
+        h_opt(list): list of Hamiltonian
+        c_opt(list): list of coefficients
+        t(float): time
+        
+    Returns:
+        qbound: quantum bound   
+    """
+    d = len(h_opt)
+    W = eyex(d)
+    qfim = qfimx(inp_state,h_opt,c_opt,t)
+    result = np.real(tracex(W @ inv(qfim + eyes(d)* 10*e-10)))
     
+    return result
+
 
 def Hx(h_opt,c_opt):
     """to create Hamiltonian from h_opt and c_opt
