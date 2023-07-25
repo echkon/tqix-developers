@@ -32,14 +32,17 @@ def qfimx(inp_state,h_opt,c_opt,t):
     # length of parameters
     d = len(h_opt)
     
+    # get rho
+    rho = operx(inp_state)
+    
     # unitary, #Ax #final state
     uni = Ux(h_opt,c_opt,t)
     ax = Ax(h_opt,c_opt,t)
-    fin_state = dotx(uni,inp_state,daggx(uni))
+    fin_rho = dotx(uni,rho,daggx(uni))
     
     # eigen_rho,  # derivative of fin_state
-    eigens = eigenx(fin_state)
-    drhos = _droh(fin_state,uni,ax)
+    eigens = eigenx(fin_rho)
+    drhos = _droh(fin_rho,uni,ax)
     
     # qfim
     for k in range(d):

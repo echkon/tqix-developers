@@ -22,19 +22,12 @@ ghz = tq.ghz_minmax(jz)
 state = tq.normx(ghx + ghy + ghz)
 print(state)
 
-# def Hamiltonia
-H = tq.Hx([jx,jy,jz],phases)
-U = tq.Ux([jx,jy,jz],phases,tm)
-print(H)
-print(U)
-
-# calculate Ak
-Ax = tq.integrate(jx,H,tm)
-Ay = tq.integrate(jy,H,tm)
-Az = tq.integrate(jz,H,tm)
-
-print(Ax,Ay,Az)
-
+# calculate qfim
+h_opt = [jx, jy, jz]
+c_opt = phases
+t = tm
+qfim = tq.qfimx(state,h_opt,c_opt,t)
+print(qfim)
 
 
 """
