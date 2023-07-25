@@ -10,7 +10,7 @@ ________________________________
 """
 # for quantum metrology
 
-__all__ = ['qfimx', 'qboundx' 'Hx', 'Ux', 'Ax']
+__all__ = ['qfimx', 'qboundx', 'Hx', 'Ux', 'Ax']
 
 import numpy as np
 from tqix.qx import daggx, dotx, eigenx, operx, tracex
