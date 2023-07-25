@@ -45,18 +45,19 @@ def qfimx(inp_state,h_opt,c_opt,t):
     drhos = _droh(fin_rho,uni,ax)
     
     # qfim
+    Q = np.zeros((d,d), dtype = complex)  
     for k in range(d):
         for l in range(d):
-            H[k,l] = 0.0
+            Q[k,l] = 0.0
             for i in range(len(eigens[0])):
                 for j in range(len(eigens[0])):
                     de = eigens[0][i] + eigens[0][j]
                     if de > 10e-15:
                         num1 = dotx(daggx(eigens[1][i]),drhos[k],eigens[1][j])
                         num2 = dotx(daggx(eigens[1][j]),drhos[l],eigens[1][i])
-                        H[k,l] += 2*np.real(num1*num2)/de
+                        Q[k,l] += 2*np.real(num1*num2)/de
                   
-    return np.real(H)     
+    return np.real(Q)     
     
 
 def Hx(h_opt,c_opt):
