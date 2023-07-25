@@ -75,7 +75,7 @@ def qboundx(inp_state,h_opt,c_opt,t):
     d = len(h_opt)
     W = eyex(d)
     qfim = qfimx(inp_state,h_opt,c_opt,t)
-    result = np.real(tracex(W @ inv(qfim + eyes(d)* 10*e-10)))
+    result = np.real(tracex(W @ inv(qfim + W* 10*e-10)))
     
     return result
 

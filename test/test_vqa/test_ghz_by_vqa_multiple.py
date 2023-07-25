@@ -29,6 +29,10 @@ t = tm
 qfim = tq.qfimx(state,h_opt,c_opt,t)
 print(qfim)
 
+# calculate quantum bound
+qb = tq.qboundx(state,h_opt,c_opt,t)
+print(qb)
+
 
 """
 # run for N
