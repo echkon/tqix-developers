@@ -95,7 +95,7 @@ def qubitx(x):
       return N
    else:
       msg = 'the quantum object is not formed from qubits'
-       raise TypeError(msg)
+      raise TypeError(msg)
 
 def isqx(x):
     """
