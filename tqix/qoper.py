@@ -217,3 +217,32 @@ def jnoper(N,i,*args):
            for j in range(i,N-1):
                res = tensorx(res,eyex(2))
         return res
+
+# add noise channel via kraus operators
+def dephasing(x, lamb):
+    """Add dephasing to the system
+
+    Args:
+        - x quantum system state
+        - lamb: noise
+    
+    Return
+        - x
+    """ 
+    # number of qubits 
+    N = 
+    
+    # kraus operators
+    k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
+    k2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
+    
+    ks1 = 
+    ks2 = 
+    
+    noise_ops = Kraus([k1,k2])
+    kraus_to_error = QuantumError(noise_ops) 
+    
+    for i in range(qc.num_qubits):
+        qc.append(kraus_to_error,[i])
+        
+    return qc
