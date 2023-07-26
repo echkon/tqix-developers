@@ -5,7 +5,7 @@ import sys
 import tqix as tq
 
 # define number of qubits
-num_qubits = 2
+num_qubits = 4
 tm = 1.0
 
 phases = [np.pi/3.]
@@ -23,19 +23,16 @@ state = ghz
 print(state)
 
 # calculate qfim
-h_opt = [jz]
+h_opt = [jx]
 c_opt = phases
 t = tm
 qfim = tq.qfimx(state,h_opt,c_opt,t)
-print('h_opt', h_opt)
 print('qfim', qfim)
 
 # calculate quantum bound
 qb = tq.qboundx(state,h_opt,c_opt,t)
 print(qb)
 
-print(tq.dotx(tq.daggx(state),jz,state))
-print(tq.Ax(h_opt,c_opt,t))
 
 """
 # run for N
