@@ -18,7 +18,7 @@ import numpy as np
 from numpy import conj
 from tqix.qx import *
 from tqix.utility import krondel
-from tqix.qtool import tensorx, dotx
+from tqix.qtool import tensorx, dotx, itensorx
 
 def eyex(n):
     # to gererate an n x n identity matrix
@@ -236,7 +236,7 @@ def dephasing(x, lamb):
     k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
     k2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
     
-    ks1 = 
+    ks1 = itensorx(k1, N)
     ks2 = 
     
     noise_ops = Kraus([k1,k2])
