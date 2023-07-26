@@ -10,13 +10,13 @@ ________________________________
 """
 # quantum toolbox for operators
 
-__all__ = ['dotx', 'tensorx', 'ptracex','deposex']
+__all__ = ['dotx', 'tensorx', 'ptracex','deposex', 'itensorx']
 
 import numpy as np
 from numpy import arccos
 from cmath import phase
 from numpy.linalg import multi_dot
-from scipy.linalg import expm
+from tqix.qoper import eyex
 
 def dotx(*args):
     """
@@ -137,3 +137,27 @@ def deposex(qubit):
     azimuthal = phase(qubit[1]) - phase(qubit[0])
 
     return float(polar), float(azimuthal)
+
+def itensorx(oper,N):
+    """calculate a list of tensors between oper and eye
+
+    Args:
+        oper (matrix): operator
+        N (int): number of qubits
+        
+    Return
+        list of tensors    
+    """
+    ltensors = []
+    for i in range(N):
+        # set list of N opers with l[i] = oper
+        itensors = [eyex(2)] * N
+        itensors[i] = oper
+        
+        # compute tensor
+        result = tensors[0]
+        for j in range(1, N):
+            result = np.kron(result, itensors[j])
+        ltensors.append(result)    
+    return ltensors   
+
