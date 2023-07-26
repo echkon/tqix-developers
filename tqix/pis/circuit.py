@@ -12,7 +12,7 @@ ________________________________
 
 #from numpy import
 import numpy as np
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.pis.util import *
 from scipy.sparse import csc_matrix
 from tqix.pis import *

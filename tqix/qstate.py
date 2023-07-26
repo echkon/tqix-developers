@@ -25,7 +25,7 @@ from scipy.special import comb,factorial
 from tqix.utility import randunit,randnormal,haar
 from tqix.qtool import dotx
 from tqix.qoper import *
-from tqix.qx import *
+from tqix.qobj import *
 
 def bx(d,e = 0):
     """ to generate an orthogonal basis of d dimension at e

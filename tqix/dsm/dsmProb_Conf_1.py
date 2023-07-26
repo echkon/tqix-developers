@@ -15,9 +15,8 @@ from numpy import pi,sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.utility import randunit,krondel,randnormal
-from tqix.qoper import eyex
 from tqix.qtool import dotx
 from tqix.backend import cdf
 from tqix.qstate import add_random_noise,add_white_noise

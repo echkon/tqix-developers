@@ -10,9 +10,8 @@ import numpy as np
 
 from qiskit.extensions import UnitaryGate
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
-from qiskit.quantum_info import Kraus, SuperOp, Choi
+from qiskit.quantum_info import Kraus
 from qiskit.providers.aer.utils import approximate_quantum_error
-import qiskit.quantum_info as qi
 from qiskit.providers.aer.noise import QuantumError
 
 

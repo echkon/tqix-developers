@@ -15,9 +15,8 @@ from numpy import pi,sqrt,dot
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tqix.qx import *
-from tqix.utility import randunit,krondel,randnormal
-from tqix.qoper import eyex
+from tqix.qobj import *
+from tqix.utility import randunit,randnormal
 from tqix.qtool import dotx
 from tqix.backend import cdf
 from tqix.qstate import add_random_noise,add_white_noise
@@ -37,7 +36,7 @@ def execu(state,ncdf,nsamp,theta,m,st,pHist='False'):
          #p = randunit()
          p = randnormal(0.5,st)
          while (p < 0) or (p > 1):
-             p = randnormal(0.5,st)
+            p = randnormal(0.5,st)
          state_new = add_white_noise(state,p)
          post_state = get_post_state(dim,m,st)
          prob = get_prob(state_new,post_state,theta,dim)
@@ -114,9 +113,9 @@ def get_prob(state,post_state,theta,dim):
             temp_prob[0,p,k] = state[p,p]
             # temp_prob_1: sum_{m}
             for m in range(dim):
-                temp_prob[1,p,k] += \
-                state[p,m]*post_state[0,m]*post_state[0,p]\
-                *np.exp(1j*2.0*pi*k*(m-p)/dim)
+               temp_prob[1,p,k] += \
+               state[p,m]*post_state[0,m]*post_state[0,p]\
+               *np.exp(1j*2.0*pi*k*(m-p)/dim)
             # temp_prob_2: sum_{n,m}
             for n in range(dim):
                for m in range(dim):
@@ -139,39 +138,39 @@ def get_prob(state,post_state,theta,dim):
       rho[3,:,:] = (temp_prob[2,:,:])/2.0
       #probabilities
       prob[0,:,:] = (rho[0,:,:]+rho[1,:,:]\
-                    +rho[2,:,:]+rho[3,:,:])/2.0 #Prob.+
+                     +rho[2,:,:]+rho[3,:,:])/2.0 #Prob.+
       prob[1,:,:] = (rho[0,:,:]-rho[1,:,:]\
-                    -rho[2,:,:]+rho[3,:,:])/2.0 #Prob.-
+                     -rho[2,:,:]+rho[3,:,:])/2.0 #Prob.-
       prob[2,:,:] = (rho[0,:,:]+1j*rho[1,:,:]\
-                    -1j*rho[2,:,:]+rho[3,:,:])/2.0 #Prob.L
+                     -1j*rho[2,:,:]+rho[3,:,:])/2.0 #Prob.L
       prob[3,:,:] = (rho[0,:,:]-1j*rho[1,:,:]\
-                    +1j*rho[2,:,:]+rho[3,:,:])/2.0 #Prob.R
+                     +1j*rho[2,:,:]+rho[3,:,:])/2.0 #Prob.R
       prob[4,:,:] = rho[0,:,:] #Prob. 0
       prob[5,:,:] = rho[3,:,:] #Prob. 1
       return np.real(prob)
    else: #for pure state
       prob = np.zeros((6,dim),dtype=complex)
-        
+
       rpsi = np.real(state) #ket
       ipsi = np.imag(state) #ket
-      
+
       psi_til = abs(dotx(post_state,state)[0,0]) #scala
       psi_abs2 = abs(state)**2 #ket: calculate |\psi'_n|^2
 
       #calculate probabilities
       prob[0,:]= (psi_abs2[:,0] - \
-                 2.0*post_state[0,:]*psi_til*rpsi[:,0]+\
-                 post_state[0,:]**2*psi_til**2)/(2.0) #P(0)
+                  2.0*post_state[0,:]*psi_til*rpsi[:,0]+\
+                  post_state[0,:]**2*psi_til**2)/(2.0) #P(0)
       prob[1,:]= (post_state[0,:]**2*psi_til**2)/(2.0) #P(1)
       prob[2,:]= (psi_abs2[:,0])/(4.0) #P(+)
       prob[3,:]= (psi_abs2[:,0]-4.0*psi_til*post_state[0,:]*rpsi[:,0]+\
-              4.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(-)
+               4.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(-)
       prob[4,:]= (psi_abs2[:,0] - 2.0*psi_til*post_state[0,:]*rpsi[:,0]+\
-              2.0*psi_til*post_state[0,:]*ipsi[:,0]+\
-              2.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(L)
+               2.0*psi_til*post_state[0,:]*ipsi[:,0]+\
+               2.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(L)
       prob[5,:]= (psi_abs2[:,0] - 2.0*psi_til*post_state[0,:]*rpsi[:,0]-\
-              2.0*psi_til*post_state[0,:]*ipsi[:,0]+\
-              2.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(R)
+               2.0*psi_til*post_state[0,:]*ipsi[:,0]+\
+               2.0*post_state[0,:]**2*psi_til**2)/(4.0) #P(R)
       return np.real(prob)
 
 def get_bisection(state,prob,dim):
@@ -210,7 +209,7 @@ def get_rho(state,prob,niter,dim):
       for p in range(dim):
          #rho01
          rho[0,x,p] = 1/2.0*(ave_rs[0,x,p]-ave_rs[1,x,p]-\
-                         1j*(ave_rs[2,x,p]-ave_rs[3,x,p]))
+                           1j*(ave_rs[2,x,p]-ave_rs[3,x,p]))
          #rho11
          rho[1,x,p] = ave_rs[5,x,p]
    return rho
@@ -223,7 +222,7 @@ def get_qurec(post_state,theta,rho,dim):
       for m in range(dim):
          for k in range(dim):
             restate[p,m] += np.exp(1j*2*pi*k*(p-m)/dim)*\
-                            (rho[0,p,k]+rho[1,p,k])
+                           (rho[0,p,k]+rho[1,p,k])
          restate[p,m] *= 2.0/(dim*post_state[0,p]\
                             *post_state[0,m])
    #generate physical state
@@ -236,11 +235,11 @@ def get_pqurec(state,post_state,theta,niter,dim):
    Eqs. (16,17) in the main text
    >>>             (P+ - P- + 2P1)
        Re[psi]_n = ---------------   (16)
-                   psi_til(1+delta_n) 
+                  psi_til(1+delta_n) 
 
    >>>                PL - PR
        Im[psi]_n = ---------------   (17)
-                   psi_til(1+deta_n)
+                  psi_til(1+deta_n)
    """
    niter = int(niter/3.)
    temp_rs = np.zeros((niter,6,dim))
@@ -260,9 +259,9 @@ def get_pqurec(state,post_state,theta,niter,dim):
    rnorm = 0.0
    for i in range(dim):
       rtemp[i] = (ave_rs[2,i]-ave_rs[3,i]+2*ave_rs[1,i])/\
-                 (psi_til*post_state[0,i])
+                  (psi_til*post_state[0,i])
       itemp[i] = (ave_rs[4,i]-ave_rs[5,i])/\
-                 (psi_til*post_state[0,i])
+                  (psi_til*post_state[0,i])
       rnorm += rtemp[i]**2+itemp[i]**2
 
    rtemp /= sqrt(rnorm)

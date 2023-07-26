@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 tqix: a Toolbox for Quantum in X:
-   x: quantum measurement, quantum metrology, quantum tomography, and more.
+    x: quantum measurement, quantum metrology, quantum tomography, and more.
 """
 import os
 
@@ -47,16 +47,16 @@ if os.path.exists('tqix/version.py'):
 write_version_py()
 
 setup(name = NAME,
-      version = VERSION,
-      description=DESCRIPTION,
-      url=URL,
-      author=AUTHOR,
-      author_email=AUTHOR_EMAIL,
-      license=LICENSE,
-      packages=PACKAGES,
-      long_description=long_description,
-      long_description_content_type="text/markdown",
-      python_requires=">=3.6",
+        version = VERSION,
+        description=DESCRIPTION,
+        url=URL,
+        author=AUTHOR,
+        author_email=AUTHOR_EMAIL,
+        license=LICENSE,
+        packages=PACKAGES,
+        long_description=long_description,
+        long_description_content_type="text/markdown",
+        python_requires=">=3.6",
 )
 
 

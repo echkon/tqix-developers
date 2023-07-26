@@ -13,7 +13,6 @@ __all__ = ['randunit','krondel','randnormal','haar','ndiff']
 
 import numpy as np
 from numpy.linalg import eigh
-import matplotlib.pyplot as plt
 import random
 from tqix.qx import *
 from scipy import (randn,diagonal,absolute,multiply)

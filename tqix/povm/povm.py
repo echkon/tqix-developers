@@ -10,7 +10,6 @@ ________________________________
 ________________________________
 """
 
-import numpy as np
 from tqix.povm.pauli import *
 from tqix.povm.stoke import *
 from tqix.povm.mub import *

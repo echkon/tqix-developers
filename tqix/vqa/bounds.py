@@ -15,7 +15,7 @@ from numpy.linalg import inv, multi_dot, eigh, matrix_rank, norm
 from scipy.linalg import sqrtm, solve_sylvester
 import copy
 
-from tqix.qx import eigenx,dotx,daggx
+from tqix.qobj import eigenx,dotx,daggx
 
 def sld_qfim(qc, qcirs, method = 'eigens'):
     

@@ -13,11 +13,7 @@ ________________________________
 __all__ = ['husimi', 'husimi_spin', 'wigner', 'wigner_spin']
 
 import numpy as np
-from scipy import (zeros, array, arange, exp, real, conj, pi,
-copy, sqrt, meshgrid, size, polyval, fliplr, conjugate,
-cos, sin)
-from numpy import pi,exp,arange
-from scipy.special import genlaguerre,factorial,sph_harm,binom
+from scipy.special import genlaguerre,factorial,sph_harm
 from tqix import *
 
 def husimi(state,x_array,y_array):

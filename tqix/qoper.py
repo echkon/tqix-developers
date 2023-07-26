@@ -16,7 +16,7 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
 
 import numpy as np
 from numpy import conj
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.utility import krondel
 from tqix.qtool import tensorx, dotx
 

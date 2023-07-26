@@ -13,7 +13,7 @@ ________________________________
 __all__ = ['qfimx', 'qboundx', 'Hx', 'Ux', 'Ax']
 
 import numpy as np
-from tqix.qx import daggx, dotx, eigenx, operx, tracex
+from tqix.qobj import daggx, dotx, eigenx, operx, tracex
 from tqix.qoper import eyex
 from scipy.linalg import expm,inv
 

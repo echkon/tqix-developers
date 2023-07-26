@@ -19,7 +19,7 @@ from tqix.qoper import *
 from tqix.qtool import dotx, tensorx
 from tqix.qstate import *
 from tqix.backend import *
-from tqix.qx import *
+from tqix.qobj import *
 
 from tqix.povm.povm import _pauli,_stoke,_mub,_sic
 

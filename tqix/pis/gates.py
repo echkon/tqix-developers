@@ -14,7 +14,7 @@ ________________________________
 from functools import partial
 import numpy as np
 import random
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.qtool import dotx
 from tqix.pis.util import *
 from tqix.pis import *

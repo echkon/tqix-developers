@@ -19,7 +19,6 @@ __all__ = ['qx','typex','shapex','qubitx',
 from numpy import (sqrt,allclose,array_equal)
 from scipy import (randn)
 from scipy.linalg import qr
-import warnings
 import numpy as np
 from random import random
 from tqix.qtool import dotx

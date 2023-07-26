@@ -14,7 +14,7 @@ from numpy import sin,pi,sqrt,tan
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.utility import krondel,randunit
 from tqix.backend import cdf
 from tqix.dsm.util import gtrace,gfide
@@ -23,7 +23,7 @@ __all__ = ['execu']
 
 def execu(state,niter,nsamp,theta,pHist='False'):
    # to run strong DSM
-    
+
    dim  = state.shape[0]
    prob = get_prob(state,theta,dim)
 

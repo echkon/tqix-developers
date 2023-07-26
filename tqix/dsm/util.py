@@ -9,13 +9,12 @@ ________________________________
 ________________________________
 """
 
-from numpy import sqrt,real,sum,abs
+from numpy import sqrt,real,sum
 import numpy as np
 from numpy.linalg import eigh
-#from scipy.linalg import sqrtm
 from random import random
 from tqix.qtool import dotx
-from tqix.qx import *
+from tqix.qobj import *
 
 __all__ = ['gtrace','gfide','ginfide']
 

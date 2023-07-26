@@ -1,6 +1,5 @@
 from tqix import *
 from tqix.qtool import dotx,tensorx
-import numpy as np
 from itertools import product
 
 __all__ = ['_stoke_']

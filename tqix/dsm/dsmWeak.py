@@ -14,7 +14,7 @@ from numpy import sin,pi,tan,sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.utility import randunit
 from tqix.backend import cdf
 from tqix.dsm.util import gtrace,gfide

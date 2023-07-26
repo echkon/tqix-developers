@@ -12,7 +12,6 @@ ________________________________
 __all__ = ['cdf','mc']
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 def cdf(f):
     """ comulative distribution function
@@ -29,7 +28,7 @@ def cdf(f):
          s += binh[i] 
     return s/(np.amax(f)/nbin*dim)/(nbin/2.)
 
-from tqix.utility import randunit,randnormal
+from tqix.utility import randunit
 def mc(f,niter = 1000):
     """
     Markov chain Monte Carlo simulation

@@ -1,5 +1,5 @@
 import numpy as np
-from tqix.qx import *
+from tqix.qobj import *
 from tqix.pis.util import *
 from tqix.pis import *
 from scipy.sparse import csc_matrix,lil_matrix

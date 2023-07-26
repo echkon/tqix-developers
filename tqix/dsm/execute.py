@@ -10,7 +10,6 @@ ________________________________
 ________________________________
 """
 
-import numpy as np
 from tqix.dsm.dsmStrong import execu as exeStr
 from tqix.dsm.dsmWeak import execu as exeWeak
 from tqix.dsm.dsmProb import execu as exeProb
@@ -32,24 +31,24 @@ class execute:
    def job(self,name):
       if name == 'strong':
          model = exeStr(self.state,\
-                 self.niter,self.nsamp,\
-                 self.theta,self.pHist)
+                  self.niter,self.nsamp,\
+                  self.theta,self.pHist)
       if name == 'weak':
          model = exeWeak(self.state,\
-                 self.niter,self.nsamp,\
-                 self.theta,self.pHist)
+                  self.niter,self.nsamp,\
+                  self.theta,self.pHist)
       if name == 'prob':
          model = exeProb(self.state,\
-                 self.niter,self.nsamp,\
-                 self.theta,self.pHist)
+                  self.niter,self.nsamp,\
+                  self.theta,self.pHist)
       if name == 'prob_1':
          model = exeProb_1(self.state,\
-                 self.niter,self.nsamp,\
-                 self.theta,self.m,self.st,self.pHist)
+                  self.niter,self.nsamp,\
+                  self.theta,self.m,self.st,self.pHist)
       if name == 'prob_2':
          model = exeProb_2(self.state,\
-                 self.niter,self.nsamp,\
-                 self.theta,self.m,self.st,self.pHist)
+                  self.niter,self.nsamp,\
+                  self.theta,self.m,self.st,self.pHist)
       return model
 
    def info(self):
