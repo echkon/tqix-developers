@@ -25,6 +25,7 @@
         |--- quasi_prob.py # generate quasi-probability functions such as Husimi Q function, Wigner function, Husimi Spin function, and Wigner Spin function
         |--- visualize.py  # contain code for Husimi and Wigner visualization in 2D, 3D, and 3D spin
         |--- utility.py    # contain some common utility (mathematical) tools
+        |--- qmetro.py     # calculation tools for quantum metrology
         |
         \povm # generating POVM measurement sets
             |--- __init__.py 
@@ -52,6 +53,19 @@
             |--- spin_operators.py #define spin operators
             |--- squeeze_param.py #define squeezing_parameters
             |--- util.py #utility code
+
+        \vqa # variational quantum algorithms
+            |---__init__.py
+            |--- bounds.py    # quantum bound, qfim, cfim, ...
+            |--- circuits.py  # quantum circuit and ansatzes
+            |--- constants    # various constants
+            |--- entanglement # to calculate entanglement 
+            |--- fitting      # fitting model
+            |--- kraus        # defined Kraus operators for noise
+            |--- plateau      # calculate barrent plateu
+            |--- vqent        # variational quantum entanglement
+            |--- vqm          # variational quantum metrology
+            |
                
 # License
  >>> copyright (c) 2019 and later\
@@ -79,6 +93,8 @@ https://github.com/echkon/tqix-developers
  >>> ```
  
  >>> For some reason, let's try this:
- >>> pip install -r requirements.txt
->>> pip install . --no-build-isolation
+ >>> ```
+ >>> $ pip install -r requirements.txt
+ >>> $ pip install . --no-build-isolation
+ >>> ```
 
