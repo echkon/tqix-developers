@@ -1,7 +1,7 @@
 """
 >>> this file is a part of tqix: a Toolbox for Quantum in X
-                              x: quantum measurement, quantum metrology, 
-                                 quantum tomography, and more.
+                                x: quantum measurement, quantum metrology, 
+                                quantum tomography, and more.
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
@@ -10,15 +10,15 @@ ________________________________
 """
 
 __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
-           'sigmap','sigmam','lowering','raising',
-           'displacement','squeezing',
-           'joper','jnoper']
+            'sigmap','sigmam','lowering','raising',
+            'displacement','squeezing',
+            'joper','jnoper']
 
 import numpy as np
 from numpy import conj
 from tqix.qx import *
 from tqix.utility import krondel
-from tqix.qtool import tensorx, dotx, itensorx
+from tqix.qtool import tensorx, dotx
 
 def eyex(n):
     # to gererate an n x n identity matrix
@@ -158,10 +158,10 @@ def joper(N,*args):
         return s/2.
 
     if args[0] == 'p':
-       return joper(N,'x')+1j*joper(N,'y')
+        return joper(N,'x')+1j*joper(N,'y')
 
     if args[0] == 'm':
-       return joper(N,'x')-1j*joper(N,'y')
+        return joper(N,'x')-1j*joper(N,'y')
 
 def jnoper(N,i,*args):
     # spin jn operators @ site i
@@ -172,50 +172,50 @@ def jnoper(N,i,*args):
         raise TypeError("please put 'x' or 'y' or 'z'")
     if args[0] == 'x':
         if i < 0 or i >= N:
-           raise TypeError('i out of range: [0,N-1]')
+            raise TypeError('i out of range: [0,N-1]')
         elif i == 0:
-           res = sigmax()
-           for j in range(1,N):
-               res = tensorx(res,eyex(2))
+            res = sigmax()
+            for j in range(1,N):
+                res = tensorx(res,eyex(2))
         else:
-           res = eyex(2)
-           for j in range(1,i):
-               res = tensorx(res,eyex(2))
-           res = tensorx(res,sigmax())
-           for j in range(i,N-1):
-               res = tensorx(res,eyex(2))
+            res = eyex(2)
+            for j in range(1,i):
+                res = tensorx(res,eyex(2))
+            res = tensorx(res,sigmax())
+            for j in range(i,N-1):
+                res = tensorx(res,eyex(2))
         return res
 
     if args[0] == 'y':
         if i < 0 or i >= N:
-           raise TypeError('i out of range: [0,N-1]')
+            raise TypeError('i out of range: [0,N-1]')
         elif i == 0:
-           res = sigmay()
-           for j in range(1,N):
-               res = tensorx(res,eyex(2))
+            res = sigmay()
+            for j in range(1,N):
+                res = tensorx(res,eyex(2))
         else:
-           res = eyex(2)
-           for j in range(1,i):
-               res = tensorx(res,eyex(2))
-           res = tensorx(res,sigmay())
-           for j in range(i,N-1):
-               res = tensorx(res,eyex(2))
+            res = eyex(2)
+            for j in range(1,i):
+                res = tensorx(res,eyex(2))
+            res = tensorx(res,sigmay())
+            for j in range(i,N-1):
+                res = tensorx(res,eyex(2))
         return res
 
     if args[0] == 'z':
         if i < 0 or i >= N:
-           raise TypeError('i out of range: [0,N-1]')
+            raise TypeError('i out of range: [0,N-1]')
         elif i == 0:
-           res = sigmaz()
-           for j in range(1,N):
-               res = tensorx(res,eyex(2))
+            res = sigmaz()
+            for j in range(1,N):
+                res = tensorx(res,eyex(2))
         else:
-           res = eyex(2)
-           for j in range(1,i):
-               res = tensorx(res,eyex(2))
-           res = tensorx(res,sigmaz())
-           for j in range(i,N-1):
-               res = tensorx(res,eyex(2))
+            res = eyex(2)
+            for j in range(1,i):
+                res = tensorx(res,eyex(2))
+            res = tensorx(res,sigmaz())
+            for j in range(i,N-1):
+                res = tensorx(res,eyex(2))
         return res
 
 # add noise channel via kraus operators
