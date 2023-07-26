@@ -43,7 +43,7 @@ def qfimx(inp_state,h_opt,c_opt,t):
     
     # eigen_rho,  # derivative of fin_state
     eigens = eigenx(fin_rho)
-    drhos = _droh(fin_rho,uni,ax)
+    drhos = _droh(rho,uni,ax) #use inp_rho to calculate drho,
     
     # qfim
     Q = np.zeros((d,d), dtype = complex)  
