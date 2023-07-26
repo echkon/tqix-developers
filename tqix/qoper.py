@@ -230,19 +230,13 @@ def dephasing(x, lamb):
         - x
     """ 
     # number of qubits 
-    N = 
+    N = qubitx(x)
     
     # kraus operators
     k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
     k2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
     
     ks1 = itensorx(k1, N)
-    ks2 = 
-    
-    noise_ops = Kraus([k1,k2])
-    kraus_to_error = QuantumError(noise_ops) 
-    
-    for i in range(qc.num_qubits):
-        qc.append(kraus_to_error,[i])
+    ks2 = itensorx(k2, N)
         
-    return qc
+    return ks1 # to test Kraus
