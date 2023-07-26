@@ -11,13 +11,13 @@ ________________________________
 
 # description: math tools for a quantum object x
 
-__all__ = ['qx','typex','shapex',
+__all__ = ['qx','typex','shapex','qubitx',
            'isqx','isbrax','isketx','isoperx','ishermx','isnormx',
            'operx','diagx','conjx','transx','daggx','tracex','eigenx',
            'groundx','expx','sqrtx','l2normx','normx']
 
 from numpy import (sqrt,allclose,array_equal)
-from scipy import (randn,diagonal,absolute,multiply)
+from scipy import (randn)
 from scipy.linalg import qr
 import warnings
 import numpy as np
@@ -69,7 +69,7 @@ def typex(x):
 
 def shapex(x):
     """
-    to return the dimention of x
+    to return the dimension of x
     """
     if torch.is_tensor(x):
           x = x.detach().cpu().numpy()
@@ -79,6 +79,22 @@ def shapex(x):
        return x.shape
     else:
        msg = 'not a quantum object.'
+       raise TypeError(msg)
+
+def qubitx(x):
+   """ convert shapex(x) to number of qubits if applicable
+
+   Args:
+       x (oper): quantum object
+       
+   Return: number of qubits    
+   """
+   dim = shapex(x)
+   N = log(dim, 2)
+   if isinstance(N, int):
+      return N
+   else:
+      msg = 'the quantum object is not formed from qubits'
        raise TypeError(msg)
 
 def isqx(x):
