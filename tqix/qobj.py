@@ -85,10 +85,11 @@ def qubitx(x):
       
    Return: number of qubits    
    """
+   
    dim = shapex(x)
-   N = np.log2(dim)
-   if isinstance(N, int):
-      return N
+   N = np.log2(dim[0])
+   if N.is_integer():
+      return int(N)
    else:
       msg = 'the quantum object is not formed from qubits'
       raise TypeError(msg)
