@@ -86,7 +86,7 @@ def qubitx(x):
    Return: number of qubits    
    """
    dim = shapex(x)
-   N = scipy.log(dim, 2)
+   N = np.log2(dim)
    if isinstance(N, int):
       return N
    else:
