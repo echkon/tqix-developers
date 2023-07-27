@@ -234,7 +234,7 @@ def dephasing_chl(x, lamb):
     k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
     k2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
     
-    ks1 = itensorx(k1, N)
-    ks2 = itensorx(k2, N)
+    ks1 = tqix.qtool.itensorx(k1, N)
+    ks2 = tqix.qtool.itensorx(k2, N)
         
     return ks1 # to test Kraus
