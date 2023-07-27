@@ -16,7 +16,6 @@ import numpy as np
 from numpy import arccos
 from cmath import phase
 from numpy.linalg import multi_dot
-from tqix.qoper import eyex
 from scipy import sparse
 
 def dotx(*args):

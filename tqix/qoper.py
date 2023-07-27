@@ -16,6 +16,7 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
 
 import numpy as np
 from numpy import conj
+from scipy import sparse
 import tqix 
 
 def eyex(n):
@@ -231,10 +232,19 @@ def dephasing_chl(x, lamb):
     N = tqix.qobj.qubitx(x)
     
     # kraus operators
-    k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
-    k2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
+    kraus1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
+    kraus2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
     
-    ks1 = tqix.qtool.itensorx(k1, N)
-    ks2 = tqix.qtool.itensorx(k2, N)
-        
-    return ks1 # to test Kraus
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.qx(x))
+    #x_csrn = 0.0
+    print('ssss',x_csr)
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr
