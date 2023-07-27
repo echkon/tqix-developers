@@ -12,7 +12,7 @@ ________________________________
 __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'sigmap','sigmam','lowering','raising',
             'displacement','squeezing',
-            'joper','jnoper']
+            'joper','jnoper', 'dephasing_chl']
 
 import numpy as np
 from numpy import conj
@@ -217,7 +217,7 @@ def jnoper(N,i,*args):
         return res
 
 # add noise channel via kraus operators
-def dephasing(x, lamb):
+def dephasing_chl(x, lamb):
     """Add dephasing to the system
 
     Args:
