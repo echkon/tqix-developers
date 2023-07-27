@@ -13,7 +13,8 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'sigmap','sigmam','lowering','raising',
             'displacement','squeezing',
             'joper','jnoper', 
-            'dephasing_chl', 'bitflip_chl']
+            'dephasing_chl', 'bitflip_chl','phaseflip_chl', 
+            'depolarizing_chl']
 
 import numpy as np
 from numpy import conj
@@ -249,7 +250,7 @@ def dephasing_chl(x, lamb):
     return x_csr
 
 def bitflip_chl(x, lamb):
-    """Add bitflit to the system
+    """Add bitflip to the system
 
     Args:
         - x quantum system state
@@ -273,6 +274,70 @@ def bitflip_chl(x, lamb):
     for i in range(N):
         x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
                     + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr
+
+def phaseflip_chl(x, lamb):
+    """Add phaseflip to the system
+
+    Args:
+        - x quantum system state
+        - lamb: noise
+    
+    Return
+        - x (sparse matrix)
+    """ 
+    # number of qubits 
+    N = tqix.qobj.qubitx(x)
+    
+    # kraus operators
+    kraus1 = np.sqrt(1-lamb) * np.array([[1, 0], [0, 1]])
+    kraus2 = np.sqrt(lamb) * np.array([[1, 0], [0, -1]])
+    
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.operx(x))
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr
+
+def depolarizing_chl(x, lamb):
+    """Add depolarizing to the system
+
+    Args:
+        - x quantum system state
+        - lamb: noise
+    
+    Return
+        - x (sparse matrix)
+    """ 
+    # number of qubits 
+    N = tqix.qobj.qubitx(x)
+    
+    # kraus operators
+    kraus1 = np.sqrt(1-lamb) * np.array([[1, 0], [0, 1]])
+    kraus2 = np.sqrt(lamb/3.) * np.array([[0, 1], [1, 0]])
+    kraus3 = np.sqrt(lamb/3.) * np.array([[0, -1j], [1j, 0]])
+    kraus4 = np.sqrt(lamb/3.) * np.array([[1, 0], [0, -1]])
+    
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    lkraus3 = tqix.qtool.itensorx(kraus3, N)
+    lkraus4 = tqix.qtool.itensorx(kraus4, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.operx(x))
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i] \
+                    + lkraus3[i] @ x_csr @ lkraus3[i] \
+                    + lkraus4[i] @ x_csr @ lkraus4[i]
         x_csr = x_csrn
     
     return x_csr

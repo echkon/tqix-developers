@@ -22,7 +22,7 @@ ghz = tq.ghz_minmax(jz)
 state = ghz
 print(state)
 
-state_dp = tq.dephasing_chl(state,lamb = 0.8)
+state_dp = tq.bitflip_chl(state,lamb = 0.4)
 print(state_dp)
 
 # calculate qfim
