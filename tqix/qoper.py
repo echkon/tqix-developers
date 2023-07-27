@@ -12,7 +12,8 @@ ________________________________
 __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'sigmap','sigmam','lowering','raising',
             'displacement','squeezing',
-            'joper','jnoper', 'dephasing_chl']
+            'joper','jnoper', 
+            'dephasing_chl', 'bitflip_chl']
 
 import numpy as np
 from numpy import conj
@@ -234,6 +235,35 @@ def dephasing_chl(x, lamb):
     # kraus operators
     kraus1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
     kraus2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
+    
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.operx(x))
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr
+
+def bitflip_chl(x, lamb):
+    """Add bitflit to the system
+
+    Args:
+        - x quantum system state
+        - lamb: noise
+    
+    Return
+        - x (sparse matrix)
+    """ 
+    # number of qubits 
+    N = tqix.qobj.qubitx(x)
+    
+    # kraus operators
+    kraus1 = np.sqrt(1-lamb) * np.array([[1, 0], [0, 1]])
+    kraus2 = np.sqrt(lamb) * np.array([[0, 1], [1, 0]])
     
     lkraus1 = tqix.qtool.itensorx(kraus1, N)
     lkraus2 = tqix.qtool.itensorx(kraus2, N)
