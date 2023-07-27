@@ -162,7 +162,7 @@ def itensorx(oper,N):
         # compute tensor
         result = itensors[0]
         for j in range(1, N):
-            result = np.kron(result, itensors[j])
+            result = sparse.kron(result, itensors[j])
         ltensors.append(result)    
     return ltensors   
 
