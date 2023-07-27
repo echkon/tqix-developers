@@ -15,10 +15,10 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'joper','jnoper']
 
 import numpy as np
-#from numpy import conj
-from tqix.qobj import *
-from tqix.utility import krondel
-from tqix.qtool import tensorx, dotx
+from numpy import conj
+# from tqix.qobj import *
+# from tqix.qtool import tensorx, dotx
+import tqix 
 
 def eyex(n):
     # to gererate an n x n identity matrix
@@ -37,11 +37,11 @@ def soper(s,*args):
     if args[0] == '+':
         M = _sp(s)
     elif args[0] == '-':
-        M = daggx(_sp(s))
+        M = tqix.qobj.daggx(_sp(s))
     elif args[0] == 'x':
-        M = 0.5 * (_sp(s) + daggx(_sp(s)))
+        M = 0.5 * (_sp(s) + tqix.qobj.daggx(_sp(s)))
     elif args[0] == 'y':
-        M = -0.5 * 1j * (_sp(s) - daggx(_sp(s)))
+        M = -0.5 * 1j * (_sp(s) - tqix.qobj.daggx(_sp(s)))
     elif args[0] == 'z':
         M = _sz(s)
     else:
@@ -54,7 +54,7 @@ def _sz(s):
     data = np.zeros((d,d),dtype = complex)
     for i in range(0,d):
         for j in range(0,d):
-            data[i,j] = krondel(s-i,s-j)*(s-i)
+            data[i,j] = tqix.utility.krondel(s-i,s-j)*(s-i)
     return data
 
 def _sp(s):
@@ -63,7 +63,7 @@ def _sp(s):
     data = np.zeros((d,d),dtype = complex)
     for i in range(0,d):
         for j in range(0,d):
-            data[i,j] = krondel(s-i,s-j+1)*\
+            data[i,j] = tqix.utility.krondel(s-i,s-j+1)*\
             np.sqrt(s*(s+1)-(s-i)*(s-j))
     return data
 
@@ -111,23 +111,23 @@ def raising(d):
     # d : dimension
     if not isinstance(d,(int, np.integer)):
         raise ValueError("dimension must be integer")
-    return daggx(lowering(d))
+    return tqix.qobj.daggx(lowering(d))
     
 #
 # displacement operator
 #
 def displacement(d,alpha):
     power = alpha*raising(d) - conj(alpha)*lowering(d)
-    M = expx(power)
+    M = tqix.qobj.expx(power)
     return M
 
 #
 # squeezing operator
 #
 def squeezing(d,beta):
-    power = 0.5 * (conj(beta)*dotx(lowering(d),lowering(d))\
-            - beta*dotx(raising(d),raising(d)))
-    M = expx(power)
+    power = 0.5 * (conj(beta)*tqix.qtool.dotx(lowering(d),lowering(d))\
+            - beta*tqix.qtool.dotx(raising(d),raising(d)))
+    M = tqix.qobj.expx(power)
     return M
 #
 # collective spin operators
@@ -176,14 +176,14 @@ def jnoper(N,i,*args):
         elif i == 0:
             res = sigmax()
             for j in range(1,N):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         else:
             res = eyex(2)
             for j in range(1,i):
-                res = tensorx(res,eyex(2))
-            res = tensorx(res,sigmax())
+                res = tqix.qtool.tensorx(res,eyex(2))
+            res = tqix.qtool.tensorx(res,sigmax())
             for j in range(i,N-1):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         return res
 
     if args[0] == 'y':
@@ -192,14 +192,14 @@ def jnoper(N,i,*args):
         elif i == 0:
             res = sigmay()
             for j in range(1,N):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         else:
             res = eyex(2)
             for j in range(1,i):
-                res = tensorx(res,eyex(2))
-            res = tensorx(res,sigmay())
+                res = tqix.qtool.tensorx(res,eyex(2))
+            res = tqix.qtool.tensorx(res,sigmay())
             for j in range(i,N-1):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         return res
 
     if args[0] == 'z':
@@ -208,14 +208,14 @@ def jnoper(N,i,*args):
         elif i == 0:
             res = sigmaz()
             for j in range(1,N):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         else:
             res = eyex(2)
             for j in range(1,i):
-                res = tensorx(res,eyex(2))
-            res = tensorx(res,sigmaz())
+                res = tqix.qtool.tensorx(res,eyex(2))
+            res = tqix.qtool.tensorx(res,sigmaz())
             for j in range(i,N-1):
-                res = tensorx(res,eyex(2))
+                res = tqix.qtool.tensorx(res,eyex(2))
         return res
 
 # add noise channel via kraus operators
@@ -230,7 +230,7 @@ def dephasing(x, lamb):
         - x
     """ 
     # number of qubits 
-    N = qubitx(x)
+    N = tqix.qobj.qubitx(x)
     
     # kraus operators
     k1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
