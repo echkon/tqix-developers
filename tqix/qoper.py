@@ -239,9 +239,7 @@ def dephasing_chl(x, lamb):
     lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
-    x_csr = sparse.csr_matrix(tqix.qx(x))
-    #x_csrn = 0.0
-    print('ssss',x_csr)
+    x_csr = sparse.csr_matrix(tqix.operx(x))
     for i in range(N):
         x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
                     + lkraus2[i] @ x_csr @ lkraus2[i]
