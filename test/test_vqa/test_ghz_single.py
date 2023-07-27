@@ -22,17 +22,18 @@ ghz = tq.ghz_minmax(jz)
 state = ghz
 print(state)
 
-print(tq.dephasing_chl(state,lamb = 0.2)[1])
+state_dp = tq.dephasing_chl(state,lamb = 0.8)
+print(state_dp)
 
 # calculate qfim
 h_opt = [jx]
 c_opt = phases
 t = tm
-qfim = tq.qfimx(state,h_opt,c_opt,t)
+qfim = tq.qfimx(state_dp.toarray(),h_opt,c_opt,t)
 print('qfim', qfim)
 
 # calculate quantum bound
-qb = tq.qboundx(state,h_opt,c_opt,t)
+qb = tq.qboundx(state_dp.toarray(),h_opt,c_opt,t)
 print(qb)
 
 

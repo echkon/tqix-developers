@@ -245,4 +245,4 @@ def dephasing_chl(x, lamb):
                     + lkraus2[i] @ x_csr @ lkraus2[i]
         x_csr = x_csrn
     
-    return x_csr
+    return x_csr.toarray()
