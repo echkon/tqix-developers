@@ -16,7 +16,7 @@
         |--- about.py    # describe the program's information
         |--- infor.py    # provide information about hardware and packages
         |--- version.py  # describe the current version of the program
-        |--- qx.py       # generate a quantum object, and some convenient tools operate on the object
+        |--- qobj.py       # generate a quantum object, and some convenient tools operate on the object
         |--- qstate      # generate various quantum states
         |--- qoper.py    # provide some common quantum operators: pauli matrices, lowering, raising,..
         |--- qmeas.py    # calculate quantum measurement using both analytical and simulation methods
