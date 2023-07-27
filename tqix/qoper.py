@@ -16,8 +16,6 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
 
 import numpy as np
 from numpy import conj
-# from tqix.qobj import *
-# from tqix.qtool import tensorx, dotx
 import tqix 
 
 def eyex(n):

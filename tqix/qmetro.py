@@ -1,7 +1,7 @@
 """
 >>> this file is a part of tqix: a Toolbox for Quantum in X
-                              x: quantum measurement, quantum metrology, 
-                                 quantum tomography, and more.
+                                x: quantum measurement, quantum metrology, 
+                                quantum tomography, and more.
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
@@ -57,7 +57,7 @@ def qfimx(inp_state,h_opt,c_opt,t):
                         num1 = dotx(daggx(eigens[1][i]),drhos[k],eigens[1][j])
                         num2 = dotx(daggx(eigens[1][j]),drhos[l],eigens[1][i])
                         Q[k,l] += 2*np.real(num1*num2)/de
-                  
+
     return np.real(Q)     
 
 def qboundx(inp_state,h_opt,c_opt,t):

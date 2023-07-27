@@ -11,13 +11,13 @@ ________________________________
 """
 
 __all__ = ['bx','bz',
-           'obasis','dbasis','zbasis','dzbasis',
-           'coherent','squeezed', 'position','spin_coherent',
-           'ghz', 'w', 'dicke', 'random', 
-           'add_random_noise','add_white_noise',
-           'ghz_minmax']
+            'obasis','dbasis','zbasis','dzbasis',
+            'coherent','squeezed', 'position','spin_coherent',
+            'ghz', 'w', 'dicke', 'random', 
+            'add_random_noise','add_white_noise',
+            'ghz_minmax']
 
-from numpy import conj,transpose, kron, sqrt, exp, pi, sin, cos
+from numpy import conj, kron, sqrt, exp, pi, sin, cos
 
 import numpy as np
 from itertools import combinations
