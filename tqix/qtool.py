@@ -1,7 +1,7 @@
 """
 >>> this file is a part of tqix: a Toolbox for Quantum in X
-                              x: quantum measurement, quantum metrology, 
-                                 quantum tomography, and more.
+                                x: quantum measurement, quantum metrology, 
+                                quantum tomography, and more.
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
@@ -155,7 +155,7 @@ def itensorx(oper,N):
         itensors[i] = oper
         
         # compute tensor
-        result = tensors[0]
+        result = itensors[0]
         for j in range(1, N):
             result = np.kron(result, itensors[j])
         ltensors.append(result)    
