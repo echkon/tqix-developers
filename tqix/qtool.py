@@ -30,7 +30,7 @@ def dotx(*args):
     dot product of input operators
     """
     if not args:
-       raise TypeError("Please put at least one argument")
+        raise TypeError("Please put at least one argument")
 
     return multi_dot(args)
 
@@ -46,13 +46,13 @@ def tensorx(*args):
     tensor prduct of input
     """
     if not args:
-       raise TypeError("Please put at least one argument")
+        raise TypeError("Please put at least one argument")
 
     if len(args) == 1 and \
-       isinstance(args[0],(tuple,list,np.ndarray)):
-       targs = args[0]
+        isinstance(args[0],(tuple,list,np.ndarray)):
+        targs = args[0]
     else:
-       targs = args
+        targs = args
     
     t = targs[0]
     for i in range(1,len(targs)):
