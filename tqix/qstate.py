@@ -31,15 +31,15 @@ def bx(d,e = 0):
     """ to generate an orthogonal basis of d dimension at e
     For example:
     base(2,0) = [[1]
-                 [0]
-                 [0]]
+                [0]
+                [0]]
     """
     if (not isinstance(d,int)) or d < 0:
-       raise ValueError("d must be integer d >= 0")
+        raise ValueError("d must be integer d >= 0")
     if (not isinstance(e,int)) or e < 0:
-       raise ValueError("e must be interger e>= 0")
+        raise ValueError("e must be interger e>= 0")
     if e > d-1:
-       raise ValueError("basis vector index need to be in d-1")
+        raise ValueError("basis vector index need to be in d-1")
     ba = np.zeros((d,1)) #column vector
     ba[e,0] = 1.0
     return qx(ba)
@@ -47,11 +47,11 @@ def bx(d,e = 0):
 def obasis(d,e = 0):
     #old version
     if (not isinstance(d,int)) or d < 0:
-       raise ValueError("d must be integer d >= 0")
+        raise ValueError("d must be integer d >= 0")
     if (not isinstance(e,int)) or e < 0:
-       raise ValueError("e must be interger e>= 0")
+        raise ValueError("e must be interger e>= 0")
     if e > d-1:
-       raise ValueError("basis vector index need to be in d-1")
+        raise ValueError("basis vector index need to be in d-1")
     print('Warnings: obasis(d,e) is an old version, please use bx(d,e) instead.')
     ba = np.zeros((d,1)) #column vector
     ba[e,0] = 1.0
@@ -228,19 +228,19 @@ def add_random_noise(psi,m = 0.0,st = 0.0):
     st: standard derivative
     """
     if isqx(psi):
-       dim = psi.shape[0]
-       per = [randnormal(m,st,dim)+1j*randnormal(m,st,dim)]
-       if typex(psi)=='ket':
-          per = daggx(per) #to get ket
-       elif typex(psi)=='oper':
-          per = dotx(daggx(per),per)
+        dim = psi.shape[0]
+        per = [randnormal(m,st,dim)+1j*randnormal(m,st,dim)]
+        if typex(psi)=='ket':
+            per = daggx(per) #to get ket
+        elif typex(psi)=='oper':
+            per = dotx(daggx(per),per)
 
-       psi = psi + per
-       psi = normx(psi)
-       return qx(psi)
+        psi = psi + per
+        psi = normx(psi)
+        return qx(psi)
     else:
-       msg = 'psi is not a quantum object'
-       raise TypeError(msg)
+        msg = 'psi is not a quantum object'
+        raise TypeError(msg)
 
 def add_white_noise(state,p = 0.0):
     """ add white noise to quantum state
@@ -254,7 +254,7 @@ def add_white_noise(state,p = 0.0):
     (1-p)*state + p*I/d
     """
     if typex(state) != 'oper':
-       state = operx(state)
+        state = operx(state)
     dim = state.shape[0]
     return qx((1-p)*state+p*eyex(dim)/dim)
 
@@ -273,8 +273,8 @@ def ghz_minmax(A):
     """
     # check is A is an oper or not
     if typex(A) != 'oper':
-       msg = 'A must be an operator'
-       raise TypeError(msg)
+        msg = 'A must be an operator'
+        raise TypeError(msg)
     
     # get min-max eigenvalues
     w,vk = eigenx(A)
@@ -311,8 +311,8 @@ def _place_ones(size,count):
     Eg.
     place_ones(3,2) <=> |110>, |101> |011>
     [[1. 1. 0.]
-     [1. 0. 1.]
-     [0. 1. 1.]]
+    [1. 0. 1.]
+    [0. 1. 1.]]
     """
     c = int(comb(size,count))
     result = np.zeros((c,size))
