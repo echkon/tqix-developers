@@ -149,10 +149,10 @@ def itensorx(oper,N):
     Return
         list of tensors    
     """
-    # convert opr to sparse matrix
+    # convert oper to sparse matrix
     oper_csr = sparse.csr_matrix(oper)
     idn_csr = sparse.identity(2)
-    
+        
     ltensors = []
     for i in range(N):
         # set list of N opers with l[i] = oper
@@ -163,6 +163,8 @@ def itensorx(oper,N):
         result = itensors[0]
         for j in range(1, N):
             result = sparse.kron(result, itensors[j])
-        ltensors.append(result)    
-    return ltensors   
+
+        result_csr = sparse.csr_matrix(result.todense())  
+        ltensors.append(result_csr)    
+    return ltensors
 
