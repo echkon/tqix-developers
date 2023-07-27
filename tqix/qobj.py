@@ -18,7 +18,6 @@ __all__ = ['qx','typex','shapex','qubitx',
 
 from numpy import (allclose,array_equal)
 import numpy as np
-from random import random
 from tqix.qtool import dotx
 import scipy
 import torch 

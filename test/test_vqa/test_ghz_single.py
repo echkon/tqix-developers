@@ -22,7 +22,7 @@ ghz = tq.ghz_minmax(jz)
 state = ghz
 print(state)
 
-print(dephasing(state))
+print(tq.dephasing(state))
 
 # calculate qfim
 h_opt = [jx]
