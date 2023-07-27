@@ -34,6 +34,7 @@ def qfimx(inp_state,h_opt,c_opt,t):
     d = len(h_opt)
     
     # get rho
+    inp_state = inp_state.toarray()
     rho = operx(inp_state)
     
     # unitary, #Ax #final state

@@ -29,11 +29,11 @@ print(state_dp)
 h_opt = [jx]
 c_opt = phases
 t = tm
-qfim = tq.qfimx(state_dp.toarray(),h_opt,c_opt,t)
+qfim = tq.qfimx(state_dp,h_opt,c_opt,t)
 print('qfim', qfim)
 
 # calculate quantum bound
-qb = tq.qboundx(state_dp.toarray(),h_opt,c_opt,t)
+qb = tq.qboundx(state_dp,h_opt,c_opt,t)
 print(qb)
 
 
