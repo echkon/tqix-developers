@@ -5,7 +5,7 @@ import sys
 import tqix as tq
 
 # define number of qubits
-num_qubits = 6
+num_qubits = 4
 tm = 3.0
 y = 0.5
 
@@ -13,7 +13,7 @@ phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 
 #Get Axyz from intergate
 # call angular momentum operator
-[jx, jy, jz] = tq.joper(num_qubits)
+[jx, jy, jz] = tq.jpauli(num_qubits)
 
 # create ghz_minmax
 ghx = tq.ghz_minmax(jx)

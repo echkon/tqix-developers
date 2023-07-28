@@ -171,7 +171,7 @@ def jpauli(N,*args):
     # args: 'x','y','z','+','-'
 
     if not args:
-        return joper(N,'x'),joper(N,'y'),joper(N,'z')
+        return jpauli(N,'x'),jpauli(N,'y'),jpauli(N,'z')
     if args[0] == 'x':
         s = 0.0
         for i in range(N): 
@@ -191,10 +191,10 @@ def jpauli(N,*args):
         return s
 
     if args[0] == 'p':
-        return joper(N,'x')+1j*joper(N,'y')
+        return jpauli(N,'x')+1j*jpauli(N,'y')
 
     if args[0] == 'm':
-        return joper(N,'x')-1j*joper(N,'y')
+        return jpauli(N,'x')-1j*jpauli(N,'y')
 
 def jnoper(N,i,*args):
     # spin jn operators @ site i
