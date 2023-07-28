@@ -16,6 +16,7 @@ import numpy as np
 from tqix.qobj import daggx, dotx, eigenx, operx, tracex
 from tqix.qoper import eyex
 from scipy.linalg import expm,inv
+from scipy import sparse
 
 def qfimx(inp_state,h_opt,c_opt,t):
     """calculate quantum fisher information
