@@ -341,3 +341,67 @@ def depolarizing_chl(x, lamb):
         x_csr = x_csrn
     
     return x_csr
+
+def markovian_chl(x, t, y):
+    """Add markovian to the system
+
+    Args:
+        - x quantum system state
+        - t: time
+        - y: noise
+    
+    Return
+        - x (sparse matrix)
+    """ 
+    # number of qubits 
+    N = tqix.qobj.qubitx(x)
+    
+    # kraus operators
+    qt = 1 - np.exp(-y*t)
+    kraus1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
+    kraus2 = np.array([[np.sqrt(qt),0], [0,0]])
+    
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.operx(x))
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr
+
+def nonmarkovian_chl(x, t, y, tc = 20):
+    """Add nonmarkovian to the system
+
+    Args:
+        - x quantum system state
+        - t: time
+        - y: noise
+    
+    Return
+        - x (sparse matrix)
+    """ 
+    # number of qubits 
+    N = tqix.qobj.qubitx(x)
+    
+    # kraus operators
+    # tc = 20.0 #fixed in rXiv:2305.08289
+    qt = 1 - np.exp(-y*t**2/(2*tc))
+    
+    kraus1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
+    kraus2 = np.array([[np.sqrt(qt),0], [0,0]])
+    
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    
+    # apply Kraus to qobj x
+    x_csr = sparse.csr_matrix(tqix.operx(x))
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
+    return x_csr

@@ -5,7 +5,7 @@ import sys
 import tqix as tq
 
 # define number of qubits
-num_qubits = 4
+num_qubits = 5
 tm = 1.0
 
 phases = [np.pi/2.]
@@ -26,28 +26,29 @@ h_opt = [jx]
 c_opt = phases
 t = tm
 
-dp = []
-bit = []
-phase = []
-dpo = []
+dp0 = []
+dp6 = []
+dp3 = []
+dp2 = []
 lambs = np.linspace(0,1,20)
 
 for lamb in lambs:
     state_dp = tq.dephasing_chl(state,lamb)
-    dp.append(tq.qfimx(state_dp,h_opt,c_opt,t)[0,0])
-    state_bit = tq.bitflip_chl(state,lamb)
-    bit.append(tq.qfimx(state_bit,h_opt,c_opt,t)[0,0])
-    state_phase = tq.phaseflip_chl(state,lamb)
-    phase.append(tq.qfimx(state_phase,h_opt,c_opt,t)[0,0])
-    state_dpo = tq.depolarizing_chl(state,lamb)
-    dpo.append(tq.qfimx(state_dpo,h_opt,c_opt,t)[0,0])
+    c_opt = [0.0]
+    dp0.append(tq.qfimx(state_dp,h_opt,c_opt,t)[0,0])
+    c_opt = [np.pi/6.]
+    dp6.append(tq.qfimx(state_dp,h_opt,c_opt,t)[0,0])
+    c_opt = [np.pi/3.]
+    dp3.append(tq.qfimx(state_dp,h_opt,c_opt,t)[0,0])
+    c_opt = [np.pi/2.]
+    dp2.append(tq.qfimx(state_dp,h_opt,c_opt,t)[0,0])
 
 # plot figure
 import matplotlib.pyplot as plt
-plt.plot(lambs,dp, label = 'dephasing')
-plt.plot(lambs,bit,label = 'bit')
-plt.plot(lambs,phase,label = 'phase')
-plt.plot(lambs,dpo,label = 'depolarizing')
+plt.plot(lambs,dp0, label = '0')
+plt.plot(lambs,dp6,label = '6')
+plt.plot(lambs,dp3,label = '3')
+plt.plot(lambs,dp2,label = '2')
 plt.legend()
 plt.show()
 

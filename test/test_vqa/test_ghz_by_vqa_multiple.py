@@ -21,6 +21,8 @@ ghz = tq.ghz_minmax(jz)
 
 state = tq.normx(ghx + ghy + ghz)
 print(state)
+state_dp = tq.markovian_chl(state,t,y)
+print(state_dp)
 
 # calculate qfim
 h_opt = [jx, jy, jz]
