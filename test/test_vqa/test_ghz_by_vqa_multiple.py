@@ -32,7 +32,7 @@ qfim = tq.qfimx(state_dp,h_opt,c_opt,t)
 print(qfim)
 
 # calculate quantum bound
-qb = tq.qboundx(state,h_opt,c_opt,t)
+qb = tq.qboundx(state_dp,h_opt,c_opt,t)
 print(qb)
 
 

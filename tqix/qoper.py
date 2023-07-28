@@ -145,19 +145,19 @@ def joper(N,*args):
         s = 0.0
         for i in range(N): 
             s += jnoper(N,i,'x')           
-        return s/2.
+        return 2*s/2. 
 
     if args[0] == 'y':
         s = 0.0
         for i in range(N):
             s += jnoper(N,i,'y')
-        return s/2.
+        return 2*s/2.
 
     if args[0] == 'z':
         s = 0.0
         for i in range(N):
             s += jnoper(N,i,'z')
-        return s/2.
+        return 2*s/2. 
 
     if args[0] == 'p':
         return joper(N,'x')+1j*joper(N,'y')
