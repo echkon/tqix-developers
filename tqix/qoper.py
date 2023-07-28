@@ -14,7 +14,8 @@ __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'displacement','squeezing',
             'joper','jnoper', 
             'dephasing_chl', 'bitflip_chl','phaseflip_chl', 
-            'depolarizing_chl']
+            'depolarizing_chl','markovian_chl',
+            'nonmarkovian_chl']
 
 import numpy as np
 from numpy import conj
