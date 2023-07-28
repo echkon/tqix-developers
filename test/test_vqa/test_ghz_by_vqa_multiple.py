@@ -21,14 +21,14 @@ ghz = tq.ghz_minmax(jz)
 
 state = tq.normx(ghx + ghy + ghz)
 print(state)
-state_dp = tq.markovian_chl(state,t,y)
+state_dp = tq.markovian_chl(state,tm,y=0.1)
 print(state_dp)
 
 # calculate qfim
 h_opt = [jx, jy, jz]
 c_opt = phases
 t = tm
-qfim = tq.qfimx(state,h_opt,c_opt,t)
+qfim = tq.qfimx(state_dp,h_opt,c_opt,t)
 print(qfim)
 
 # calculate quantum bound
