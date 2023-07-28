@@ -12,7 +12,7 @@ ________________________________
 __all__ = ['eyex','soper','sigmax','sigmay','sigmaz',
             'sigmap','sigmam','lowering','raising',
             'displacement','squeezing',
-            'joper','jnoper', 
+            'joper','jpauli','jnoper', 
             'dephasing_chl', 'bitflip_chl','phaseflip_chl', 
             'depolarizing_chl','markovian_chl',
             'nonmarkovian_chl']
@@ -145,19 +145,50 @@ def joper(N,*args):
         s = 0.0
         for i in range(N): 
             s += jnoper(N,i,'x')           
-        return 2*s/2. 
+        return s/2. 
 
     if args[0] == 'y':
         s = 0.0
         for i in range(N):
             s += jnoper(N,i,'y')
-        return 2*s/2.
+        return s/2.
 
     if args[0] == 'z':
         s = 0.0
         for i in range(N):
             s += jnoper(N,i,'z')
-        return 2*s/2. 
+        return s/2. 
+
+    if args[0] == 'p':
+        return joper(N,'x')+1j*joper(N,'y')
+
+    if args[0] == 'm':
+        return joper(N,'x')-1j*joper(N,'y')
+
+def jpauli(N,*args):
+    # collective Pauli operators
+    # N: integer: number of spin-1/2
+    # args: 'x','y','z','+','-'
+
+    if not args:
+        return joper(N,'x'),joper(N,'y'),joper(N,'z')
+    if args[0] == 'x':
+        s = 0.0
+        for i in range(N): 
+            s += jnoper(N,i,'x')           
+        return s 
+
+    if args[0] == 'y':
+        s = 0.0
+        for i in range(N):
+            s += jnoper(N,i,'y')
+        return s
+
+    if args[0] == 'z':
+        s = 0.0
+        for i in range(N):
+            s += jnoper(N,i,'z')
+        return s
 
     if args[0] == 'p':
         return joper(N,'x')+1j*joper(N,'y')
