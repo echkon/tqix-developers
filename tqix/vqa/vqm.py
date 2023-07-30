@@ -15,12 +15,12 @@ from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
 #model can dua params vao
 
 def training(qc: qiskit.QuantumCircuit,
-             qcirs,
-             which_train,
-             cost_func,
-             grad_func,
-             opt_func,
-             num_steps):
+            qcirs,
+            which_train,
+            cost_func,
+            grad_func,
+            opt_func,
+            num_steps):
     
     """ train a vqm model
     
@@ -55,10 +55,10 @@ def qc_add(qc, qcirs):
     
     cirq = qc.copy()    
     for i in range (len(qcirs)):
-         cirq &= qcirs[i][0](qc.copy(), qcirs[i][1], qcirs[i][2])
+        cirq &= qcirs[i][0](qc.copy(), qcirs[i][1], qcirs[i][2])
         
     return cirq
- 
+
 #
 # custom unitary for phase and noises
 #

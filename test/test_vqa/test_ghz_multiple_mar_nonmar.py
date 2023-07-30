@@ -5,7 +5,7 @@ import sys
 import tqix as tq
 
 # define number of qubits
-num_qubits = 4
+num_qubits = 6
 tm = 3.0
 y = 0.5
 
@@ -29,9 +29,9 @@ ts = np.linspace(0.1,tm,50)
 qbmk = []
 qbnmk = []
 for t in ts:
-    state_mk = tq.markovian_chl(state,tm,y)
+    state_mk = tq.markovian_chl(state,t,y)
     qbmk.append(tq.qboundx(state_mk,h_opt,c_opt,t))
-    state_nmk = tq.nonmarkovian_chl(state,tm,y)
+    state_nmk = tq.nonmarkovian_chl(state,t,y)
     qbnmk.append(tq.qboundx(state_nmk,h_opt,c_opt,t))
 
 # find min qbound
