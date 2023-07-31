@@ -11,7 +11,7 @@ import tqix.vqa.constants
 import tqix.vqa.vqm
 
 import numpy as np
-from numpy.linalg import inv, multi_dot, eigh, matrix_rank, norm
+from numpy.linalg import inv, multi_dot, norm
 from scipy.linalg import sqrtm, solve_sylvester
 import copy
 
@@ -20,7 +20,7 @@ from tqix.qobj import eigenx,dotx,daggx
 def sld_qfim(qc, qcirs, method = 'eigens'):
     
     """calculate QFIM using SLD with different methods
-        
+    
     Args:
         - qc : initial circuit
         - qcirs: set of circuits (we always qc_add as model, no call here)
@@ -38,7 +38,7 @@ def sld_qfim(qc, qcirs, method = 'eigens'):
         raise ValueError(
             "Method is not avilable: please use 'eigens', 'inverse', or 'sylvester' ")
     
-        
+    
     
 def sld_qfim_inverse(qc, qcirs):
     
@@ -142,7 +142,7 @@ def sld_bound(qc, qcirs):
     Returns:
         - sld bound
     """
-        
+    
     d = len(qcirs[1][2]) #[1]:u_phase,[1][2]:phases
     W = np.identity(d)
     
@@ -180,7 +180,7 @@ def rld_qfim(qc, qcirs):
     R = np.zeros((d,d), dtype = complex)
     IR = _i_R(rho)
     
-    vec_grho = []  
+    vec_grho = []
     for i in range(d):
         vec_grho.append(_vectorize(grho[i]))
     
@@ -230,7 +230,7 @@ def cfim(qc, qcirs):
     # measurements
     qc_copy = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
     pro = tqix.vqa.circuits.measure_born(qc_copy)
-                
+    
     dpro = []
     d = len(qcirs[1][2]) #[1]:u_phase,[1][2]:phases
     s = tqix.vqa.constants.step_size
