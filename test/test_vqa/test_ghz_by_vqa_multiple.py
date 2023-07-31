@@ -15,8 +15,8 @@ ts = np.linspace(0.1,tm,50)
 
 for t in ts:   
     # set intial circuits
-    qcir1_ghz = [tq.ghz, None, None]
-    qcir1_star = [tq.star_ghz, None, None]   
+    qcir1_ghz = [tq.ghz_cir, None, None]
+    qcir1_star = [tq.star_graph, None, None]   
     qcir2 = [tq.u_phase,t,phases]    
     qcir3_mar = [tq.markovian,t,y]
     qcir3_nonmar = [tq.non_markovian,t,y]
