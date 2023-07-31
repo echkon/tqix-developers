@@ -5,7 +5,7 @@ import sys
 import tqix as tq
 
 # define number of qubits
-num_qubits = 6
+num_qubits = 3
 tm = 3.0
 y = 0.5
 
@@ -20,7 +20,7 @@ ghx = tq.ghz_minmax(jx)
 ghy = tq.ghz_minmax(jy)
 ghz = tq.ghz_minmax(jz)
 
-state = tq.normx(ghx + ghy + ghz)
+state = tq.normx(ghz)
 
 # calculate qfim
 h_opt = [jx, jy, jz]
@@ -28,6 +28,7 @@ c_opt = phases
 ts = np.linspace(0.1,tm,50)
 qbmk = []
 qbnmk = []
+
 for t in ts:
     state_mk = tq.markovian_chl(state,t,y)
     qbmk.append(tq.qboundx(state_mk,h_opt,c_opt,t))

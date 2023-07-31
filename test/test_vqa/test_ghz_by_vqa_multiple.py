@@ -1,37 +1,53 @@
 import qiskit
 import numpy as np
-import sys
 
 import tqix as tq
 
-# define number of qubits
+# run for N
 num_qubits = 3
 tm = 3.0
-
+y = 0.5 #fix
 phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 
-#Get Axyz from intergate
-# call angular momentum operator
-[jx, jy, jz] = tq.joper(num_qubits)
+qbound_mar = []
+qbound_nonmar = []
+ts = np.linspace(0.1,tm,50)
 
-# create ghz_minmax
-ghx = tq.ghz_minmax(jx)
-ghy = tq.ghz_minmax(jy)
-ghz = tq.ghz_minmax(jz)
+for t in ts:   
+    # set intial circuits
+    qcir1_ghz = [tq.ghz, None, None]
+    qcir1_star = [tq.star_ghz, None, None]   
+    qcir2 = [tq.u_phase,t,phases]    
+    qcir3_mar = [tq.markovian,t,y]
+    qcir3_nonmar = [tq.non_markovian,t,y]
 
-state = tq.normx(ghx + ghy + ghz)
-print(state)
-state_dp = tq.markovian_chl(state,tm,y=0.1)
-print(state_dp)
 
-# calculate qfim
-h_opt = [jx, jy, jz]
-c_opt = phases
-t = tm
-qfim = tq.qfimx(state_dp,h_opt,c_opt,t)
-print(qfim)
+    # input circuit
+    qcirs_star_mar =[qcir1_ghz, qcir2, qcir3_mar]
+    qcirs_star_nonmar =[qcir1_ghz, qcir2, qcir3_nonmar]
+        
+    # setup a model 
+    qc = qiskit.QuantumCircuit(num_qubits, num_qubits)   
+    
+    # quantum bound
+    qbound_mar.append(tq.sld_bound(qc.copy(),qcirs_star_mar))
+    qbound_nonmar.append(tq.sld_bound(qc.copy(),qcirs_star_nonmar))
 
-# calculate quantum bound
-qb = tq.qboundx(state_dp,h_opt,c_opt,t)
-print(qb)
+    
+# find min qbound
+mar_min = min(qbound_mar)
+mar_index = np.argmin(qbound_mar)
+nonmar_min = min(qbound_nonmar)
+nonmar_index = np.argmin(qbound_nonmar)
 
+print(ts[mar_index],mar_min)
+print(ts[nonmar_index],nonmar_min)
+
+#plot figure to check min
+import matplotlib.pyplot as plt
+#first plot
+plt.subplot(1, 2, 1)
+plt.ylim(0,4)
+plt.plot(ts, qbound_mar, '-.',label='Mar_0.5_pi_6')
+plt.plot(ts, qbound_nonmar, '-',label='Mar_0.5_pi_6')
+plt.savefig('multiple_N5_time_vqa.eps')

@@ -1,14 +1,5 @@
 import qiskit
 import numpy as np
-import sys
-#sys.path.insert(1,'../')
-
-#from vqa.circuits import *
-#from vqa.vqm import *
-#from vqa.bounds import *
-#from vqa.fitting import *
-#from vqa.constants import *
-#from vqa.kraus import *
 
 import tqix as tq
 
@@ -24,7 +15,7 @@ ts = np.linspace(0.1,tm,100)
 
 for t in ts:   
     # set intial circuits
-    qcir1_ghz = [tq.ghz, None, None]
+    qcir1_ghz = [tq.ghz_cir, None, None]
     qcir1_star = [tq.star_graph, None, None]   
     qcir2 = [tq.u_phase,t,phases]    
     qcir3_mar = [tq.markovian,t,y]

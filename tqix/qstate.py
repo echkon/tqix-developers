@@ -101,7 +101,7 @@ def squeezed(d,alpha,beta):
     """
     ground = bx(d,0)
     squeezed = dotx(displacement(d,alpha),
-               squeezing(d,beta),ground)
+                squeezing(d,beta),ground)
     squeezed = normx(squeezed)
     return qx(squeezed)
 
