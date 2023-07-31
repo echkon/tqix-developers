@@ -15,9 +15,9 @@ import tqix.vqa.constants
 #
 
 def create_ansatz(qc: qiskit.QuantumCircuit, 
-                  qc_func,
-                  params, 
-                  num_layers):
+                    qc_func,
+                    params, 
+                    num_layers):
     
     """ create an ansatz with a given name
     
@@ -109,7 +109,6 @@ def star_ansatz_inv(
     Returns:
         (qiskit.QuantumCircuit): init circuit
     """
-      
     return star_ansatz(qc,num_layers,params).inverse()
 
     
@@ -246,11 +245,11 @@ def create_num_params(qc_name, num_qubits, num_layers):
         - qc_name: qc name
         - num_qubtis: number of qubits
         - num_layers: list of layers for these ansatzes
-  
+
     Returns:
         - total number of paramaters
     """
-          
+    
     if qc_name == 'star':
         num_params = num_layers*(2*num_qubits - 2)
     elif qc_name == 'ring':
@@ -269,7 +268,7 @@ def create_num_params(qc_name, num_qubits, num_layers):
 def create_params(cirs,coefs,num_qubits,values):
     
     """ to create a list of parameters:
-                    
+    
     Args:
         - qc_funcs: list of qc_func, i.e., [create_stargraph_ansatz,create_ringgraph_ansatz]
         - num_layers: list of layers for these ansatzes
@@ -312,7 +311,7 @@ def state_density(qc: qiskit.QuantumCircuit):
     return qiskit.quantum_info.DensityMatrix.from_instruction(qc.copy()).data
 
 
-def ghz(qc: qiskit.QuantumCircuit, *args, **kwargs):
+def ghz_cir(qc: qiskit.QuantumCircuit, *args, **kwargs):
     
     """Create GHZ state 
 
@@ -366,7 +365,7 @@ def ring_graph(qc: qiskit.QuantumCircuit, *args, **kwargs):
         qc.barrier()
     return qc
 
-def w(qc, *args, **kwargs):
+def w_cir(qc, *args, **kwargs):
     """Create n-qubit W state based on the its number of qubits
 
     Args:
@@ -583,11 +582,11 @@ def measure_born(qc: qiskit.QuantumCircuit):
     n = qc.num_qubits
     d = 2**n
     probs = []
-   
+
     rho = qiskit.quantum_info.DensityMatrix.from_instruction(qc.copy()).data
 
     for i in range(0, d):
         probs.append(np.real(rho[i,i]))
-          
+
     return  np.array(probs) 
 
