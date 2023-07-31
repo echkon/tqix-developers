@@ -17,7 +17,12 @@ ghx = tq.ghz_minmax(jx)
 ghy = tq.ghz_minmax(jy)
 ghz = tq.ghz_minmax(jz)
 
-state = tq.normx(ghx+ghy+ghz)
+#state = tq.normx(ghx+ghy+ghz)
+# thu voi star
+import qiskit
+qc = qiskit.QuantumCircuit(3, 3)
+state = tq.qx(tq.vqa.state_vector(tq.vqa.star_graph(qc,None,None)))
+print(state)
 
 # calculate qfim
 h_opt = [jx, jy, jz]

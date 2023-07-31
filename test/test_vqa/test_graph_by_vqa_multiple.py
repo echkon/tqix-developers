@@ -1,6 +1,5 @@
 import qiskit
 import numpy as np
-
 import tqix as tq
 
 # run for N

@@ -4,9 +4,9 @@ import numpy as np
 import tqix as tq
 
 # run for N
-num_qubits = 3
+num_qubits = 4
 tm = 3.0
-y = 0.5 #fix
+y = 1.0 #fix
 phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 
 qbound_mar = []
@@ -23,8 +23,8 @@ for t in ts:
 
 
     # input circuit
-    qcirs_star_mar =[qcir1_ghz, qcir2, qcir3_mar]
-    qcirs_star_nonmar =[qcir1_ghz, qcir2, qcir3_nonmar]
+    qcirs_star_mar =[qcir1_star, qcir2, qcir3_mar]
+    qcirs_star_nonmar =[qcir1_star, qcir2, qcir3_nonmar]
         
     # setup a model 
     qc = qiskit.QuantumCircuit(num_qubits, num_qubits)   
@@ -33,7 +33,7 @@ for t in ts:
     qbound_mar.append(tq.vqa.sld_bound(qc.copy(),qcirs_star_mar))
     qbound_nonmar.append(tq.vqa.sld_bound(qc.copy(),qcirs_star_nonmar))
 
-    
+
 # find min qbound
 mar_min = min(qbound_mar)
 mar_index = np.argmin(qbound_mar)
