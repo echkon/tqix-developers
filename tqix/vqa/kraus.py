@@ -123,7 +123,7 @@ def markovian(qc: qiskit.QuantumCircuit, t, y):
 
     Args:
         - qc (qiskit.QuantumCircuit): quantumcircuit
-        - t:  time
+        - t: time
         - y: gamma
     
     Return
@@ -149,7 +149,7 @@ def non_markovian(qc: qiskit.QuantumCircuit, t, y):
 
     Args:
         - qc (qiskit.QuantumCircuit): quantumcircuit
-        - t:  time
+        - t: time
         - y: gamma
     
     Return
