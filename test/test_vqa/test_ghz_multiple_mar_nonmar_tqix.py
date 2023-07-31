@@ -16,12 +16,20 @@ phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 ghx = tq.ghz_minmax(jx)
 ghy = tq.ghz_minmax(jy)
 ghz = tq.ghz_minmax(jz)
-
+print(ghz)
 #state = tq.normx(ghx+ghy+ghz)
 # thu voi star
 import qiskit
 qc = qiskit.QuantumCircuit(3, 3)
 state = tq.qx(tq.vqa.state_vector(tq.vqa.star_graph(qc,None,None)))
+state = tq.qx([[0.35355339+0.j],
+         [0.35355339+0.j],  
+         [0.35355339+0.j], 
+         [-0.35355339+0.j],
+         [0.35355339+0.j], 
+         [-0.35355339+0.j], 
+         [0.35355339+0.j],
+         [0.35355339+0.j]])
 print(state)
 
 # calculate qfim

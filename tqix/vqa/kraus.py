@@ -130,7 +130,7 @@ def markovian(qc: qiskit.QuantumCircuit, t, y):
         - qc
     """ 
     y = y[0] if type(y) == list else y
-    qt = 1 - np.exp(-y*t) #y = gamma = 0.1
+    qt = 1 - np.exp(-y*t) 
     
     k1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
     k2 = np.array([[np.sqrt(qt),0], [0,0]])
@@ -157,7 +157,7 @@ def non_markovian(qc: qiskit.QuantumCircuit, t, y):
     """ 
     y = y[0] if type(y) == list else y
     tc = 20.0 #fixed in rXiv:2305.08289
-    qt = 1 - np.exp(-y*t**2/(2*tc)) #gamma = 0.1
+    qt = 1 - np.exp(-y*t*t/(2*tc))
     
     k1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
     k2 = np.array([[np.sqrt(qt),0], [0,0]])

@@ -421,7 +421,7 @@ def nonmarkovian_chl(x, t, y, tc = 20.0):
     
     # kraus operators
     # tc = 20.0 #fixed in rXiv:2305.08289
-    qt = 1 - np.exp(-y*t**2/(2*tc))
+    qt = 1 - np.exp(-y*t*t/(2*tc))
     
     kraus1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
     kraus2 = np.array([[np.sqrt(qt),0], [0,0]])

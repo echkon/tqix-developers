@@ -10,7 +10,7 @@ phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 
 qbound_mar = []
 qbound_nonmar = []
-ts = np.linspace(0.1,tm,100)
+ts = np.linspace(0.1,tm,30)
 
 for t in ts:   
     # set intial circuits
@@ -32,7 +32,7 @@ for t in ts:
     qbound_mar.append(tq.sld_bound(qc.copy(),qcirs_star_mar))
     qbound_nonmar.append(tq.sld_bound(qc.copy(),qcirs_star_nonmar))
 
-    
+
 # find min qbound
 mar_min = min(qbound_mar)
 mar_index = np.argmin(qbound_mar)
