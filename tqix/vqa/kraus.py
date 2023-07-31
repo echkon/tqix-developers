@@ -169,4 +169,3 @@ def non_markovian(qc: qiskit.QuantumCircuit, t, y):
         qc.append(kraus_to_error,[i])
         
     return qc
- 

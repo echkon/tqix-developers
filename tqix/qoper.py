@@ -405,7 +405,7 @@ def markovian_chl(x, t, y):
     
     return x_csr
 
-def nonmarkovian_chl(x, t, y, tc = 20):
+def nonmarkovian_chl(x, t, y, tc = 20.0):
     """Add nonmarkovian to the system
 
     Args:

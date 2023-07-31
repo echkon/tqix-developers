@@ -93,9 +93,9 @@ def sld_qfim_sylvester(qc, qcirs):
     for i in range(d):
         for j in range(d):
             H[i,j] = 0.5*np.trace(rho @ AntiCommutator(L[i],L[j]))
-                  
+
     return np.real(H)     
-                               
+
 
 def sld_qfim_eigens(qc, qcirs):
     
@@ -128,7 +128,7 @@ def sld_qfim_eigens(qc, qcirs):
                         num1 = dotx(daggx(eigens[1][i]),grho[k],eigens[1][j])
                         num2 = dotx(daggx(eigens[1][j]),grho[l],eigens[1][i])
                         H[k,l] += 2*np.real(num1*num2)/de
-                  
+                        
     return np.real(H)  
 
 
@@ -156,7 +156,7 @@ def rld_qfim(qc, qcirs):
     
     Analytical:
         H_ij = tr(rho*L_i*L_j^\dag)
-             = tr(L_j^\dag*rho*L_i)
+            = tr(L_j^\dag*rho*L_i)
 
         submit rho*L_i = der_i(rho) : this is rld
         we get: H_ij = tr(L_j^\dag*dev_i(rho))
@@ -270,7 +270,7 @@ def cls_bound(qc, qcirs):
         - W: weight matrix
 
     Returns:
-       - rld bound
+        - rld bound
     """
     
     #list2str = list(map(lambda f: f.__name__, cirs)) 
@@ -303,7 +303,7 @@ def _grad_rho(qc, qcirs):
     
     dp = [] #array of matrices rho
     s = tqix.vqa.constants.step_size 
-  
+    
     for i in range(0, len(qcirs[1][2])):
         qcirs1, qcirs2 = copy.deepcopy(qcirs), copy.deepcopy(qcirs)       
         qcirs1[1][2][i] += s
@@ -324,7 +324,7 @@ def _inv_M(rho, epsilon = 10e-10):
         - quantum state rho (data)
 
     Returns:
-       - inverse matrix M 
+        - inverse matrix M 
     """
     
     d = len(rho)
@@ -340,7 +340,7 @@ def _i_R(rho, epsilon = 10e-10):
         - quantum state rho (data)
 
     Returns:
-       - inverse matrix R 
+        - inverse matrix R 
     """    
     d = len(rho)
     R = np.kron(np.identity(d), rho)
@@ -351,8 +351,8 @@ def sylvester(A,B,C):
     """ solve the sylvester function:
         AX + XB = 2*C # the symmetric logarithmic derivative
         here A,B = rho for SLD, i.e., rho @ L + L @ rho = 2*drho
-             A = rho, B = 0 for RLD, i.e., rho @ L = 2*drho
-             C = drho
+            A = rho, B = 0 for RLD, i.e., rho @ L = 2*drho
+            C = drho
     Args:
         - rho: input quantum state
         - drho: input derivative of quantum state
@@ -369,11 +369,8 @@ def sylvester(A,B,C):
         
     #print(X)  
     return X
-                               
-                               
+
+
 def AntiCommutator(A,B):
     # AB + BA
     return A @ B + B @ A                     
-                               
-                               
-        

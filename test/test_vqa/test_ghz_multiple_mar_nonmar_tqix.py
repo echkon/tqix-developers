@@ -1,7 +1,4 @@
-import qiskit
 import numpy as np
-import sys
-
 import tqix as tq
 
 # define number of qubits
@@ -20,7 +17,7 @@ ghx = tq.ghz_minmax(jx)
 ghy = tq.ghz_minmax(jy)
 ghz = tq.ghz_minmax(jz)
 
-state = tq.normx(ghz)
+state = tq.normx(ghx+ghy+ghz)
 
 # calculate qfim
 h_opt = [jx, jy, jz]
