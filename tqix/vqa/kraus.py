@@ -140,7 +140,7 @@ def markovian(qc: qiskit.QuantumCircuit, t, y):
     
     for i in range(qc.num_qubits):
         qc.append(kraus_to_error,[i])
-        
+    
     return qc
 
 
@@ -167,5 +167,5 @@ def non_markovian(qc: qiskit.QuantumCircuit, t, y):
     
     for i in range(qc.num_qubits):
         qc.append(kraus_to_error,[i])
-        
+    
     return qc
