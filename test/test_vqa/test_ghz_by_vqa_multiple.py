@@ -5,7 +5,7 @@ import tqix as tq
 
 # run for N
 num_qubits = 3
-tm = 3.0
+tm = 4.0
 y = 1.0 #fix
 phases = [np.pi/6.,np.pi/6.,np.pi/6.]
 
