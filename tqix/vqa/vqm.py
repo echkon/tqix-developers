@@ -77,11 +77,30 @@ def u_phase(qc: qiskit.QuantumCircuit, t, params):
     """
     n = qc.num_qubits
     
-    for i in range(n):        
+    for i in range(0,n):     
         qc.append(_u_gate(t, params),[i])
     
     return qc
 
+def u_phase_anc(qc: qiskit.QuantumCircuit, t, params):
+    
+    """Add phase model to the circuit from anc
+    
+    Args:
+        - qc (qiskit.QuantumCircuit): quantumcircuit
+        - t: time coefs
+        - params  (number of parameters)
+        - a, b (int): start and end
+        
+    Return
+        - qc
+    """
+    n = qc.num_qubits
+    
+    for i in range(1,n):     
+        qc.append(_u_gate(t, params),[i])
+    
+    return qc
 
 def _u_gate(t, params):
     """ return arbitary gates

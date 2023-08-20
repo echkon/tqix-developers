@@ -14,11 +14,11 @@ ts = np.linspace(0.1,tm,30)
 
 for t in ts:   
     # set intial circuits
-    qcir1_ghz = [tq.vqa.ghz_cir, None, None]
-    qcir1_star = [tq.vqa.star_graph, None, None]   
-    qcir2 = [tq.vqa.u_phase,t,phases]    
-    qcir3_mar = [tq.vqa.markovian,t,y]
-    qcir3_nonmar = [tq.vqa.non_markovian,t,y]
+    qcir1_ghz = [tq.ghz_cir, None, None]
+    qcir1_star = [tq.star_graph, None, None]   
+    qcir2 = [tq.u_phase,t,phases]    
+    qcir3_mar = [tq.markovian,t,y]
+    qcir3_nonmar = [tq.non_markovian,t,y]
 
 
     # input circuit
@@ -29,8 +29,8 @@ for t in ts:
     qc = qiskit.QuantumCircuit(num_qubits, num_qubits)   
     
     # quantum bound
-    qbound_mar.append(tq.vqa.sld_bound(qc.copy(),qcirs_star_mar))
-    qbound_nonmar.append(tq.vqa.sld_bound(qc.copy(),qcirs_star_nonmar))
+    qbound_mar.append(tq.sld_bound(qc.copy(),qcirs_star_mar))
+    qbound_nonmar.append(tq.sld_bound(qc.copy(),qcirs_star_nonmar))
 
 
 # find min qbound
