@@ -8,7 +8,7 @@ ________________________________
 >>> all rights reserved
 ________________________________
 """
-# for quantum metrology
+# for quantum metrology calculated from theory
 
 __all__ = ['qfimx', 'qboundx', 'Hx', 'Ux', 'Ax']
 
