@@ -52,8 +52,19 @@
             |--- spin_operators.py #define spin operators
             |--- squeeze_param.py #define squeezing_parameters
             |--- util.py #utility code
-            
-            
+            |
+        \vqa # variational quantum algorithms
+            |---__init__.py
+            |--- bounds.py    # quantum bound, qfim, cfim, ...
+            |--- circuits.py  # quantum circuit and ansatzes
+            |--- constants    # various constants
+            |--- entanglement # to calculate entanglement 
+            |--- fitting      # fitting model
+            |--- kraus        # defined Kraus operators for noise
+            |--- plateau      # calculate barrent plateu
+            |--- vqent        # variational quantum entanglement
+            |--- vqm          # variational quantum metrology
+            |
 # License
  >>> copyright (c) 2019 and later\
  >>> authors: Le Bin Ho\
