@@ -13,18 +13,19 @@
 
     \tqix
         |--- __init__.py # an init file to mark directory
-        |--- about.py    # describe the program's information
-        |--- infor.py    # provide information about hardware and packages
-        |--- version.py  # describe the current version of the program
-        |--- qobj.py       # generate a quantum object, and some convenient tools operate on the object
-        |--- qstate      # generate various quantum states
-        |--- qoper.py    # provide some common quantum operators: pauli matrices, lowering, raising,..
-        |--- qmeas.py    # calculate quantum measurement using both analytical and simulation methods
-        |--- backend.py  # two simuation mnethods: monte carlo and comulative distribution function
-        |--- qtool.py    # contain auxiliary (physical) tools
+        |--- about.py # describe the program's information
+        |--- hinfor.py # provide information about hardware and packages
+        |--- version.py # describe the current version of the program
+        |--- qobj.py # generate a quantum object, and some convenient tools operate on the object
+        |--- qstate # generate various quantum states
+        |--- qoper.py # provide some common quantum operators: pauli matrices, lowering, raising,..
+        |--- qmeas.py # calculate quantum measurement using both analytical and simulation methods
+        |--- qmetro.py # calcualte quantum metrology
+        |--- backend.py # two simuation mnethods: monte carlo and comulative distribution function
+        |--- qtool.py # contain auxiliary (physical) tools
         |--- quasi_prob.py # generate quasi-probability functions such as Husimi Q function, Wigner function, Husimi Spin function, and Wigner Spin function
-        |--- visualize.py  # contain code for Husimi and Wigner visualization in 2D, 3D, and 3D spin
-        |--- utility.py    # contain some common utility (mathematical) tools
+        |--- visualize.py # contain code for Husimi and Wigner visualization in 2D, 3D, and 3D spin
+        |--- utility.py # contain some common utility (mathematical) tools
         |
         \povm # generating POVM measurement sets
             |--- __init__.py 
