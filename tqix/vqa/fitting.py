@@ -64,7 +64,7 @@ def bound_rld_cls(qc, qcirs):
     Returns:
         - Numpy array: The cost function
     """
-       
+    
     rld_bound = tqix.vqa.bounds.rld_bound(qc.copy(),qcirs)  
     cls_bound = tqix.vqa.bounds.cls_bound(qc.copy(),qcirs)
     

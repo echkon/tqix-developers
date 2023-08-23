@@ -13,19 +13,15 @@ import numpy as np
 #from autograd.numpy.linalg import inv
 
 def training(qc: qiskit.QuantumCircuit,
-             cirs,
-             coefs,
-             params,
-             optimizer,
-             num_steps,
-             ofset):
+            qcirs,
+            optimizer,
+            num_steps,
+            ofset):
             
     """ to run vqent
     Args:
         - qc (QuantumCircuit): The quantum circuit want to calculate the gradient
-        - cirs: name of circuit function
-        - coefs: number of layers or time
-        - params (Numpy array): Parameters
+        - qcirs: name of circuit function
         - optimizer: optimizer
         - num_steps: number of steps
         - ofset: additional parameters for changing ce
@@ -36,39 +32,33 @@ def training(qc: qiskit.QuantumCircuit,
         - ce: concerntrable entanglement
     """
     
-    #model = vqa.circuits.create_ansatz(qc,params,**kwargs)
-    cirs = cirs[0]
-    coefs = coefs[0]
-    params = params[0]
-    
-    params, costs, ce = fit(qc,cirs,coefs,params,optimizer,num_steps,ofset)
+    #model = vqa.circuits.create_ansatz(qc,params,**kwargs)    
+    params, costs, ce = fit(qc,qcirs,optimizer,num_steps,ofset)
     
     return [params], costs, ce
 
 
-def _cost_func(qc,cirs,coefs,params,ofset):
-                             
+def _cost_func(qc,qcirs,ofset):
+    
     """Return the cost function
         C = np.abs(ofset - ce)
     
     Args:
         - qc (QuantumCircuit): The quantum circuit want to calculate the gradient
-        - cirs: name of circuit function
-        - coefs: number of layers or time
-        - params (Numpy array): Parameters
+        - qcirs: name of circuit function
         - ofset: additional parameters for changing ce
 
     Returns:
         - Numpy array: The cost function
     """
     #calculate ce 
-    qc1 = cirs(qc, coefs, params)
-    ces = tqix.vqa.entanglement.concentratable_entanglement(qc1)
-           
+    fcir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    ces = tqix.vqa.entanglement.concentratable_entanglement(fcir)
+    
     return np.abs(ofset - ces), ces
 
 
-def _grad_func(qc,cirs,coefs,params,ofset):
+def _grad_func(qc,qcirs,ofset):
     
     """Return the gradient of the loss function
         C = np.abs(ofset - ces)
@@ -76,9 +66,7 @@ def _grad_func(qc,cirs,coefs,params,ofset):
 
     Args:
         - qc (QuantumCircuit): The quantum circuit want to calculate the gradient
-        - cirs: name of circuit function
-        - coefs: number of layers or time
-        - params (Numpy array): Parameters
+        - qcirs: name of circuit function
         - ofset: additional parameters for changing ce
 
     Returns:
@@ -89,28 +77,26 @@ def _grad_func(qc,cirs,coefs,params,ofset):
     s = tqix.vqa.constants.step_size
     grad_cost = [] #to reset index
 
-    indx = list(range(0, len(params)))       
+    indx = list(range(0, len(qcirs[0][2])))       
     for i in indx:
-        params1, params2 = params.copy(), params.copy()
-        params1[i] += s
-        params2[i] -= s
+        qcirs1, qcirs2 = copy.deepcopy(qcirs), copy.deepcopy(qcirs)
+        qcirs1[0][2][i] += s #[0] ansatz_name, [2] ansatz_params [0] first_param
+        qcirs2[0][2][i] -= s
 
-        cost1,ces1 = _cost_func(qc.copy(),cirs,coefs,params1,ofset)
-        cost2,ces2 = _cost_func(qc.copy(),cirs,coefs,params2,ofset)
+        cost1,ces1 = _cost_func(qc.copy(),qcirs1,ofset)
+        cost2,ces2 = _cost_func(qc.copy(),qcirs2,ofset)
         
         grad_cost.append((cost1 - cost2)/(2*s))
     return grad_cost
 
 
-def fit(qc: qiskit.QuantumCircuit,cirs,coefs,params,optimizer,num_steps,ofset):
+def fit(qc: qiskit.QuantumCircuit,qcirs,optimizer,num_steps,ofset):
     
     """Return the new thetas that fit with the circuit from create_circuit_func function#
 
     Args:
         - qc (QuantumCircuit): The quantum circuit want to calculate the gradient
         - cirs: name of circuit function
-        - coefs: number of layers or time
-        - params (Numpy array): Parameters
         - optimizer: optimizer
         - num_steps: number of steps
         - ofset: additional parameters for changing ce
@@ -120,17 +106,16 @@ def fit(qc: qiskit.QuantumCircuit,cirs,coefs,params,optimizer,num_steps,ofset):
         - loss_values (Numpy array): the list of loss_value
     """
     
-    paramss = []
     costs = []
-       
+    
     for i in range(0, num_steps):
-        dev_cost = _grad_func(qc.copy(),cirs,coefs,params,ofset)
+        dev_cost = _grad_func(qc.copy(),qcirs,params,ofset)
         
         # update params
         params = optimizer(params,dev_cost,i)
         
         # compute cost    
-        cost,ces = _cost_func(qc.copy(),cirs,coefs,params,ofset)
+        cost,ces = _cost_func(qc.copy(),qcirs,params,ofset)
         
         costs.append(cost)
         #print(i,cost)
@@ -138,7 +123,7 @@ def fit(qc: qiskit.QuantumCircuit,cirs,coefs,params,optimizer,num_steps,ofset):
     #calculate ce
     #qc1 = create_circuit_func(qc,params,**kwargs)
     #ce = vqa.entanglement.concentratable_entanglement(qc1)
- 
+    
     return params, costs, ces
 
 
@@ -179,7 +164,7 @@ def adam(params, dev_cost, iteration):
         v[i] = beta2 * v[i] + (1 - beta1) * dev_cost[i]**2
         mhat = m[i] / (1 - beta1**(iteration + 1))
         vhat = v[i] / (1 - beta2**(iteration + 1))
-   
+        
         params[i] -= tqix.vqa.constants.learning_rate * mhat / (np.sqrt(vhat) + epsilon)
     
     return params
