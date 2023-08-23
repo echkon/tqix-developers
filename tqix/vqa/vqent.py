@@ -120,11 +120,6 @@ def fit(qc: qiskit.QuantumCircuit,qcirs,optimizer,num_steps,ofset):
         cost,ces = _cost_func(qc.copy(),qcirs,ofset)
         
         costs.append(cost)
-        #print(i,cost)
-        
-    #calculate ce
-    #qc1 = create_circuit_func(qc,params,**kwargs)
-    #ce = vqa.entanglement.concentratable_entanglement(qc1)
     
     return params, costs, ces
 
