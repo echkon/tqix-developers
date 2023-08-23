@@ -14,9 +14,7 @@ import numpy as np
 
 
 def plateau(qc: qiskit.QuantumCircuit, 
-            cirs,
-            coefs,
-            params,
+            qcirs,
             cost_func,
             num_samples):
             
@@ -38,15 +36,14 @@ def plateau(qc: qiskit.QuantumCircuit,
     grads = []
     
     for _ in range(num_samples):
-        params = tqix.vqa.circuits.create_params(cirs,coefs,num_qubits,['random',params[1],params[2],'random'])  
-        grad = gradf(qc.copy(),cirs,coefs,params,cost_func)      
+        grad = gradf(qc.copy(),qcirs,cost_func)      
         grads.append(grad) 
         
     var =  np.var(grads)       
     return var
 
 
-def gradf(qc: qiskit.QuantumCircuit,cirs,coefs,params,cost_func):
+def gradf(qc: qiskit.QuantumCircuit,qcirs,cost_func):
     
     """Return the gradient of the loss function
         w.r.t theta_1
@@ -63,12 +60,13 @@ def gradf(qc: qiskit.QuantumCircuit,cirs,coefs,params,cost_func):
     """
     
     s = tqix.vqa.constants.step_size    
-    params1, params2 = copy.deepcopy(params), copy.deepcopy(params)
-    params1[0][0] += s #[0][0]the first paramater
-    params2[0][0] -= s
-
-    cost1 = cost_func(qc.copy(),cirs,coefs,params1) #ues full params
-    cost2 = cost_func(qc.copy(),cirs,coefs,params2)
+    
+    qcirs1, qcirs2 = copy.deepcopy(qcirs), copy.deepcopy(qcirs)
+    qcirs1[0][0][0] += s
+    qcirs2[0][0][0] -= s
+        
+    cost1 = cost_func(qc.copy(),qcirs1)
+    cost2 = cost_func(qc.copy(),qcirs2)
     
     return (cost1 - cost2)/(2*s)
     
