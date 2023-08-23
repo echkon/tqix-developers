@@ -515,19 +515,9 @@ def measure_theor(qc: qiskit.QuantumCircuit, qubits, cbits = []):
     Returns:
         - float: Frequency of 00..0 cbit by Born rule
     """    
-    
-    nshorts = 10000000
-    n = len(qubits)
-    if cbits == []:
-        cbits = qubits.copy()
-    for i in range(0, n):
-        qc.measure(qubits[i], cbits[i])
-    
-    counts = qiskit.execute(
-            qc, backend = tqix.vqa.constants.backend,
-            shots = nshorts).result().get_counts()
-
-    return counts.get("0" * len(qubits), 0) / nshorts
+    rho = qiskit.quantum_info.DensityMatrix.from_instruction(qc.copy()).data
+    pro0 = np.real(rho[0,0])
+    return pro0
 
 
 def measure_all(qc: qiskit.QuantumCircuit):

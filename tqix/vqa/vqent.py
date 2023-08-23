@@ -53,8 +53,7 @@ def _cost_func(qc,qcirs,ofset):
     """
     #calculate ce 
     fcir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
-    ces = tqix.vqa.entanglement.concentratable_entanglement(fcir)
-    
+    ces = tqix.vqa.entanglement.concentratable_entanglement_theor(fcir)
     return np.abs(ofset - ces), ces
 
 
