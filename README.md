@@ -95,6 +95,7 @@ https://github.com/echkon/tqix-developers
  >>>```
  >>> pip install -r requirements.txt
  >>>```
+ >>>```
 >>> pip install . --no-build-isolation
 >>>```
 
