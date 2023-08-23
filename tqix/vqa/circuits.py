@@ -5,10 +5,9 @@
 #__all__ = []
 
 import qiskit
+import tqix
 import numpy as np
 from qiskit.circuit.library import GMS
-
-import tqix.vqa.constants
 
 #
 # ansatz
@@ -500,7 +499,7 @@ def measure(qc: qiskit.QuantumCircuit, qubits, cbits = []):
         qc.measure(qubits[i], cbits[i])
     
     counts = qiskit.execute(
-            qc, backend = vqa.constants.backend,
+            qc, backend = tqix.vqa.constants.backend,
             shots = tqix.vqa.constants.num_shots).result().get_counts()
 
     return counts.get("0" * len(qubits), 0) / tqix.vqa.constants.num_shots

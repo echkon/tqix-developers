@@ -3,9 +3,8 @@
 """
 
 import qiskit
+import tqix
 import numpy as np
-import tqix.vqa.circuits
-import tqix.vqa.constants
 from math import comb
 
 def concentratable_entanglement(
@@ -21,7 +20,7 @@ def concentratable_entanglement(
     
     n_qubit = qc.num_qubits #this is ancilar
     swap_qc = create_swap_test_state(qc.copy())
-   
+    
     list_measured = list(range(0, n_qubit))
     prob = tqix.vqa.circuits.measure(swap_qc, list_measured)
     return 1 - prob
@@ -39,7 +38,7 @@ def concentratable_entanglement_theor(
     
     n_qubit = qc.num_qubits #this is ancila qubits
     swap_qc = create_swap_test_state(qc.copy()) #full qubits
-   
+    
     list_measured = list(range(0, n_qubit))
     prob = tqix.vqa.circuits.measure_theor(swap_qc, list_measured)
     return 1 - prob

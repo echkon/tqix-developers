@@ -6,10 +6,10 @@ __all__ = ['training']
 
 
 import qiskit
-import tqix.vqa.constants
-import tqix.vqa.entanglement
+import tqix
 
 import numpy as np
+import copy
 #from autograd.numpy.linalg import inv
 
 def training(qc: qiskit.QuantumCircuit,
@@ -109,13 +109,15 @@ def fit(qc: qiskit.QuantumCircuit,qcirs,optimizer,num_steps,ofset):
     costs = []
     
     for i in range(0, num_steps):
-        dev_cost = _grad_func(qc.copy(),qcirs,params,ofset)
+        dev_cost = _grad_func(qc.copy(),qcirs,ofset)
+        params = qcirs[0][2]
         
         # update params
         params = optimizer(params,dev_cost,i)
+        qcirs[0][2] = params
         
         # compute cost    
-        cost,ces = _cost_func(qc.copy(),qcirs,params,ofset)
+        cost,ces = _cost_func(qc.copy(),qcirs,ofset)
         
         costs.append(cost)
         #print(i,cost)
