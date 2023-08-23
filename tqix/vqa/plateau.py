@@ -32,14 +32,18 @@ def plateau(qc: qiskit.QuantumCircuit,
         - barren plateau
     """
     
-    num_qubits = qc.num_qubits
+    #num_qubits = qc.num_qubits
     grads = []
     
     for _ in range(num_samples):
+        #need new params here
+        param_len = len(qcirs[0][2])
+        qcirs[0][2] = np.random.uniform(0, 2 * np.pi,param_len)
+        qcirs[-1][2] = np.random.uniform(0, 2 * np.pi,param_len)
+        
         grad = gradf(qc.copy(),qcirs,cost_func)      
         grads.append(grad) 
-        
-    var =  np.var(grads)       
+    var =  np.var(grads)      
     return var
 
 
@@ -62,9 +66,9 @@ def gradf(qc: qiskit.QuantumCircuit,qcirs,cost_func):
     s = tqix.vqa.constants.step_size    
     
     qcirs1, qcirs2 = copy.deepcopy(qcirs), copy.deepcopy(qcirs)
-    qcirs1[0][0][0] += s
-    qcirs2[0][0][0] -= s
-        
+    qcirs1[0][2][0] += s #[0] ansatz_name, [2] ansatz_params [0] first_param
+    qcirs2[0][2][0] -= s
+    
     cost1 = cost_func(qc.copy(),qcirs1)
     cost2 = cost_func(qc.copy(),qcirs2)
     
