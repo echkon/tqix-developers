@@ -13,7 +13,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # all information about tqix is here
 MAN = 3
 SUB = 0
-SUBS= 3
+SUBS= 4
 VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
 REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','sklearn','qiskit (>=0.43.0)']
 PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm','tqix/vqa']
