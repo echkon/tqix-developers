@@ -52,7 +52,7 @@ def obasis(d,e = 0):
         raise ValueError("e must be interger e>= 0")
     if e > d-1:
         raise ValueError("basis vector index need to be in d-1")
-    print('Warnings: obasis(d,e) is an old version, please use bx(d,e) instead.')
+    #print('Warnings: obasis(d,e) is an old version, please use bx(d,e) instead.')
     ba = np.zeros((d,1)) #column vector
     ba[e,0] = 1.0
     return qx(ba)
@@ -73,7 +73,7 @@ def bz(j,m):
 
 def zbasis(j,m):
     #old version
-    print('Warnings: zbasis(j,m) is an old version, please use bz(d,e) instead.')
+    #print('Warnings: zbasis(j,m) is an old version, please use bz(d,e) instead.')
     return qx(bx(int(2*j+1),int(j-m)))
 
 def dzbasis(j,m):

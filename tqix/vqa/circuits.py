@@ -253,7 +253,7 @@ def create_num_params(qc_name, num_qubits, num_layers):
         num_params = num_layers*(2*num_qubits - 2)
     elif qc_name == 'ring':
         num_params = num_layers*2*num_qubits
-    elif qc_name == 'sque':
+    elif qc_name == 'squeezing':
         num_params = num_layers*num_qubits*(num_qubits+1)  
     #elif qc_name == 'u_phase':
     #    num_params = 3 # fixed

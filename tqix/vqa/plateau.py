@@ -42,9 +42,10 @@ def plateau(qc: qiskit.QuantumCircuit,
         qcirs[-1][2] = np.random.uniform(0, 2 * np.pi,param_len)
         
         grad = gradf(qc.copy(),qcirs,cost_func)      
-        grads.append(grad) 
+        grads.append(grad)
+    aveg = np.average(grads)     
     var =  np.var(grads)      
-    return var
+    return np.abs(aveg), var
 
 
 def gradf(qc: qiskit.QuantumCircuit,qcirs,cost_func):

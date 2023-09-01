@@ -47,7 +47,7 @@ def husimi(state,x_array,y_array):
     for i in range(M):
         for j in range(N):
             temp = coherent(d,alpha[i,j])
-            qfunc = dotx(daggx(temp),state,temp)/(pi)
+            qfunc = dotx(daggx(temp),state,temp)/(np.pi)
             value[i,j] = float(np.real(qfunc))
 
     return value
@@ -84,7 +84,7 @@ def husimi_spin(state,x_array,y_array):
         for j in range(N):
             temp = spin_coherent(float((d-1)/2.0),np.real(alpha[i,j]),np.imag(alpha[i,j]))
             #temp = coherent(d,alpha[i,j])
-            qfunc = dotx(daggx(temp),state,temp) /(pi)
+            qfunc = dotx(daggx(temp),state,temp) /(np.pi)
             value[i,j] = float(np.real(qfunc))
 
     return value
@@ -132,14 +132,14 @@ def _wigner(d,state,alpha):
         for j in range(d):
             if (j > i):
                 laguerre = genlaguerre(i,j-i)(4 * abs(alpha)**2)
-                temp = (-1)**j / (pi) * np.sqrt(factorial(i)/factorial(j))\
-                        *exp(-2 * abs(alpha)**2) * (-2*conjx(alpha))**(j-i)\
+                temp = (-1)**j / (np.pi) * np.sqrt(factorial(i)/factorial(j))\
+                        *np.exp(-2 * abs(alpha)**2) * (-2*conjx(alpha))**(j-i)\
                         *laguerre
                 result += temp * state[i,j]
             else:
                 laguerre = genlaguerre(j,i-j)(4 * abs(alpha)**2)
-                temp = (-1)**j / (pi) * np.sqrt(factorial(j)/factorial(i))\
-                        *exp(-2 * abs(alpha)**2) * (-2*conjx(-alpha))**(i-j)\
+                temp = (-1)**j / (np.pi) * np.sqrt(factorial(j)/factorial(i))\
+                        *np.exp(-2 * abs(alpha)**2) * (-2*conjx(-alpha))**(i-j)\
                         *laguerre
                 result += conjx(temp) * state[i,j]
     return result
