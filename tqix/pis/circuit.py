@@ -1,7 +1,7 @@
 """
 >>> this file is a part of tqix: a Toolbox for Quantum in X
-                              x: quantum measurement, quantum metrology, 
-                                 quantum tomography, and more.
+                                x: quantum measurement, quantum metrology, 
+                                quantum tomography, and more.
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
@@ -18,7 +18,7 @@ from scipy.sparse import csc_matrix
 from tqix.pis import *
 import torch 
 __all__ =['circuit','sobj',
-          'dbx','dicke_ghz']
+            'dbx','dicke_ghz']
 
 def circuit(N,**kwargs):
     """
@@ -41,14 +41,14 @@ def circuit(N,**kwargs):
         device = None
 
     if not init_state:
-       j = N/2
-       psi = dbx(j,-j) # all spins down
-       if use_gpu:
+        j = N/2
+        psi = dbx(j,-j) # all spins down
+        if use_gpu:
             psi = psi.todense()
             return sobj(torch.tensor(operx(psi)).to(device),N,use_gpu=use_gpu,device=device,num_process=num_process)
-       return sobj(operx(psi).tolist(),N,use_gpu=use_gpu,device=device,num_process=num_process) 
+        return sobj(operx(psi).tolist(),N,use_gpu=use_gpu,device=device,num_process=num_process) 
     else:
-       return sobj(init_state,N,use_gpu=use_gpu,device=device,num_process=num_process)
+        return sobj(init_state,N,use_gpu=use_gpu,device=device,num_process=num_process)
 
 class sobj(Gates):
     """
@@ -101,8 +101,8 @@ def dbx(j,m):
     # output: a vector basis
 
     if m > j or m < -j:
-       raise ValueError('j must in bound -j ≤ m ≤ j')
-      
+        raise ValueError('j must in bound -j ≤ m ≤ j')
+    
     dim = int(2*j + 1)
     state = np.zeros((dim,1))
     offset = get_vidx(j,m) #get vector's index
@@ -111,7 +111,6 @@ def dbx(j,m):
 
 def dicke_ghz(N):
     """
-
     :param N: number of qubits
     :type N: int
     :return: state in dicked ghz basis

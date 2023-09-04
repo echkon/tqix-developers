@@ -91,7 +91,7 @@ https://github.com/echkon/tqix-developers
  >>> $ pip3 install tqix
  >>> ```
  
- >>> For some reason, let's try this:
+ >>> For some reasons, let's try this:
  >>>```
  >>> pip install -r requirements.txt
  >>>```
@@ -99,3 +99,7 @@ https://github.com/echkon/tqix-developers
 >>> pip install . --no-build-isolation
 >>>```
 
+>>> There may an error when we have new files: let try
+>>>```
+>>>pip install -v .
+>>>```

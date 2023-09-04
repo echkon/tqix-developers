@@ -178,4 +178,3 @@ def S_2(S):
     non_zero_values = np.array([S*(S+1)]*len(non_zero_row_inds))
     opr = csc_matrix((non_zero_values, (non_zero_row_inds,non_zero_col_inds)), shape=(dim, dim))
     return opr
- 
