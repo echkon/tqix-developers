@@ -20,4 +20,3 @@ from tqix.vqa.kraus import *
 from tqix.vqa.plateau import *
 from tqix.vqa.vqent import *
 from tqix.vqa.vqm import *
-from tqix.vqa.genetic import *

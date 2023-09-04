@@ -5,7 +5,7 @@
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
->>> contributors:
+>>> contributors: Viet NT
 >>> all rights reserved
 ________________________________
 """
@@ -235,6 +235,24 @@ class Gates(object):
         params = {"theta":theta,"phi":phi}
         self.check_input_param(params)
         return self.gates(type="RN",phi=phi,*args, **kwargs)
+
+    def R_phase(self,theta,phi,gamma,*args, **kwargs):
+        """
+        
+        :math:`R_{phases}(\\phases)= e^{-i\\phases J_{n}}`
+
+        :param theta: theta angle
+        :type theta: float
+        :param phi: phi angle
+        :type phi: float
+        :param gamma: gamma angle
+        :type gamma: float
+        :return: new state after being acted upon by R_phases
+        :rtype: ndarray, tensor, sparse
+        """              
+        params = {"theta":theta,"phi":phi, "gamma":gamma}
+        self.check_input_param(params)
+        return self.gates(type="RP",phi=phi,gamma=gamma,*args, **kwargs)
 
     def check_input_param(self,params):
         """
@@ -537,7 +555,7 @@ class Gates(object):
         for ops in ["x","y","z","+","-"]:
             if ops in type:
                 count_ops += 1
-        if any([True for gate in ["rn","gms"] if gate in type]):
+        if any([True for gate in ["rn","gms","rp"] if gate in type]):
             count_ops += 2
         if count_ops == 1:
             J = get_J(type)
@@ -578,6 +596,16 @@ class Gates(object):
                     expJ = torch.matrix_exp(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
                 else:
                     expJ = expm(1j*self.theta*(J*np.sin(phi)-J_prime*np.cos(phi)))
+            elif "rp" in type:
+                phi = kwargs.pop('phi', None)
+                gamma = kwargs.pop('gamma', None)
+                J = get_J("x")
+                J_prime = get_J("y")
+                J_3 = get_J("z")
+                if self.use_gpu:
+                    expJ = torch.matrix_exp(-1j(*self.theta*J+phi*J_prime+gamma*J_3))
+                else:
+                    expJ = expm(-1j(*self.theta*J+phi*J_prime+gamma*J_3))
 
         expJ_conj = daggx(expJ)
         if self.use_gpu:
