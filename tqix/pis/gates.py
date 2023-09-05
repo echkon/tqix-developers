@@ -603,9 +603,9 @@ class Gates(object):
                 J_prime = get_J("y")
                 J_3 = get_J("z")
                 if self.use_gpu:
-                    expJ = torch.matrix_exp(-1j(*self.theta*J+phi*J_prime+gamma*J_3))
+                    expJ = torch.matrix_exp(-1j*(self.theta*J+phi*J_prime+gamma*J_3))
                 else:
-                    expJ = expm(-1j(*self.theta*J+phi*J_prime+gamma*J_3))
+                    expJ = expm(-1j*(self.theta*J+phi*J_prime+gamma*J_3))
 
         expJ_conj = daggx(expJ)
         if self.use_gpu:

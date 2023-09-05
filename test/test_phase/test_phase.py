@@ -13,15 +13,15 @@ print(psi) #sparse matrix
 print(psi.toarray()) #full matrix
 
 #apply the rotation gate RN on the circuit
-qc.RN(-np.pi/2,np.pi/4)
+qc.R_phase(np.pi/6,np.pi/6,np.pi/6)
 psi2 = qc.state
 
 #visualize state
 THETA = [0, np.pi]
 PHI = [0, 2* np.pi]
 husimi_spin_3d(psi.toarray()+psi2.toarray(),
-                   THETA ,PHI,cmap = cmindex(1),fname ="husimi_sphere.png",view
-                   =(0,0))
+                    THETA ,PHI,cmap = cmindex(1),fname ="husimi_sphere.png",view
+                    =(0,0))
 #get probability
 prob = qc.measure(num_shots=1000)
 #plot figure
