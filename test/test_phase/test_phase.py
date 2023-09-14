@@ -13,8 +13,11 @@ print(psi) #sparse matrix
 print(psi.toarray()) #full matrix
 
 #apply the rotation gate RN on the circuit
-qc.R_phase(np.pi/6,np.pi/6,np.pi/6)
+#qc.R_phase(np.pi/6,np.pi/6,np.pi/6)
+qc.RX(np.pi/6., 0.3)
 psi2 = qc.state
+
+print('psi2',psi2)
 
 #visualize state
 THETA = [0, np.pi]

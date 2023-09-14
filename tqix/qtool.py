@@ -167,3 +167,21 @@ def itensorx(oper,N):
         ltensors.append(result_csr)    
     return ltensors
 
+def ftensorx(oper,N):
+    """calculate full tensors of N opers
+    i.e., oper \otimes oper \otimes ...
+
+    Args:
+        oper (matrix): operator
+        N (int): number of qubits
+        
+    Return
+        list of tensors    
+    """
+    # convert oper to sparse matrix
+    oper_csr = sparse.csr_matrix(oper)
+    
+    ftensor = oper_csr
+    for i in range(1,N):
+        ftensor = sparse.kron(ftensor, oper_csr)  
+    return ftensor
