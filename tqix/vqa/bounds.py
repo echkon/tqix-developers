@@ -364,7 +364,7 @@ def sylvester(A,B,C):
     X = []
     
     for i in range(lenC):
-        L = solve_sylvester(A, B, 2*C[i])
+        L = solve_sylvester(A, B, 2.0*C[i])
         X.append(L)
         
     #print(X)  
@@ -374,3 +374,27 @@ def sylvester(A,B,C):
 def AntiCommutator(A,B):
     # AB + BA
     return A @ B + B @ A                     
+
+
+def calculate_SLD(qc, qcirs):
+    # to calculate SLD
+        
+    cir = tqix.vqa.vqm.qc_add(qc.copy(), qcirs)
+    rho = tqix.vqa.circuits.state_density(cir.copy()) #rho after evolve
+    grho = _grad_rho(qc.copy(), qcirs)
+    
+    d = len(grho) # number of paramaters     
+    Ls = []
+    eigens = eigenx(rho)
+    
+    for i in range(d):
+        L = np.zeros((len(rho),len(rho)), dtype = complex) 
+        for k in range(len(eigens[0])):
+            for l in range(len(eigens[0])):
+                de = eigens[0][k] + eigens[0][l]
+                if de > 10e-15:
+                    coe1 = dotx(daggx(eigens[1][k]),grho[i],eigens[1][l])/de
+                    coe2 = eigens[1][k]@daggx(eigens[1][l])
+                    L += 2*coe1*coe2
+        Ls.append(L)                
+    return Ls

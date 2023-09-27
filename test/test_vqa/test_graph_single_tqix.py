@@ -7,17 +7,10 @@ num_qubits = 5
 tm = 1.0
 
 phases = [np.pi/4.]
+state = tq.star(num_qubits)
 
-#Get Axyz from intergate
 # call angular momentum operator
 [jx, jy, jz] = tq.joper(num_qubits)
-
-# create ghz_minmax
-ghx = tq.ghz_minmax(jx)
-ghy = tq.ghz_minmax(jy)
-ghz = tq.ghz_minmax(jz)
-
-state = ghx
 
 # calculate qfim
 h_opt = [jx]
