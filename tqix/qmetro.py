@@ -96,7 +96,7 @@ def Hx(h_opt,c_opt):
     if len(h_opt) != len(c_opt):
         raise TypeError("list length does not match")
     else:
-        H = 0.0
+        H = 0.0 + 0.0j
         for i in range(len(h_opt)):
             H += h_opt[i]*c_opt[i]
         return H    

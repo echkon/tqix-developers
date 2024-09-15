@@ -168,8 +168,8 @@ def itensorx(oper,N):
     return ltensors
 
 def ftensorx(oper,N):
-    """calculate full tensors of N opers
-    i.e., oper \otimes oper \otimes ...
+    """calculate full tensors between opers,
+    i.e., oper \otimes oper \otimes...
 
     Args:
         oper (matrix): operator
@@ -180,8 +180,19 @@ def ftensorx(oper,N):
     """
     # convert oper to sparse matrix
     oper_csr = sparse.csr_matrix(oper)
-    
-    ftensor = oper_csr
-    for i in range(1,N):
-        ftensor = sparse.kron(ftensor, oper_csr)  
-    return ftensor
+    idn_csr = sparse.identity(2)
+        
+    ltensors = []
+    for i in range(N):
+        # set list of N opers with l[i] = oper
+        itensors = [idn_csr] * N
+        itensors[i] = oper_csr
+        
+        # compute tensor
+        result = itensors[0]
+        for j in range(1, N):
+            result = sparse.kron(result, itensors[j])
+
+        result_csr = sparse.csr_matrix(result.todense())  
+        ltensors.append(result_csr)    
+    return ltensors

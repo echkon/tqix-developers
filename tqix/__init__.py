@@ -46,10 +46,6 @@ from tqix.povm import *
 # pis
 from tqix.pis import *
 
-# vqa
-from tqix.vqa import *
-
-
 
 # -----------------------------------------------------------------------------
 # Clean name space

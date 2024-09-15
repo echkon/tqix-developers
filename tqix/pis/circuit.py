@@ -16,9 +16,10 @@ from tqix.qobj import *
 from tqix.pis.util import *
 from scipy.sparse import csc_matrix
 from tqix.pis import *
-import torch 
-__all__ =['circuit','sobj',
-            'dbx','dicke_ghz']
+import torch
+
+#__all__ =['circuit','sobj',
+#            'dbx','dicke_ghz']
 
 def circuit(N,**kwargs):
     """
@@ -29,7 +30,7 @@ def circuit(N,**kwargs):
     :rtype: instance of sobj
     """    
     use_gpu = kwargs.pop('use_gpu', False)
-    init_state = kwargs.pop('initial_state', None)
+    init_state = kwargs.pop('init_state', None)
     num_process = kwargs.pop('num_process', None)
     if use_gpu:
         if torch.cuda.is_available():
@@ -40,7 +41,8 @@ def circuit(N,**kwargs):
     else:
         device = None
 
-    if not init_state:
+    #if not init_state:
+    if init_state is None:
         j = N/2
         psi = dbx(j,-j) # all spins down
         if use_gpu:

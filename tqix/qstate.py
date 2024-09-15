@@ -1,7 +1,7 @@
 """
 >>> this file is a part of tqix: a Toolbox for Quantum in X
-                                x: quantum measurement, quantum metrology, 
-                                quantum tomography, and more.
+                              x: quantum measurement, quantum metrology, 
+                                 quantum tomography, and more.
 ________________________________
 >>> copyright (c) 2019 and later
 >>> authors: Binho Le
@@ -15,7 +15,7 @@ __all__ = ['bx','bz',
             'coherent','squeezed', 'position','spin_coherent',
             'ghz', 'w', 'dicke', 'random', 
             'add_random_noise','add_white_noise',
-            'ghz_minmax', 'star']
+            'ghz_minmax']
 
 from numpy import conj, kron, sqrt, exp, pi, sin, cos
 
@@ -281,28 +281,6 @@ def ghz_minmax(A):
     idx_min = np.argmin(w)
     idx_max = np.argmax(w)
     return (1/np.sqrt(2.0)*(vk[idx_min]+vk[idx_max]))
-
-def star(n):
-    """ to generate star state
-    Parameters
-    ----------
-    n: number of qubits
-
-    Return: GHZ state, 
-    ie. (|0+...+> + |1-...->)/sqrt(2)
-
-    """
-    dim = 2**n
-    up,down = _up_down()
-    plus = normx(up + down)
-    minus = normx(up - down)
-    
-    ups,upd = up,down
-    for i in range(n-1):
-        ups = kron(ups,plus)
-        upd = kron(upd,minus)
-    st = (ups+upd)/sqrt(2.0)
-    return qx(st)
 
 #####
 def _up_down():

@@ -130,7 +130,7 @@ def calc_rho_0(rho_0,iks,jmm1,state,all_iks,j_min,j_max,N_in,d_dicke,use_gpu=Fal
         else:
             return accumulate_states
     else:
-        accumulate_states = csc_matrix((d_dicke, d_dicke), dtype=np.complex)
+        accumulate_states = csc_matrix((d_dicke, d_dicke), dtype=complex)
         for ik in iks:
             i,k = ik 
             j,m,m1 = jmm1[i,k]
@@ -265,7 +265,7 @@ def add_noise(qc,noise=0.3,num_process=None,use_gpu=False,device=None):
         else:
             rho = state
     else:
-        rho_0 = csc_matrix((d_dicke, d_dicke), dtype=np.complex)
+        rho_0 = csc_matrix((d_dicke, d_dicke), dtype=complex)
         rho = state
     j_min = get_jmin(N_in)
     j_max = N_in/2

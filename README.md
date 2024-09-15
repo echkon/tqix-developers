@@ -8,6 +8,7 @@
 >>>In version 2.0.1 we add a library called tqix.pis for large-scale quantum simulation.     
 
 >>> In version 3.0.* we add a library called tqix.vqa for Variational Quantum Algorithms
+>>> In 4.1 we remove tqix.vqa
 
 # Structure of the program
 
@@ -54,18 +55,6 @@
             |--- squeeze_param.py #define squeezing_parameters
             |--- util.py #utility code
             |
-        \vqa # variational quantum algorithms
-            |---__init__.py
-            |--- bounds.py    # quantum bound, qfim, cfim, ...
-            |--- circuits.py  # quantum circuit and ansatzes
-            |--- constants    # various constants
-            |--- entanglement # to calculate entanglement 
-            |--- fitting      # fitting model
-            |--- kraus        # defined Kraus operators for noise
-            |--- plateau      # calculate barrent plateu
-            |--- vqent        # variational quantum entanglement
-            |--- vqm          # variational quantum metrology
-            |
 # License
  >>> copyright (c) 2019 and later\
  >>> authors: Le Bin Ho\
@@ -94,12 +83,10 @@ https://github.com/echkon/tqix-developers
  >>> For some reasons, let's try this:
  >>>```
  >>> pip install -r requirements.txt
+     pip install . --no-build-isolation
  >>>```
- >>>```
->>> pip install . --no-build-isolation
->>>```
 
->>> There may an error when we have new files: let try
->>>```
->>>pip install -v .
->>>```
+ >>> There may an error when we have new files: let try
+ >>>```
+ >>>pip install -v .
+ >>>```

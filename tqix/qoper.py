@@ -269,12 +269,15 @@ def dephasing_chl(x, lamb):
     kraus1 = np.array([[1, 0],[0, np.sqrt(1 - lamb)]])
     kraus2 = np.array([[0, 0],[0, np.sqrt(lamb)]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ fkraus1 + fkraus2 @ x_csr @ fkraus2
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
     
     return x_csr
 
@@ -295,12 +298,15 @@ def bitflip_chl(x, lamb):
     kraus1 = np.sqrt(1-lamb) * np.array([[1, 0], [0, 1]])
     kraus2 = np.sqrt(lamb) * np.array([[0, 1], [1, 0]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ fkraus1 + fkraus2 @ x_csr @ fkraus2
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
     
     return x_csr
 
@@ -321,12 +327,15 @@ def phaseflip_chl(x, lamb):
     kraus1 = np.sqrt(1-lamb) * np.array([[1, 0], [0, 1]])
     kraus2 = np.sqrt(lamb) * np.array([[1, 0], [0, -1]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ fkraus1 + fkraus2 @ x_csr @ fkraus2
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
     
     return x_csr
 
@@ -349,17 +358,19 @@ def depolarizing_chl(x, lamb):
     kraus3 = np.sqrt(lamb/3.) * np.array([[0, -1j], [1j, 0]])
     kraus4 = np.sqrt(lamb/3.) * np.array([[1, 0], [0, -1]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
-    fkraus3 = tqix.qtool.ftensorx(kraus3, N)
-    fkraus4 = tqix.qtool.ftensorx(kraus4, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
+    lkraus3 = tqix.qtool.itensorx(kraus3, N)
+    lkraus4 = tqix.qtool.itensorx(kraus4, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ tqix.qobj.daggx(fkraus1) \
-            + fkraus2 @ x_csr @ tqix.qobj.daggx(fkraus2) \
-            + fkraus3 @ x_csr @ tqix.qobj.daggx(fkraus3) \
-            + fkraus4 @ x_csr @ tqix.qobj.daggx(fkraus4)
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i] \
+                    + lkraus3[i] @ x_csr @ lkraus3[i] \
+                    + lkraus4[i] @ x_csr @ lkraus4[i]
+        x_csr = x_csrn
     
     return x_csr
 
@@ -382,12 +393,15 @@ def markovian_chl(x, t, y):
     kraus1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
     kraus2 = np.array([[np.sqrt(qt),0], [0,0]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ fkraus1 + fkraus2 @ x_csr @ fkraus2
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
     
     return x_csr
 
@@ -412,11 +426,14 @@ def nonmarkovian_chl(x, t, y, tc = 20.0):
     kraus1 = np.array([[np.sqrt(1-qt) ,0], [0,1]])
     kraus2 = np.array([[np.sqrt(qt),0], [0,0]])
     
-    fkraus1 = tqix.qtool.ftensorx(kraus1, N)
-    fkraus2 = tqix.qtool.ftensorx(kraus2, N)
+    lkraus1 = tqix.qtool.itensorx(kraus1, N)
+    lkraus2 = tqix.qtool.itensorx(kraus2, N)
     
     # apply Kraus to qobj x
     x_csr = sparse.csr_matrix(tqix.operx(x))
-    x_csr = fkraus1 @ x_csr @ fkraus1 + fkraus2 @ x_csr @ fkraus2
-        
+    for i in range(N):
+        x_csrn = lkraus1[i] @ x_csr @ lkraus1[i] \
+                    + lkraus2[i] @ x_csr @ lkraus2[i]
+        x_csr = x_csrn
+    
     return x_csr
