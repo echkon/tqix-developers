@@ -11,12 +11,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # all information about tqix is here
-MAN = 3
-SUB = 0
-SUBS= 4
-VERSION = '%d.%d.%d' % (MAN,SUB,SUBS)
-REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','sklearn','qiskit (>=0.43.0)']
-PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm','tqix/vqa']
+MAN = 4
+SUB = 1
+
+VERSION = '%d.%d' % (MAN,SUB)
+REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','scikit-learn']
+PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
 NAME = "tqix"
 AUTHOR = ("Binho Le")
