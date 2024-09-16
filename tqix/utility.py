@@ -14,7 +14,8 @@ __all__ = ['randunit','krondel','randnormal','haar','ndiff']
 import numpy as np
 import random
 from tqix.qobj import *
-from scipy import (randn,diagonal,absolute,multiply)
+from numpy.random import randn
+from numpy import diagonal, absolute, multiply
 from scipy.linalg import qr
 
 def randunit():
