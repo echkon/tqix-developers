@@ -1,3 +1,15 @@
+Metadata-Version: 2.1
+Name: onecircuit
+Version: 0.0.1
+Summary: One solution for all quantum circuit needs.
+Home-page: 
+Author: Binho Le
+Author-email: Binho Le <binho@fris.tohoku.ac.jp>
+License: GNU
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # **OneCircuit**
 
 `OneCircuit` is a versatile Python package designed to simplify the creation, manipulation, and visualization of quantum circuits. Built with ease of use in mind, `OneCircuit` allows researchers and developers to quickly set up quantum circuits, experiment with various quantum gates, and visualize the results.

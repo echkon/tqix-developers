@@ -1,7 +1,7 @@
 [build-system]
-requires = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','scikit-learn']
+requires = ['numpy (>=1.8)', 'scipy (>=1.7.1)']
 
 [project]
-name = "tqix"
+name = "onecircuit"
 authors = [{name = "Binho Le", email = "binho@fris.tohoku.ac.jp"}]
 dynamic = ["version", "description", "readme", "requires-python","license"]
