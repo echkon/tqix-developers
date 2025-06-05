@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-OneCircuit: One solution for all quantum circuit needs
+tqix: a Toolbox for Quantum in X:
+    x: quantum measurement, quantum metrology, quantum tomography, and more.
 """
 import os
 
@@ -9,27 +10,26 @@ from setuptools import setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# all information about onecircuit is here
-MAN = 0
-SUB = 0
-SUB1 = 1
+# all information about tqix is here
+MAN = 4
+SUB = 3
 
-VERSION = '%d.%d.%d' % (MAN,SUB, SUB1)
-REQUIRES = ['numpy (>=1.8)','scipy (>=1.7.1)']
-PACKAGES = ['onecircuit']
+VERSION = '%d.%d' % (MAN,SUB)
+REQUIRES = ['numpy (>=1.8)', 'torch (>=1.10)','scipy (>=1.7.1)','scikit-learn']
+PACKAGES = ['tqix', 'tqix/dsm', 'tqix/pis', 'tqix/povm']
 
-NAME = "onecircuit"
+NAME = "tqix"
 AUTHOR = ("Binho Le")
 AUTHOR_EMAIL = ("binho@fris.tohoku.ac.jp")
 LICENSE = "GNU"
-DESCRIPTION = "One solution for all quantum circuit needs."
-KEYWORDS = "quantum circuit, variationa quantum circuit"
-URL = ""
+DESCRIPTION = "A Toolbox for Quantum in X"
+KEYWORDS = "quantum measurement, quantum metrology, quantum tomography"
+URL = "https://vqisinfo.wixsite.com/tqix"
 PLATFORMS = ["Linux", "Mac OSX", "Unix", "Windows"]
 
-def write_version_py(filename='onecircuit/_version.py'):
+def write_version_py(filename='tqix/version.py'):
     cnt = """\
-#this file is generated from onecircuit setup.py
+#this file is generated from tqix setup.py
 version = '%(version)s'
 """
     a = open(filename, 'w')
@@ -39,8 +39,8 @@ version = '%(version)s'
         a.close()
 
 # if exists then remove
-if os.path.exists('onecircuit/_version.py'):
-    os.remove('onecircuit/_version.py')
+if os.path.exists('tqix/version.py'):
+    os.remove('tqix/version.py')
 
 
 

@@ -1,2 +1,4 @@
 numpy>=1.8
-scipy>=1.7.1
+torch>=1.10
+scipy<1.12.0
+scikit-learn>=0.0
