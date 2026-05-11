@@ -192,26 +192,42 @@ try:
 except:
     pass
 
-def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'Blues',dirname ="",
-                fname = 'fig_husimi_spin_3d.eps',alpha = 0.65,view=(120,120),use_axis=False):
+def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'jet',dirname ="",
+                fname = 'fig_husimi_spin_3d.eps',alpha = 0.7,colorbar=True,axis=True,view=None):
     """ to plot Husimi visualization in Bloch sphere
     
     Parameters:
     state: quantum object
         A given quantum state needed to visualize
-    theta, phi: array-like(2)
-        The minimum and maximum values of the coordinates 
+    theta, phi: array-like or 2D meshgrid
+        Either [min, max] bounds or full theta/phi meshgrid arrays.
     cmap: str or Colormap
-        A colormap instance or colormap name (default: 'viridis') 
+        A colormap instance or colormap name (default: 'jet') 
     fname: string
         File name  
+    colorbar: bool
+        Whether to draw the Husimi colorbar (default: True)
+    axis: bool
+        Whether to draw the coordinate axes (default: True)
 
     Returns:
     A file with fname
     """
 
-    theta_array = np.linspace(theta[0], theta[1], N)
-    phi_array = np.linspace(phi[0], phi[1], N)
+    theta_array = np.asarray(theta)
+    phi_array = np.asarray(phi)
+    if theta_array.ndim > 1:
+        theta_array = np.unique(theta_array)
+    if phi_array.ndim > 1:
+        phi_array = np.unique(phi_array)
+
+    if theta_array.size == 2 and phi_array.size == 2:
+        theta_array = np.linspace(theta_array[0], theta_array[1], N)
+        phi_array = np.linspace(phi_array[0], phi_array[1], N)
+    elif theta_array.ndim > 1 or phi_array.ndim > 1:
+        theta_array = theta_array.flatten()
+        phi_array = phi_array.flatten()
+
     theta_grid, phi_grid = np.meshgrid(theta_array,phi_array)
 
     #convert to x,y,z
@@ -219,44 +235,24 @@ def husimi_spin_3d(state,theta,phi,N = 100,cmap = 'Blues',dirname ="",
     y = np.sin(theta_grid) * np.sin(phi_grid)
     z = np.cos(theta_grid)
 
-    h = husimi_spin(state,theta_array,phi_array)
+    d = state.shape[0] if hasattr(state, 'shape') else len(state)
+    J = float((d - 1) / 2.0)
 
-    a = str('cm.')+cmap
-    if h.min() < -10e10:
-        cmap = eval(a)
-        norm = mpl.colors.Normalize(-h.max(), h.max())
-    else:
-        cmap = eval(a)
-        norm = mpl.colors.Normalize(h.min(), h.max())
-
+    sphere_radius = 5
     fig = plt.figure(figsize=(6,6))
     ax = fig.add_subplot(projection='3d')
-    ax.plot_surface(x, y, z, rstride=1, cstride=1, shade=False,
-                    facecolors=cmap(norm(h)),linewidth=0,alpha=alpha)
-    
-    # Create a mappable object for the color bar
-    mappable = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
-    mappable.set_array(norm(h))
+    plot_husimi_surface(ax, state, J, theta_array, phi_array, x, y, z, sphere_radius, cmap=cmap)
 
-    # Add the color bar
-    cbar = fig.colorbar(mappable, ax=ax, shrink=0.5, aspect=5)
-    cbar.set_label('Husimi Q Function')  # Label for the color bar
+    format_husimi_axes(ax, sphere_radius=sphere_radius, axis=axis)
+    if colorbar:
+        #add_husimi_colorbar(fig, ax, label=r"$Q(\theta, \phi) = |\langle \theta, \phi | CSS \rangle|^2$")
+        add_husimi_colorbar(fig, ax)
 
-    if use_axis:
-        ax.quiver(1,0,0,1,0,0,color = 'navy', alpha = .8, lw = 1,length=0.5) #x arrow
-        ax.text(1.6,0,0.1,"x","x")
-        ax.quiver(0,1,0,0,1,0,color = 'navy', alpha = .8, lw = 1,length=0.5)#y arrow
-        ax.text(0,1.6,0.1,"y","y")
-        ax.quiver(0,0,1,0,0,1,color = 'navy', alpha = .8, lw = 1,length=0.5)#z arrow
-        ax.text(0.05,0.05,1.6,"z","z")
-    plt.axis('off')
     _printout(fname)
-    ax.view_init(view)
-    elev,azim = view
-    ax.view_init(elev=elev, azim=azim)
-    #fig.colorbar()  
+    if view is not None:
+        elev, azim = view
+        ax.view_init(elev=elev, azim=azim)
     fig.savefig(os.path.join(dirname,fname), dpi=300, transparent=True, bbox_inches='tight', pad_inches=0.1)
-    #plt.close()
 
 def wigner_spin_3d(state,theta,phi,N = 100,cmap = 'viridis',
                    fname = 'fig_wigner_spin_3d.eps',alpha = 1,view=(120,120),use_axis=False):
@@ -598,3 +594,222 @@ def plot_husimi_sphere(H, X, Y, Z,
         ax.view_init(elev=20, azim=60)
 
         plt.show()
+
+def compute_spin_evolution(H, psi_start, t_list, eigvecs_proj):
+    """
+    Evolves a state over time and computes probability distributions in a given basis.
+    Returns the states, the list of probability arrays, and a unified ymax.
+    """
+    states = []
+    probs_list = []
+    ymax_hist = 0.0
+
+    for t in t_list:
+        psi_t = evolve_state(H, psi_start, t)
+        states.append(psi_t)
+        
+        # Projecting onto the basis eigenvectors
+        psi_t_proj = eigvecs_proj.conj().T @ psi_t
+        prob = np.abs(psi_t_proj)**2
+        prob /= prob.sum()
+        
+        probs_list.append(prob)
+        ymax_hist = max(ymax_hist, prob.max())
+        
+    return states, probs_list, ymax_hist * 1.15 # Includes headroom
+
+def plot_husimi_surface(ax_h, psi_t, J, theta_vals, phi_vals, X, Y, Z, sphere_radius=5, cmap='jet'):
+    """Calculates the Husimi Q function and plots it on the 3D sphere."""
+    theta_vals = np.asarray(theta_vals)
+    phi_vals = np.asarray(phi_vals)
+    if theta_vals.ndim > 1:
+        theta_vals = np.unique(theta_vals)
+    if phi_vals.ndim > 1:
+        phi_vals = np.unique(phi_vals)
+
+    if hasattr(psi_t, 'shape') and psi_t.ndim == 2 and psi_t.shape[0] == psi_t.shape[1]:
+        Q = husimi_spin(psi_t, theta_vals, phi_vals)
+    else:
+        Q = husimi_Q_spin(psi_t, J, theta_vals, phi_vals)
+    
+    # Transpose Q so its (theta, phi) indexing aligns with the X, Y, Z meshgrid arrays.
+    Q = Q.T 
+    Q_plot = Q / np.nanmax(Q)
+    cmap_obj = plt.get_cmap(cmap)
+    colors = cmap_obj(Q_plot)
+
+    ax_h.plot_surface(
+        X * sphere_radius, Y * sphere_radius, Z * sphere_radius,
+        rstride=1, cstride=1, shade=False,
+        facecolors=colors, linewidth=0, antialiased=True, alpha=0.7,
+    )
+    draw_sphere_grid(ax_h, R=sphere_radius)
+
+def format_husimi_axes(ax_h, sphere_radius=5, axis=True):
+    """Applies custom OAT/TAT camera angles, axes limits, and specific vector arrows."""
+    arrow_length = sphere_radius * 1.5
+    label_offset = arrow_length * 1.15
+
+    # Set invisible bounding box
+    ax_h.set_xlim(-arrow_length, arrow_length)
+    ax_h.set_ylim(-arrow_length, arrow_length)
+    z_shift = 2.2
+    ax_h.set_zlim(-arrow_length + z_shift, arrow_length + z_shift)
+
+    # Specific camera view
+    ax_h.view_init(elev=20, azim=-60)
+    ax_h.set_proj_type('ortho')
+    ax_h.set_box_aspect([1, 1, 1], zoom=1.8)
+    ax_h.set_axis_off()
+
+    if axis:
+        # Draw the same stylized Husimi axes as in husimi.ipynb
+        ax_h.quiver(0, 0, 0, arrow_length+0.2, -2.0, 0.7, color="k", arrow_length_ratio=0.08, linewidth=1.5)
+        ax_h.quiver(0, 0, 0, -0.2, -arrow_length-3.0, -0.1, color="k", arrow_length_ratio=0.08, linewidth=1.5)
+        ax_h.quiver(0, 0, 0, 0, 0, arrow_length, color="k", arrow_length_ratio=0.08, linewidth=1.5)
+
+        # Place labels at the same locations as the notebook style
+        ax_h.text(label_offset-0.6, 0, 0, r"$x$", color="k", fontsize=12, ha='center', va='center')
+        ax_h.text(0, -label_offset-3.0, 0, r"$y$", color="k", fontsize=12, ha='center', va='center')
+        ax_h.text(0, 0, label_offset, r"$z$", color="k", fontsize=12, ha='center', va='center')
+def add_husimi_colorbar(fig, ax, label="", shrink=0.85, aspect=20, pad=0.05):
+    """Adds a colorbar to a Husimi visualization with a custom label."""
+    mappable = mpl.cm.ScalarMappable(cmap=plt.cm.jet, norm=mpl.colors.Normalize(vmin=0, vmax=1))
+    mappable.set_array([])
+    cbar = fig.colorbar(mappable, ax=ax, shrink=shrink, aspect=aspect, pad=pad)
+    if label:
+        cbar.set_label(label, fontsize=14, rotation=90, labelpad=25)
+    return cbar
+
+def format_histogram_axes(ax_hist, eigvals, ymax, xlabel=r"$m_x$", ylabel=r"$P(m_x)$", title=None):
+    """Formats the 1D probability histogram with standard aesthetics."""
+    ax_hist.set_axisbelow(True)
+    ax_hist.grid(axis='y', color='gray', alpha=0.3, linestyle='--')
+    
+    ax_hist.set_xlim(eigvals[0] - 10.0, eigvals[-1] + 10.0)
+    ax_hist.set_ylim(0, ymax)
+    ax_hist.set_xlabel(xlabel)
+    ax_hist.set_ylabel(ylabel)
+    
+    if title:
+        ax_hist.set_title(title, fontsize=13)
+        
+    ax_hist.set_xticks([eigvals[0], 0, eigvals[-1]])
+    ax_hist.set_xticklabels([r"$-m$", r"$0$", r"$m$"])
+
+
+def plot_evolution_sequence(filename, states, probs_list, labels, eigvals_x,
+                            ymax_hist=0.2, sphere_radius=5, N=100):
+    """
+    Top row: Husimi Q distributions.
+    Bottom row: P(m_x) histograms.
+    """
+    n_cols = len(states)
+    fig = plt.figure(figsize=(3 * n_cols, 6), dpi=150)
+
+    theta_vals = np.linspace(0, np.pi, N)
+    phi_vals = np.linspace(0, 2*np.pi, N)
+    theta_grid, phi_grid = np.meshgrid(theta_vals, phi_vals)
+
+    X = np.sin(theta_grid) * np.cos(phi_grid)
+    Y = np.sin(theta_grid) * np.sin(phi_grid)
+    Z = np.cos(theta_grid)
+
+    dim = len(states[0])
+    J = (dim - 1) / 2
+
+    for i, (psi_t, prob_x, label) in enumerate(zip(states, probs_list, labels)):
+        ax_h = fig.add_subplot(2, n_cols, i + 1, projection="3d")
+        plot_husimi_surface(
+            ax_h, psi_t, J,
+            theta_vals, phi_vals,
+            X, Y, Z,
+            sphere_radius
+        )
+        format_husimi_axes(ax_h, sphere_radius)
+
+        ax_hist = fig.add_subplot(2, n_cols, n_cols + i + 1)
+        ax_hist.bar(eigvals_x, prob_x, width=0.8)
+        format_histogram_axes(ax_hist, eigvals_x, ymax_hist, title=label)
+
+    plt.tight_layout()
+    plt.savefig(filename, format="eps", dpi=150)
+    plt.show()
+    
+import matplotlib.animation as animation
+
+def generate_evolution_animation(filename, states, probs_list, titles,
+                                 eigvals_x, ymax_hist=0.2,
+                                 fps=15, sphere_radius=5, N=100):
+    """
+    Creates and saves an MP4 animation.
+
+    Top panel: Husimi Q distribution on the sphere.
+    Bottom panel: P(m_x) histogram.
+
+    This version infers J and builds theta/phi/X/Y/Z internally.
+    """
+
+    # --- Infer spin size from state dimension ---
+    dim = states[0].shape[0]
+    J = (dim - 1) / 2
+
+    # --- Build Husimi sphere grid internally ---
+    theta_vals = np.linspace(0, np.pi, N)
+    phi_vals = np.linspace(0, 2*np.pi, N)
+
+    theta_grid, phi_grid = np.meshgrid(theta_vals, phi_vals)
+
+    X = np.sin(theta_grid) * np.cos(phi_grid)
+    Y = np.sin(theta_grid) * np.sin(phi_grid)
+    Z = np.cos(theta_grid)
+
+    fig = plt.figure(figsize=(4, 7), dpi=150)
+    ax_h = fig.add_subplot(2, 1, 1, projection="3d")
+    ax_hist = fig.add_subplot(2, 1, 2)
+
+    n_frames = len(states)
+
+    def draw_frame(i):
+        ax_h.cla()
+        ax_hist.cla()
+
+        # --- Husimi sphere ---
+        plot_husimi_surface(
+            ax_h,
+            states[i],
+            J,
+            theta_vals,
+            phi_vals,
+            X,
+            Y,
+            Z,
+            sphere_radius
+        )
+
+        format_husimi_axes(ax_h, sphere_radius)
+        ax_h.set_title(titles[i], fontsize=13)
+
+        # --- Histogram ---
+        ax_hist.bar(eigvals_x, probs_list[i], width=0.8)
+        format_histogram_axes(ax_hist, eigvals_x, ymax_hist)
+
+        plt.tight_layout()
+
+    ani = animation.FuncAnimation(
+        fig,
+        draw_frame,
+        frames=n_frames,
+        interval=1000 / fps
+    )
+
+    writer = animation.FFMpegWriter(
+        fps=fps,
+        bitrate=2000,
+        extra_args=["-vcodec", "libx264", "-pix_fmt", "yuv420p"]
+    )
+
+    ani.save(filename, writer=writer)
+    plt.close(fig)
+
+    print(f"Saved {filename}")
